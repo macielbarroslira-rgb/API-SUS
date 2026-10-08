@@ -1,0 +1,89 @@
+"""Diagnóstico da API de Dados Abertos do Ministério da Saúde (roda no GitHub Actions)."""
+
+import json
+import sys
+import urllib.error
+import urllib.request
+
+BASE = "https://apidadosabertos.saude.gov.br"
+ORIGEM = "https://macielbarroslira-rgb.github.io"
+CANDIDATOS_SPEC = [
+    f"{BASE}/v1/static/swagger.json",
+    f"{BASE}/static/swagger.json",
+    f"{BASE}/v1/swagger.json",
+    f"{BASE}/swagger.json",
+    f"{BASE}/v1/openapi.json",
+    f"{BASE}/openapi.json",
+]
+
+
+def get(url, metodo="GET", extra=None):
+    cab = {"Origin": ORIGEM, "Accept": "application/json", "User-Agent": "API-SUS-diagnostico"}
+    cab.update(extra or {})
+    req = urllib.request.Request(url, headers=cab, method=metodo)
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return r.status, dict(r.headers), r.read()
+    except urllib.error.HTTPError as e:
+        return e.code, dict(e.headers), e.read()
+    except Exception as e:  # noqa: BLE001
+        return None, {}, str(e).encode()
+
+
+def cors(cabecalhos):
+    return {k: v for k, v in cabecalhos.items() if k.lower().startswith("access-control")} or "NENHUM cabeçalho CORS"
+
+
+print("=" * 70)
+status, cab, corpo = get(f"{BASE}/v1/")
+print(f"Página /v1/: status={status}")
+html = corpo.decode("utf-8", "replace")
+for trecho in ("swagger.json", "openapi.json", "url:"):
+    i = html.find(trecho)
+    if i >= 0:
+        print(f"  trecho com '{trecho}': {html[max(0, i - 120):i + 60]!r}")
+
+spec, spec_url = None, None
+for url in CANDIDATOS_SPEC:
+    status, cab, corpo = get(url)
+    print(f"SPEC {url}: status={status} tipo={cab.get('Content-Type')} cors={cors(cab)}")
+    if status == 200 and spec is None:
+        try:
+            spec, spec_url = json.loads(corpo), url
+        except ValueError:
+            pass
+
+if spec is None:
+    print("Nenhuma especificação encontrada.")
+    sys.exit(0)
+
+with open("swagger.json", "w", encoding="utf-8") as f:
+    json.dump(spec, f, ensure_ascii=False)
+print("=" * 70)
+print(f"Especificação: {spec_url}")
+print(f"  versão={spec.get('swagger') or spec.get('openapi')} info={spec.get('info')}")
+print(f"  host={spec.get('host')} basePath={spec.get('basePath')} servers={spec.get('servers')}")
+caminhos = spec.get("paths", {})
+print(f"  {len(caminhos)} caminhos:")
+for caminho, item in caminhos.items():
+    op = item.get("get")
+    if not op:
+        continue
+    params = [f"{p.get('name')}{'*' if p.get('required') else ''}" for p in op.get("parameters", []) if isinstance(p, dict)]
+    print(f"    GET {caminho}  [{', '.join(params)}]  {op.get('summary', '')}")
+
+print("=" * 70)
+testes = [
+    "/arboviroses/dengue?nu_ano=2024&limit=2&offset=0",
+    "/v1/arboviroses/dengue?nu_ano=2024&limit=2&offset=0",
+    "/cnes/estabelecimentos?limit=2&offset=0",
+    "/v1/cnes/estabelecimentos?limit=2&offset=0",
+]
+for t in testes:
+    status, cab, corpo = get(BASE + t)
+    print(f"DADOS {t}: status={status} cors={cors(cab)}")
+    print(f"   corpo: {corpo[:300].decode('utf-8', 'replace')!r}")
+status, cab, _ = get(
+    BASE + "/cnes/estabelecimentos?limit=1", "OPTIONS", {"Access-Control-Request-Method": "GET"}
+)
+print(f"PREFLIGHT OPTIONS: status={status} cors={cors(cab)}")

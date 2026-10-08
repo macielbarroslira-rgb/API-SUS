@@ -1,0 +1,27 @@
+name: Diagnóstico da API oficial
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/diagnostico.py
+      - .github/workflows/diagnostico.yml
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostico:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/diagnostico.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: swagger-oficial
+          path: swagger.json
+          if-no-files-found: ignore
