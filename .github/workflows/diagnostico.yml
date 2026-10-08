@@ -6,6 +6,7 @@ on:
     paths:
       - scripts/diagnostico.py
       - scripts/sonda_csv.py
+      - scripts/sonda_repeticao.py
       - .github/workflows/diagnostico.yml
 
 permissions:
@@ -19,7 +20,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python scripts/sonda_csv.py
+      - run: python scripts/sonda_repeticao.py
       - name: Teste real de geração de planilhas
         if: false
         env:
