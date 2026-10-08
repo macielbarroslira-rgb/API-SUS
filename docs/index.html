@@ -107,7 +107,6 @@ const specsPadrao = () => ["./swagger.json"];
 const REPO = location.hostname.endsWith(".github.io")
   ? `${location.hostname.split(".")[0]}/${location.pathname.split("/").filter(Boolean)[0] || ""}`
   : "macielbarroslira-rgb/API-SUS";
-const URL_WORKFLOW = `https://github.com/${REPO}/actions/workflows/baixar-planilha.yml`;
 const NOMES_LIMIT = ["limit", "limite"], NOMES_OFFSET = ["offset", "pagina", "page"];
 const TAMANHO_PAGINA_PADRAO = 20, MAX_PAGINAS = 5000;
 
@@ -614,30 +613,35 @@ async function consultar() {
 
 function prepararPlanilha() {
   const { filtros, colunas, agrupar_por, somar, max_registros } = coletar();
-  const valores = [
-    ["base", atual.id],
-    ["filtros", Object.entries(filtros).map(([k, v]) => `${k}=${v}`).join("; ")],
-    ["colunas", (colunas || []).join(",")],
-    ["agrupar_por", agrupar_por.join(",")],
-    ["somar", somar.join(",")],
-    ["max_registros", String(max_registros)],
-  ];
-  const linha = ([nome, valor]) => {
-    const copiar = el("button", { onclick: async () => { try { await navigator.clipboard.writeText(valor); copiar.textContent = "Copiado ✓"; } catch { copiar.textContent = "Selecione e copie"; } } }, "Copiar");
-    return el("tr", {}, el("td", {}, el("b", {}, nome)), el("td", {}, el("code", {}, valor || "(deixe vazio)")), el("td", {}, valor ? copiar : ""));
+  const valores = {
+    base: atual.id,
+    filtros: Object.entries(filtros).map(([k, v]) => `${k}=${v}`).join("; "),
+    colunas: (colunas || []).join(","),
+    agrupar_por: agrupar_por.join(","),
+    somar: somar.join(","),
+    max_registros: String(max_registros),
+    formato: "xlsx",
   };
-  const tab = el("table"); tab.append(el("tbody", {}, ...valores.map(linha)));
+  const corpo = [
+    "Pedido de planilha gerado pela página API-SUS.",
+    "👉 Clique em **Create** (Criar) para gerar. Em alguns minutos aparece aqui um comentário com o link do Excel.",
+    "",
+    "```",
+    ...Object.entries(valores).map(([k, v]) => `${k}: ${v}`),
+    "```",
+  ].join("\n");
+  const titulo = `[planilha] ${atual.resumo ? atual.resumo.slice(0, 80) : atual.id}`;
+  const url = `https://github.com/${REPO}/issues/new?` + new URLSearchParams({ title: titulo, body: corpo });
+  window.open(url, "_blank", "noopener");
   $("#saida").replaceChildren(
-    el("p", {}, "A planilha é gerada pelo GitHub (a API do Ministério não permite consulta direta pelo navegador):"),
+    el("p", {}, "Abrimos o pedido no GitHub numa nova aba (se não abriu, ", el("a", { href: url, target: "_blank", rel: "noopener" }, "clique aqui"), ")."),
     el("ol", {},
-      el("li", {}, "Abra ", el("a", { href: URL_WORKFLOW, target: "_blank", rel: "noopener" }, "Actions → Baixar planilha"), " (precisa estar logado no GitHub)."),
-      el("li", {}, "Clique em ", el("b", {}, "Run workflow"), " e preencha com os valores abaixo:"),
+      el("li", {}, "Na aba do GitHub, clique no botão verde ", el("b", {}, "Create"), " (Criar). Precisa estar logado como dono do repositório."),
+      el("li", {}, "Em 1 a 3 minutos (bases grandes demoram mais) aparece um comentário no pedido com o resumo e o link ", el("b", {}, "⬇️ baixar"), " do Excel."),
     ),
-    el("div", { className: "tabela" }, tab),
-    el("ol", { start: 3 },
-      el("li", {}, "Clique no botão verde ", el("b", {}, "Run workflow"), ". Aguarde a execução ficar com ✅ (atualize a página)."),
-      el("li", {}, "Clique na execução: aparece um resumo com os totais e a prévia dos dados. No fim da página, em ", el("b", {}, "Artifacts"), ", baixe ", el("b", {}, `planilha-${atual.id}`), " (um .zip com o Excel: aba “resumo” com os totais por categoria e aba “dados”)."),
-    ),
+    el("p", { className: "dica" }, "Todas as planilhas geradas ficam em ",
+      el("a", { href: `https://github.com/${REPO}/releases/tag/planilhas`, target: "_blank", rel: "noopener" }, "Releases → planilhas"),
+      ". Pedidos anteriores: ", el("a", { href: `https://github.com/${REPO}/issues?q=is%3Aissue+%5Bplanilha%5D`, target: "_blank", rel: "noopener" }, "Issues"), "."),
   );
 }
 

@@ -48,12 +48,18 @@ A API do Ministério da Saúde **não permite consulta direta de outros sites** 
 cabeçalhos CORS; verificado pelo workflow `Diagnóstico da API oficial`). Por isso a
 planilha é gerada pelo próprio GitHub:
 
-1. Veja as bases, filtros e colunas em **https://macielbarroslira-rgb.github.io/API-SUS/**
-   e clique em **Gerar planilha** para obter os valores a preencher.
-2. Abra **Actions → Baixar planilha → Run workflow**, preencha base, filtros
-   (ex.: `nu_ano=2024; id_municip=355030`), colunas e máximo de linhas.
-3. Quando a execução terminar (✅), abra-a: há um resumo com prévia dos dados e, no fim
-   da página, em **Artifacts**, o arquivo `planilha-<base>` (Excel ou CSV).
+1. Abra **https://macielbarroslira-rgb.github.io/API-SUS/**, escolha uma consulta pronta ou uma
+   base, os filtros, as colunas e (opcional) **agrupar por / somar**.
+2. Clique em **Gerar planilha**: abre no GitHub um pedido (*issue*) já preenchido. Clique em **Create**.
+3. O workflow `Planilha por pedido` gera o Excel e comenta no pedido o resumo e o link
+   **⬇️ baixar** (o arquivo fica na release `planilhas`). Só o dono/colaboradores do
+   repositório conseguem disparar.
+
+Alternativa manual: **Actions → Baixar planilha → Run workflow**, preenchendo os mesmos campos;
+o arquivo sai em **Artifacts** no fim da página da execução.
+
+> Os workflows disparados por issue e por "Run workflow" só funcionam quando estão no branch
+> padrão (`main`) do repositório.
 
 O workflow `Atualizar catálogo` (semanal) mantém `docs/swagger.json` e `docs/variaveis.json`
 (colunas descobertas consultando 1 registro de cada base) atualizados.

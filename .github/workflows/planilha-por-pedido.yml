@@ -1,0 +1,70 @@
+name: Planilha por pedido
+
+# A página web abre uma issue pré-preenchida com o título "[planilha] ...".
+# Este workflow gera a planilha, publica o arquivo na release "planilhas"
+# (link de download direto) e comenta o resultado na issue.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  gerar:
+    # Só pedidos do dono/colaboradores do repositório (evita uso por terceiros).
+    if: >-
+      startsWith(github.event.issue.title, '[planilha]') &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NUMERO: ${{ github.event.issue.number }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Avisar que começou
+        run: gh issue comment "$NUMERO" --repo "$REPO" --body "⏳ Gerando a planilha... (acompanhe em ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+      - name: Gerar planilha
+        id: gerar
+        env:
+          CORPO: ${{ github.event.issue.body }}
+          DATASUS_SPEC_CACHE: docs/swagger.json
+          DATASUS_TIMEOUT: "300"
+          DATASUS_MAX_REGISTROS_TETO: "3000000"
+        run: python scripts/pedido_planilha.py 2> >(tee erro.log >&2)
+      - name: Publicar e responder
+        if: success()
+        env:
+          ARQUIVO: ${{ steps.gerar.outputs.arquivo }}
+        run: |
+          gh release view planilhas --repo "$REPO" >/dev/null 2>&1 || \
+            gh release create planilhas --repo "$REPO" --title "Planilhas geradas" \
+              --notes "Arquivos gerados pela página API-SUS (workflow Planilha por pedido)." --latest=false
+          gh release upload planilhas "saida/$ARQUIVO" --repo "$REPO" --clobber
+          {
+            echo "✅ **Planilha pronta:** [⬇️ baixar $ARQUIVO](${{ github.server_url }}/$REPO/releases/download/planilhas/$ARQUIVO)"
+            echo ""
+            cat resumo.md
+            if [ -s erro.log ]; then echo ""; echo "<details><summary>Log</summary>"; echo ""; echo '```'; cat erro.log; echo '```'; echo "</details>"; fi
+          } > comentario.md
+          gh issue comment "$NUMERO" --repo "$REPO" --body-file comentario.md
+          gh issue close "$NUMERO" --repo "$REPO"
+      - name: Informar erro
+        if: failure()
+        run: |
+          {
+            echo "❌ **Não foi possível gerar a planilha.**"
+            echo ""
+            echo '```'
+            cat erro.log 2>/dev/null || echo "Veja o log em ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo '```'
+          } > comentario.md
+          gh issue comment "$NUMERO" --repo "$REPO" --body-file comentario.md
