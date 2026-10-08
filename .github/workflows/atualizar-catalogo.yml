@@ -1,0 +1,32 @@
+name: Atualizar catálogo
+
+# Baixa a especificação oficial (swagger.json) e salva em docs/swagger.json,
+# usada pela página web e como cópia local do catálogo.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * 1"
+  push:
+    paths:
+      - .github/workflows/atualizar-catalogo.yml
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Baixar especificação
+        run: |
+          curl -sSf --retry 3 -o docs/swagger.json https://apidadosabertos.saude.gov.br/static/swagger.json
+          python3 -c "import json; d=json.load(open('docs/swagger.json')); print(d['info'], len(d['paths']), 'caminhos')"
+      - name: Salvar no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/swagger.json
+          if git diff --cached --quiet; then echo "Sem mudanças."; exit 0; fi
+          git commit -m "Atualiza catálogo da API oficial (swagger.json)"
+          git push
