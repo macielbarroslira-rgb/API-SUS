@@ -399,21 +399,23 @@ class MotorServidor {
 
 // Consultas prontas. As colunas foram confirmadas nos dados reais (docs/variaveis.json).
 const PRONTAS = [
-  { nome: "Produção ambulatorial (SIA) por procedimento", base: "assistencia-a-saude-sia-procedimentos-ambulatoriais", agrupar: ["ds_procedimento"], somar: ["qt_procedimento", "nu_valor_procedimento"], dica: "Filtre por competência (nu_comp), município (co_ibge) ou estabelecimento (co_cnes)." },
-  { nome: "Produção ambulatorial (SIA) por complexidade", base: "assistencia-a-saude-sia-procedimentos-ambulatoriais", agrupar: ["ds_complex_procedimento"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
-  { nome: "Produção ambulatorial (SIA) por estabelecimento", base: "assistencia-a-saude-sia-procedimentos-ambulatoriais", agrupar: ["co_cnes", "no_fantasia"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
-  { nome: "Produção hospitalar (SIH) por procedimento", base: "assistencia-a-saude-sih-procedimentos-hospitalares", agrupar: ["ds_procedimento"], somar: ["qt_procedimento", "nu_valor_procedimento"], dica: "Filtre por competência (nu_comp), município (co_ibge) ou estabelecimento (co_cnes)." },
-  { nome: "Produção hospitalar (SIH) por financiamento", base: "assistencia-a-saude-sih-procedimentos-hospitalares", agrupar: ["ds_financiamento"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
-  { nome: "Produção hospitalar (SIH) por estabelecimento", base: "assistencia-a-saude-sih-procedimentos-hospitalares", agrupar: ["co_cnes", "no_fantasia"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
-  { nome: "CNES: leitos por tipo", base: "assistencia-a-saude-cnes-leitos", agrupar: ["ds_leito"], somar: ["qt_existente", "qt_sus"] },
-  { nome: "CNES: leitos por estabelecimento", base: "assistencia-a-saude-cnes-leitos", agrupar: ["co_cnes"], somar: ["qt_existente", "qt_sus"] },
-  { nome: "CNES: equipamentos por tipo", base: "assistencia-a-saude-cnes-equipamentos", agrupar: ["ds_equipamento"], somar: ["qt_existente", "qt_uso"] },
-  { nome: "CNES: profissionais por ocupação (CBO)", base: "assistencia-a-saude-cnes-profissionais", agrupar: ["ds_cbo"], somar: ["nu_carga_horaria_total"] },
-  { nome: "CNES: profissionais por vínculo", base: "assistencia-a-saude-cnes-profissionais", agrupar: ["ds_vinculo"], somar: [] },
-  { nome: "CNES: estabelecimentos por classificação", base: "assistencia-a-saude-cnes-estabelecimentos", agrupar: ["ds_class_estab"], somar: [] },
-  { nome: "CNES: serviços especializados por serviço", base: "assistencia-a-saude-cnes-servicos-especializados", agrupar: ["ds_servico"], somar: [] },
-  { nome: "Hospitais e leitos por UF", base: "assistencia-a-saude-hospitais-e-leitos", agrupar: ["unidade_da_federacao_onde_fica_o_hospital"], somar: ["quantidade_total_de_leitos_do_hosptial", "quantidade_total_de_leitos_sus_do_hosptial", "quantidade_de_leitos_de_uti_do_hosptial"] },
+  // Bases que paginam corretamente na API oficial (totais completos)
+  { nome: "CNES (cadastro): estabelecimentos por UF", base: "cnes-estabelecimentos", agrupar: ["codigo_uf"], somar: [], dica: "Base com páginas de 20 registros: para o Brasil inteiro a consulta é longa; filtre por UF (codigo_uf) ou município (codigo_municipio)." },
+  { nome: "CNES (cadastro): estabelecimentos por tipo de unidade", base: "cnes-estabelecimentos", agrupar: ["codigo_tipo_unidade"], somar: [], dica: "Filtre por UF (codigo_uf) ou município (codigo_municipio)." },
+  { nome: "CNES (cadastro): centro cirúrgico / obstétrico por município", base: "cnes-estabelecimentos", agrupar: ["codigo_municipio", "estabelecimento_possui_centro_cirurgico", "estabelecimento_possui_centro_obstetrico"], somar: [], dica: "Filtre por UF (codigo_uf)." },
+  { nome: "Hospitais e leitos por UF (leitos totais, SUS e UTI)", base: "assistencia-a-saude-hospitais-e-leitos", agrupar: ["unidade_da_federacao_onde_fica_o_hospital"], somar: ["quantidade_total_de_leitos_do_hosptial", "quantidade_total_de_leitos_sus_do_hosptial", "quantidade_de_leitos_de_uti_do_hosptial", "quantidade_de_leitos_de_uti_sus_do_hosptial"] },
+  { nome: "Hospitais e leitos por município", base: "assistencia-a-saude-hospitais-e-leitos", agrupar: ["nome_do_municipio_onde_fica_o_hospital"], somar: ["quantidade_total_de_leitos_do_hosptial", "quantidade_total_de_leitos_sus_do_hosptial", "quantidade_de_leitos_de_uti_do_hosptial"], dica: "Filtre por UF (uf)." },
+  { nome: "Hospitais e leitos por tipo de unidade", base: "assistencia-a-saude-hospitais-e-leitos", agrupar: ["descricao_do_tipo_da_unidade"], somar: ["quantidade_total_de_leitos_do_hosptial", "quantidade_total_de_leitos_sus_do_hosptial"] },
+  { nome: "Unidades Básicas de Saúde por UF", base: "assistencia-a-saude-unidade-basicas-de-saude", agrupar: ["uf"], somar: [] },
   { nome: "Dengue: notificações por sexo", base: "arboviroses-dengue", agrupar: ["cs_sexo"], somar: [], dica: "Informe o ano (nu_ano) e, se quiser, o município (id_municip)." },
+  { nome: "Dengue: notificações por município", base: "arboviroses-dengue", agrupar: ["id_municip"], somar: [], dica: "Informe o ano (nu_ano)." },
+  { nome: "Vacinação 2024: doses por vacina", base: "vacinacao-doses-aplicadas-pni-2024", agrupar: ["descricao_vacina_fabricante"], somar: [], dica: "Base muito grande: comece com um máximo de linhas pequeno." },
+  // Bases de assistência: a API oficial NÃO pagina corretamente (testado em out/2026) — totais incompletos
+  { nome: "⚠️ SIA: produção ambulatorial por procedimento (API incompleta)", base: "assistencia-a-saude-sia-procedimentos-ambulatoriais", agrupar: ["ds_procedimento"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
+  { nome: "⚠️ SIH: produção hospitalar por procedimento (API incompleta)", base: "assistencia-a-saude-sih-procedimentos-hospitalares", agrupar: ["ds_procedimento"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
+  { nome: "⚠️ CNES: leitos por tipo (API incompleta)", base: "assistencia-a-saude-cnes-leitos", agrupar: ["ds_leito"], somar: ["qt_existente", "qt_sus"] },
+  { nome: "⚠️ CNES: equipamentos por tipo (API incompleta)", base: "assistencia-a-saude-cnes-equipamentos", agrupar: ["ds_equipamento"], somar: ["qt_existente", "qt_uso"] },
+  { nome: "⚠️ CNES: profissionais por ocupação/CBO (API incompleta)", base: "assistencia-a-saude-cnes-profissionais", agrupar: ["ds_cbo"], somar: ["nu_carga_horaria_total"] },
 ];
 
 // Heurística só para ordenar as listas: valores numéricos primeiro em "Somar".

@@ -64,6 +64,22 @@ O workflow `Atualizar catálogo` (semanal) mantém `docs/swagger.json` e `docs/v
 2. Aguarde a instalação; a API sobe sozinha na porta 8000 e o navegador abre a interface,
    que consulta e baixa os dados diretamente.
 
+## Resumos: agrupar e somar
+
+Escolha variáveis categóricas para **agrupar** e numéricas para **somar**: o resultado traz,
+para cada grupo, a quantidade de registros e as somas, mais uma linha **TOTAL**. A agregação é
+feita página a página (sem guardar tudo na memória); acima de 1 milhão de linhas os dados
+detalhados são omitidos, mas o resumo considera todas.
+
+```bash
+# leitos totais e SUS por UF (todas as linhas)
+curl -o leitos.xlsx "http://localhost:8000/api/datasets/assistencia-a-saude-hospitais-e-leitos/dados?agrupar_por=unidade_da_federacao_onde_fica_o_hospital&somar=quantidade_total_de_leitos_do_hosptial,quantidade_total_de_leitos_sus_do_hosptial&max_registros=0&formato=xlsx"
+
+python -m app.cli dados cnes-estabelecimentos -f "codigo_uf=35" -g codigo_tipo_unidade -n 0 -o cnes_sp.xlsx
+```
+
+A página web tem **consultas prontas** (com colunas conferidas nos dados reais).
+
 ## Endpoints
 
 | Método | Caminho | O que faz |
@@ -87,9 +103,11 @@ O `{id}` é o caminho da base com `-` no lugar de `/` (ex.: `/arboviroses/dengue
 | *qualquer filtro da base* | Repassado à API oficial (ex.: `nu_ano=2024`). É validado contra a especificação: nome, tipo, valores permitidos e obrigatoriedade. |
 | `colunas` | Variáveis a retornar, separadas por vírgula. Campos aninhados usam ponto (`endereco.uf`). Sem esse parâmetro, todas as colunas são retornadas. |
 | `local.<coluna>` | Filtro de igualdade aplicado aqui, depois do download (para colunas que a API oficial não filtra). |
-| `max_registros` | Máximo de registros a buscar (padrão 1000, teto 100000). |
+| `max_registros` | Máximo de registros a buscar (padrão 1000; `0` = todos, até o teto). |
+| `agrupar_por` | Variáveis categóricas para o resumo, separadas por vírgula (ex.: `ds_procedimento`). |
+| `somar` | Variáveis numéricas somadas em cada grupo (ex.: `qt_procedimento,nu_valor_procedimento`). |
 | `paginar` | `true` (padrão) percorre as páginas automaticamente. |
-| `formato` | `json` (padrão), `csv` ou `xlsx` (Excel). |
+| `formato` | `json` (padrão), `csv` ou `xlsx` (Excel: aba `resumo` com TOTAL, aba `dados`, aba `consulta`). |
 | `separador` | Separador do CSV (padrão `,`; use `;` para o Excel em português). |
 
 ### Exemplos
@@ -163,7 +181,15 @@ Verificado contra a API real (workflow `Diagnóstico da API oficial`):
   texto da descrição do `limit` (ex.: 20 no CNES, 1000 na dengue) e é lido de lá. A base
   `economia-da-saude/bps` usa `pagina` (começa em 1) e `tamanhoPagina` (máx. 500).
 - A especificação não documenta as colunas das respostas; elas são descobertas por amostra.
-- Bases com o parâmetro `campos` recebem as colunas escolhidas, e a própria API devolve só elas.
+- O parâmetro `campos` da API faz ela responder **502 após ~60 s**; por isso não é usado (as
+  colunas são selecionadas aqui).
+- **Paginação com defeito em 11 bases** (teste automático em `docs/variaveis.json`), entre elas
+  todas as bases novas de assistência: `sia-procedimentos-ambulatoriais`, `sih-procedimentos-hospitalares`,
+  `cnes-leitos`, `cnes-equipamentos`, `cnes-profissionais`, `cnes-servicos-especializados` e
+  `cnes-estabelecimentos` (de `assistencia-a-saude`). Elas devolvem 1–2 registros por página mesmo
+  pedindo 1000, então **contagens e somas sobre elas saem incompletas**. A API-SUS continua
+  buscando até uma página vazia e avisa explicitamente quando isso acontece. As demais 98 bases
+  (incluindo `cnes/estabelecimentos` e `hospitais-e-leitos`) paginam corretamente.
 
 ## Testes
 
