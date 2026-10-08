@@ -41,6 +41,30 @@ docker build -t api-sus .
 docker run -p 8000:8000 api-sus
 ```
 
+
+## Testar na web (sem instalar nada)
+
+### Página web (GitHub Pages)
+
+A pasta `docs/` tem uma versão da interface que roda **só no navegador**: lê o `swagger.json`
+oficial e consulta a API do Ministério da Saúde direto do seu computador. Para publicar:
+
+1. No GitHub, abra **Settings → Pages**.
+2. Em **Build and deployment → Source**, escolha **Deploy from a branch**.
+3. Selecione o branch onde está o código (ex.: `main`) e a pasta **`/docs`**. Clique em **Save**.
+4. Em alguns minutos a página fica em `https://<seu-usuario>.github.io/API-SUS/`.
+
+> O modo direto só funciona se a API oficial permitir chamadas de outros sites (CORS).
+> Isso não foi verificado. Se a página mostrar erro de acesso, use o modo
+> **"Pelo servidor API-SUS"** com o endereço do Codespaces (abaixo).
+
+### Codespaces (API completa rodando no GitHub)
+
+1. Na página do repositório, clique em **Code → Codespaces → Create codespace**.
+2. Aguarde a instalação; a API sobe sozinha na porta 8000 e o navegador abre a interface.
+3. A aba **Ports** mostra o endereço público (`https://...app.github.dev`). Para usá-lo na
+   página do GitHub Pages, deixe a porta como **Public** (botão direito → Port Visibility).
+
 ## Endpoints
 
 | Método | Caminho | O que faz |

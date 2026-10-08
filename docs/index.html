@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API-SUS · Consulta</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --painel: #fff; --texto: #1c2430; --suave: #5b6675; --borda: #dde2e8;
+    --destaque: #0b6e4f; --destaque-texto: #fff; --erro: #b42318; --aviso: #8a5a00; --sel: #e7f4ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c; --painel: #1a2028; --texto: #e6e9ee; --suave: #9aa5b3; --borda: #2c3540;
+      --destaque: #3fb68b; --destaque-texto: #08130e; --erro: #ff8a7a; --aviso: #f0c060; --sel: #1d3329;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--texto); }
+  header { padding: 16px; border-bottom: 1px solid var(--borda); background: var(--painel); }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; color: var(--suave); font-size: 13px; }
+  .fonte { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 10px; font-size: 13px; }
+  .fonte input[type=text] { width: min(420px, 100%); }
+  details { font-size: 13px; margin-top: 6px; }
+  details input { margin-top: 4px; }
+  main { display: grid; grid-template-columns: 340px 1fr; gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  section { background: var(--painel); border: 1px solid var(--borda); border-radius: 10px; padding: 14px; min-width: 0; }
+  h2 { font-size: 16px; margin: 0 0 10px; }
+  h3 { font-size: 14px; margin: 16px 0 8px; }
+  input, select, button { font: inherit; color: inherit; }
+  input[type=text], input[type=number], select { width: 100%; padding: 7px 9px; border: 1px solid var(--borda); border-radius: 6px; background: var(--bg); }
+  button { padding: 8px 14px; border-radius: 6px; border: 1px solid var(--borda); background: var(--bg); cursor: pointer; }
+  button.primario { background: var(--destaque); color: var(--destaque-texto); border-color: var(--destaque); }
+  button:disabled { opacity: .5; cursor: wait; }
+  .lista { list-style: none; margin: 10px 0 0; padding: 0; max-height: 70vh; overflow: auto; }
+  .lista li { padding: 8px; border-radius: 6px; cursor: pointer; border-bottom: 1px solid var(--borda); }
+  .lista li:hover, .lista li.ativo { background: var(--sel); }
+  .lista .grupo { font-size: 11px; text-transform: uppercase; color: var(--suave); letter-spacing: .03em; }
+  .lista .cam { font-family: ui-monospace, monospace; font-size: 13px; word-break: break-all; }
+  .res { font-size: 12px; color: var(--suave); }
+  .campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .campos label { display: block; font-size: 13px; }
+  .campos small { color: var(--suave); display: block; }
+  .obrig { color: var(--erro); }
+  .vars { display: flex; flex-wrap: wrap; gap: 6px 14px; max-height: 240px; overflow: auto; padding: 6px; border: 1px solid var(--borda); border-radius: 6px; }
+  .vars label { font-size: 13px; white-space: nowrap; }
+  .acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+  .msg { margin-top: 10px; font-size: 13px; }
+  .msg.erro { color: var(--erro); } .msg.aviso { color: var(--aviso); }
+  .url { font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all; background: var(--bg); padding: 8px; border-radius: 6px; border: 1px solid var(--borda); }
+  .tabela { overflow: auto; max-height: 60vh; margin-top: 10px; border: 1px solid var(--borda); border-radius: 6px; }
+  table { border-collapse: collapse; font-size: 12px; min-width: 100%; }
+  th, td { padding: 5px 8px; border-bottom: 1px solid var(--borda); text-align: left; white-space: nowrap; }
+  th { position: sticky; top: 0; background: var(--painel); }
+  .vazio { color: var(--suave); }
+  a { color: var(--destaque); }
+</style>
+</head>
+<body>
+<header>
+  <h1>API-SUS: consulta à API de Dados Abertos do Ministério da Saúde</h1>
+  <p id="status">Carregando catálogo...</p>
+  <div class="fonte">
+    <label><input type="radio" name="modo" value="direto" checked> Direto na API oficial (pelo navegador)</label>
+    <label><input type="radio" name="modo" value="servidor"> Pelo servidor API-SUS:</label>
+    <input type="text" id="urlServidor" placeholder="https://seu-servidor (ex.: endereço do Codespaces)">
+    <button id="aplicar">Conectar</button>
+  </div>
+  <details>
+    <summary>Avançado (modo direto)</summary>
+    <label>URL dos dados <input type="text" id="urlBase"></label>
+    <label>URLs da especificação (separadas por vírgula) <input type="text" id="urlSpecs"></label>
+    <label>Paginação do offset
+      <select id="modoOffset"><option value="pagina">número da página (0, 1, 2...)</option><option value="registro">índice do registro (0, 20, 40...)</option></select>
+    </label>
+  </details>
+</header>
+<main>
+  <section>
+    <h2>Bases disponíveis</h2>
+    <input type="text" id="busca" placeholder="Buscar (ex.: dengue, cnes, leitos)">
+    <div style="margin-top:8px"><select id="grupo"><option value="">Todos os grupos</option></select></div>
+    <ul class="lista" id="lista"></ul>
+  </section>
+  <section id="detalhe">
+    <p class="vazio">Selecione uma base à esquerda.</p>
+  </section>
+</main>
+<script>
+"use strict";
+// =========================================================================
+// Motor "direto": lê o swagger.json oficial e consulta a API pelo navegador.
+// Mesma lógica de app/catalogo.py e app/consulta.py.
+// =========================================================================
+const BASE_PADRAO = "https://apidadosabertos.saude.gov.br";
+const specsPadrao = b => [`${b}/v1/static/swagger.json`, `${b}/static/swagger.json`, `${b}/v1/swagger.json`, `${b}/swagger.json`];
+const NOMES_LIMIT = ["limit", "limite"], NOMES_OFFSET = ["offset", "pagina", "page"];
+const TAMANHO_PAGINA_PADRAO = 20, MAX_PAGINAS = 5000;
+
+const normalizar = t => (t || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const slug = c => normalizar(c).replace(/[{}]/g, "").replace(/[^a-z0-9_]+/g, "-").replace(/^-+|-+$/g, "") || "raiz";
+
+function resolver(spec, obj) {
+  const vistos = new Set();
+  while (obj && typeof obj === "object" && obj.$ref) {
+    const ref = obj.$ref;
+    if (typeof ref !== "string" || !ref.startsWith("#/") || vistos.has(ref)) return {};
+    vistos.add(ref);
+    let alvo = spec;
+    for (let p of ref.slice(2).split("/")) {
+      p = p.replace(/~1/g, "/").replace(/~0/g, "~");
+      if (!alvo || typeof alvo !== "object" || !(p in alvo)) return {};
+      alvo = alvo[p];
+    }
+    obj = alvo;
+  }
+  return obj;
+}
+function mesclarAllOf(spec, s) {
+  if (!s || !s.allOf) return s;
+  const props = { ...(s.properties || {}) };
+  for (const parte of s.allOf) Object.assign(props, mesclarAllOf(spec, resolver(spec, parte)).properties || {});
+  return { ...s, type: "object", properties: props };
+}
+function camposDeObjeto(spec, s) {
+  return Object.entries(s.properties || {}).map(([nome, prop]) => {
+    prop = resolver(spec, prop) || {};
+    let tipo = Array.isArray(prop.type) ? prop.type.join("/") : (prop.type || "");
+    if (prop.format) tipo = tipo ? `${tipo} (${prop.format})` : prop.format;
+    return { nome, tipo, descricao: prop.description || prop.title || "" };
+  });
+}
+function extrairCampos(spec, schema) {
+  schema = mesclarAllOf(spec, resolver(spec, schema));
+  if (!schema || typeof schema !== "object") return [null, []];
+  if (schema.type === "array" || schema.items) {
+    return [null, camposDeObjeto(spec, mesclarAllOf(spec, resolver(spec, schema.items || {})) || {})];
+  }
+  for (const [nome, p0] of Object.entries(schema.properties || {})) {
+    const p = resolver(spec, p0);
+    if (p && (p.type === "array" || p.items)) {
+      const item = mesclarAllOf(spec, resolver(spec, p.items || {}));
+      if (item && item.properties) return [nome, camposDeObjeto(spec, item)];
+    }
+  }
+  return [null, camposDeObjeto(spec, schema)];
+}
+function schemaResposta(op) {
+  const r = (op.responses || {})["200"] || (op.responses || {}).default || {};
+  if (r.schema) return r.schema;
+  const c = r.content || {};
+  for (const [mime, corpo] of Object.entries(c)) if (mime.includes("json") && corpo.schema) return corpo.schema;
+  for (const corpo of Object.values(c)) if (corpo && corpo.schema) return corpo.schema;
+  return null;
+}
+function parametro(spec, bruto) {
+  const p = resolver(spec, bruto);
+  if (!p || !["query", "path"].includes(p.in)) return null;
+  const s = resolver(spec, p.schema || {});
+  const f = s && Object.keys(s).length ? s : p;
+  return {
+    nome: p.name, local: p.in, obrigatorio: !!p.required || p.in === "path",
+    tipo: String(f.type || p.type || "string"), formato: f.format || p.format || null,
+    descricao: p.description || "", enum: f.enum || p.enum || null,
+    padrao: f.default ?? p.default ?? null, minimo: f.minimum ?? p.minimum ?? null, maximo: f.maximum ?? p.maximum ?? null,
+  };
+}
+function montarDatasets(spec) {
+  if (!spec || typeof spec.paths !== "object") throw new Error("Especificação inválida (sem 'paths').");
+  const ds = {};
+  for (const [caminho, item0] of Object.entries(spec.paths)) {
+    const item = resolver(spec, item0);
+    const op = item && item.get;
+    if (!op) continue;
+    const params = new Map();
+    for (const b of [...(item.parameters || []), ...(op.parameters || [])]) {
+      const p = parametro(spec, b);
+      if (p) params.set(p.local + ":" + p.nome, p);
+    }
+    const [chave_lista, campos] = extrairCampos(spec, schemaResposta(op));
+    let id = slug(caminho);
+    if (ds[id]) { let n = 2; while (ds[`${id}-${n}`]) n++; id = `${id}-${n}`; }
+    const parametros = [...params.values()];
+    const lim = parametros.find(p => p.local === "query" && NOMES_LIMIT.includes(p.nome.toLowerCase()));
+    const off = parametros.find(p => p.local === "query" && NOMES_OFFSET.includes(p.nome.toLowerCase()));
+    ds[id] = {
+      id, caminho, grupo: (op.tags || [])[0] || caminho.replace(/^\/+/, "").split("/")[0] || "geral",
+      resumo: (op.summary || "").trim(), descricao: (op.description || "").trim(), operation_id: op.operationId || null,
+      parametros, campos, chave_lista, paginavel: !!(lim && off),
+      parametro_limit: lim ? lim.nome : null, parametro_offset: off ? off.nome : null,
+    };
+  }
+  if (!Object.keys(ds).length) throw new Error("A especificação não contém operações GET.");
+  return ds;
+}
+
+function extrairRegistros(dados, chave) {
+  if (Array.isArray(dados)) return dados.map(r => (r && typeof r === "object" && !Array.isArray(r)) ? r : { valor: r });
+  if (dados && typeof dados === "object") {
+    if (chave && Array.isArray(dados[chave])) return extrairRegistros(dados[chave]);
+    const vals = Object.values(dados);
+    if (vals.length === 1 && Array.isArray(vals[0])) return extrairRegistros(vals[0]);
+    return [dados];
+  }
+  return dados == null ? [] : [{ valor: dados }];
+}
+function achatar(o, pre = "", s = {}) {
+  for (const [k, v] of Object.entries(o || {})) {
+    if (v && typeof v === "object" && !Array.isArray(v)) achatar(v, pre + k + ".", s);
+    else s[pre + k] = Array.isArray(v) ? JSON.stringify(v) : v;
+  }
+  return s;
+}
+function colunasPresentes(regs) {
+  const vistas = new Set();
+  for (const r of regs) for (const k of Object.keys(achatar(r))) vistas.add(k);
+  return [...vistas];
+}
+
+async function obterJSON(url) {
+  let r;
+  try { r = await fetch(url, { headers: { Accept: "application/json" } }); }
+  catch (e) {
+    const erro = new Error(`O navegador não conseguiu acessar ${url}. Provável bloqueio de CORS da API oficial ou falha de rede. ` +
+      `Alternativa: use o modo "Pelo servidor API-SUS" (ex.: rodando no Codespaces).`);
+    erro.rede = true; throw erro;
+  }
+  const texto = await r.text();
+  if (!r.ok) { const e = new Error(`A API oficial respondeu ${r.status}: ${texto.slice(0, 300)}`); e.status = r.status; throw e; }
+  try { return JSON.parse(texto); } catch { throw new Error(`Resposta não é JSON: ${texto.slice(0, 200)}`); }
+}
+
+class MotorDireto {
+  constructor(base, specs, modoOffset) { this.base = base.replace(/\/+$/, ""); this.specs = specs; this.modoOffset = modoOffset; this.cache = new Map(); }
+  async catalogo() {
+    const erros = [];
+    for (const url of this.specs) {
+      try {
+        const spec = await obterJSON(url);
+        this.spec = spec; this.datasets = montarDatasets(spec); this.origem = url;
+        const grupos = {};
+        for (const d of Object.values(this.datasets)) grupos[d.grupo] = (grupos[d.grupo] || 0) + 1;
+        return { origem: url, titulo_api_oficial: spec.info?.title, versao_api_oficial: spec.info?.version,
+                 total_bases: Object.keys(this.datasets).length, grupos: Object.fromEntries(Object.entries(grupos).sort()) };
+      } catch (e) { erros.push(e); }
+    }
+    if (erros.every(e => e.rede)) {
+      throw new Error(`O navegador não conseguiu acessar ${this.base} (provável bloqueio de CORS da API oficial ou falha de rede). ` +
+        `Alternativa: use o modo "Pelo servidor API-SUS" (ex.: rodando no Codespaces).`);
+    }
+    throw new Error("Não foi possível carregar a especificação. " + erros.map(e => e.message).join(" | "));
+  }
+  async listar(q, grupo) {
+    let itens = Object.values(this.datasets);
+    if (grupo) itens = itens.filter(d => normalizar(d.grupo) === normalizar(grupo));
+    if (q) { const t = normalizar(q); itens = itens.filter(d => normalizar([d.id, d.caminho, d.grupo, d.resumo, d.descricao].join(" ")).includes(t)); }
+    return itens.sort((a, b) => (a.grupo + a.caminho).localeCompare(b.grupo + b.caminho));
+  }
+  async detalhe(id) { const d = this.datasets[id]; if (!d) throw new Error(`Base '${id}' não encontrada.`); return d; }
+  converter(p, v) {
+    const t = String(v).trim();
+    if (p.tipo === "integer") { if (!/^-?\d+$/.test(t)) throw new Error(`Filtro '${p.nome}' deve ser inteiro.`); return parseInt(t, 10); }
+    if (p.tipo === "number") { const n = Number(t); if (Number.isNaN(n)) throw new Error(`Filtro '${p.nome}' deve ser numérico.`); return n; }
+    return t;
+  }
+  url(ds, path, query) {
+    let c = ds.caminho;
+    for (const [k, v] of Object.entries(path)) c = c.replace(`{${k}}`, encodeURIComponent(v));
+    const qs = new URLSearchParams(query).toString();
+    return this.base + c + (qs ? "?" + qs : "");
+  }
+  async get(url) {
+    if (this.cache.has(url)) return this.cache.get(url);
+    const d = await obterJSON(url); this.cache.set(url, d); return d;
+  }
+  async dados(id, { filtros = {}, colunas = null, max_registros = 1000, paginar = true }) {
+    const ds = await this.detalhe(id);
+    const query = {}, path = {};
+    for (const [k, v] of Object.entries(filtros)) {
+      const p = ds.parametros.find(x => x.nome === k);
+      if (!p || v === "" || v == null) continue;
+      (p.local === "path" ? path : query)[k] = this.converter(p, v);
+    }
+    const controle = [ds.parametro_limit, ds.parametro_offset];
+    const faltando = ds.parametros.filter(p => p.obrigatorio && !controle.includes(p.nome) && !(p.nome in query) && !(p.nome in path)).map(p => p.nome);
+    if (faltando.length) throw new Error(`Preencha o(s) filtro(s) obrigatório(s): ${faltando.join(", ")}.`);
+    const avisos = []; let regs = [], paginas = 0, primeiraUrl = null;
+    if (!ds.paginavel || !paginar) {
+      primeiraUrl = this.url(ds, path, query);
+      regs = extrairRegistros(await this.get(primeiraUrl), ds.chave_lista); paginas = 1;
+      if (regs.length > max_registros) { avisos.push(`Resultado truncado em ${max_registros} registros.`); regs = regs.slice(0, max_registros); }
+    } else {
+      const lim = ds.parametros.find(p => p.nome === ds.parametro_limit);
+      const tamanho = Number(query[lim.nome] ?? lim.maximo ?? lim.padrao ?? TAMANHO_PAGINA_PADRAO);
+      const inicio = Number(query[ds.parametro_offset] ?? 0); delete query[ds.parametro_offset];
+      let anterior = null, interrompido = false;
+      while (regs.length < max_registros && paginas < MAX_PAGINAS) {
+        const desloc = inicio + (this.modoOffset === "pagina" ? paginas : paginas * tamanho);
+        const u = this.url(ds, path, { ...query, [lim.nome]: tamanho, [ds.parametro_offset]: desloc });
+        primeiraUrl = primeiraUrl || u;
+        const pag = extrairRegistros(await this.get(u), ds.chave_lista); paginas++;
+        if (!pag.length) { interrompido = true; break; }
+        const dig = JSON.stringify(pag);
+        if (dig === anterior) { avisos.push("A API devolveu a mesma página duas vezes; paginação interrompida. Troque o modo de offset em 'Avançado'."); interrompido = true; break; }
+        anterior = dig; regs.push(...pag);
+        if (pag.length < tamanho) { interrompido = true; break; }
+      }
+      if (!interrompido && regs.length >= max_registros) avisos.push(`Limite de ${max_registros} registros atingido; pode haver mais dados.`);
+      regs = regs.slice(0, max_registros);
+    }
+    let cols = colunasPresentes(regs);
+    if (colunas && colunas.length) {
+      const ausentes = colunas.filter(c => !cols.includes(c));
+      if (ausentes.length && regs.length) avisos.push(`Coluna(s) não encontrada(s): ${ausentes.join(", ")}.`);
+      regs = regs.map(r => { const a = achatar(r); return Object.fromEntries(colunas.map(c => [c, a[c] ?? null])); });
+      cols = [...colunas];
+    }
+    return { dataset: id, url_origem: primeiraUrl, filtros: { ...path, ...query }, colunas: cols,
+             paginas_consultadas: paginas, total: regs.length, avisos, dados: regs };
+  }
+  async amostra(id, filtros) {
+    const ds = await this.detalhe(id);
+    const f = { ...filtros };
+    if (ds.parametro_limit && !(ds.parametro_limit in f)) f[ds.parametro_limit] = 5;
+    const r = await this.dados(id, { filtros: f, max_registros: 5, paginar: false });
+    return r.colunas;
+  }
+}
+
+// Motor "servidor": usa os endpoints do backend API-SUS (FastAPI).
+class MotorServidor {
+  constructor(url) { this.url = url.replace(/\/+$/, ""); }
+  async req(caminho, opcoes) {
+    let r;
+    try { r = await fetch(this.url + caminho, opcoes); }
+    catch { throw new Error(`Não foi possível acessar ${this.url}. Verifique se o servidor está no ar e se a porta está pública.`); }
+    const corpo = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(corpo.erro || (typeof corpo.detail === "string" ? corpo.detail : JSON.stringify(corpo.detail)) || r.statusText);
+    return corpo;
+  }
+  async catalogo() { const c = await this.req("/api/catalogo"); return { ...c, origem: `${this.url} (${c.origem})` }; }
+  async listar(q, grupo) {
+    const p = new URLSearchParams(); if (q) p.set("q", q); if (grupo) p.set("grupo", grupo);
+    return (await this.req("/api/datasets?" + p)).bases;
+  }
+  async detalhe(id) { return this.req("/api/datasets/" + encodeURIComponent(id)); }
+  async dados(id, corpo) {
+    return this.req(`/api/datasets/${encodeURIComponent(id)}/dados`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...corpo, formato: "json" }) });
+  }
+  async amostra(id, filtros) {
+    const r = await this.req(`/api/datasets/${encodeURIComponent(id)}/variaveis?` + new URLSearchParams({ ...filtros, amostra: "true" }));
+    if (!r.amostra) throw new Error(r.aviso || "Amostra indisponível.");
+    return r.amostra.variaveis;
+  }
+}
+
+// =========================================================================
+// Interface
+// =========================================================================
+const $ = (s, el = document) => el.querySelector(s);
+const el = (tag, props = {}, ...filhos) => {
+  const n = document.createElement(tag); Object.assign(n, props);
+  for (const f of filhos) n.append(f instanceof Node ? f : document.createTextNode(f ?? ""));
+  return n;
+};
+const guardar = (k, v) => { try { localStorage.setItem("apisus." + k, v); } catch {} };
+const lerGuardado = k => { try { return localStorage.getItem("apisus." + k); } catch { return null; } };
+let motor = null, atual = null, ultimoResultado = null;
+
+function configurarCampos() {
+  const qs = new URLSearchParams(location.search);
+  const modo = qs.get("servidor") ? "servidor" : (lerGuardado("modo") || "direto");
+  document.querySelector(`input[name=modo][value=${modo}]`).checked = true;
+  $("#urlServidor").value = qs.get("servidor") || lerGuardado("servidor") || "";
+  $("#urlBase").value = qs.get("base") || lerGuardado("base") || BASE_PADRAO;
+  $("#urlSpecs").value = qs.get("spec") || lerGuardado("specs") || "";
+  $("#urlSpecs").placeholder = specsPadrao($("#urlBase").value).join(", ");
+  $("#modoOffset").value = lerGuardado("offset") || "pagina";
+}
+
+function criarMotor() {
+  const modo = document.querySelector("input[name=modo]:checked").value;
+  guardar("modo", modo); guardar("servidor", $("#urlServidor").value); guardar("base", $("#urlBase").value);
+  guardar("specs", $("#urlSpecs").value); guardar("offset", $("#modoOffset").value);
+  if (modo === "servidor") {
+    if (!$("#urlServidor").value.trim()) throw new Error("Informe a URL do servidor API-SUS.");
+    return new MotorServidor($("#urlServidor").value.trim());
+  }
+  const base = $("#urlBase").value.trim() || BASE_PADRAO;
+  const specs = $("#urlSpecs").value.trim() ? $("#urlSpecs").value.split(",").map(s => s.trim()).filter(Boolean) : specsPadrao(base);
+  return new MotorDireto(base, specs, $("#modoOffset").value);
+}
+
+async function iniciar() {
+  $("#lista").replaceChildren(); $("#detalhe").replaceChildren(el("p", { className: "vazio" }, "Selecione uma base à esquerda."));
+  $("#grupo").replaceChildren(el("option", { value: "" }, "Todos os grupos"));
+  $("#status").textContent = "Carregando catálogo...";
+  try {
+    motor = criarMotor();
+    const cat = await motor.catalogo();
+    $("#status").textContent = `${cat.total_bases} bases · ${cat.titulo_api_oficial || ""} ${cat.versao_api_oficial || ""} · origem: ${cat.origem}`;
+    for (const [g, n] of Object.entries(cat.grupos)) $("#grupo").append(el("option", { value: g }, `${g} (${n})`));
+    await carregarLista();
+  } catch (e) {
+    $("#status").replaceChildren(el("span", { className: "msg erro" }, "Erro ao carregar o catálogo: " + e.message));
+  }
+}
+
+async function carregarLista() {
+  const bases = await motor.listar($("#busca").value, $("#grupo").value);
+  const ul = $("#lista"); ul.replaceChildren();
+  if (!bases.length) ul.append(el("li", { className: "vazio" }, "Nenhuma base encontrada."));
+  for (const b of bases) {
+    const li = el("li", {}, el("div", { className: "grupo" }, b.grupo), el("div", { className: "cam" }, b.caminho), el("div", { className: "res" }, b.resumo));
+    li.onclick = () => { document.querySelectorAll(".lista li").forEach(x => x.classList.remove("ativo")); li.classList.add("ativo"); abrir(b.id); };
+    ul.append(li);
+  }
+}
+
+async function abrir(id) {
+  const box = $("#detalhe");
+  box.replaceChildren(el("p", { className: "vazio" }, "Carregando..."));
+  try { atual = await motor.detalhe(id); } catch (e) { box.replaceChildren(el("p", { className: "msg erro" }, e.message)); return; }
+  const controle = [atual.parametro_limit, atual.parametro_offset];
+  const filtros = atual.parametros.filter(p => !controle.includes(p.nome));
+  const campos = el("div", { className: "campos" });
+  for (const p of filtros) {
+    let input;
+    if (p.enum) {
+      input = el("select", { name: p.nome }, el("option", { value: "" }, "(qualquer)"));
+      for (const v of p.enum) input.append(el("option", { value: v }, String(v)));
+    } else {
+      input = el("input", { type: ["integer", "number"].includes(p.tipo) ? "number" : "text", name: p.nome, placeholder: p.padrao ?? "" });
+    }
+    campos.append(el("label", {}, p.nome, p.obrigatorio ? el("span", { className: "obrig" }, " *") : "",
+      el("small", {}, `${p.tipo}${p.formato ? " · " + p.formato : ""}${p.descricao ? " · " + p.descricao : ""}`), input));
+  }
+  box.replaceChildren(
+    el("h2", {}, atual.resumo || atual.caminho),
+    el("div", { className: "res" }, `${atual.grupo} · `, el("code", {}, atual.caminho), atual.paginavel ? " · paginação automática" : ""),
+    atual.descricao ? el("p", {}, atual.descricao) : "",
+    el("h3", {}, "1. Filtros (enviados à API oficial)"),
+    filtros.length ? campos : el("p", { className: "vazio" }, "Esta base não declara filtros."),
+    el("h3", {}, "2. Variáveis (colunas) a retornar"),
+    el("div", { id: "vars", className: "vars" }),
+    el("div", { className: "acoes" },
+      el("button", { onclick: () => marcar(true) }, "Marcar todas"),
+      el("button", { onclick: () => marcar(false) }, "Desmarcar"),
+      el("button", { onclick: amostrar }, "Descobrir variáveis com amostra real")),
+    el("h3", {}, "3. Resultado"),
+    el("div", { className: "acoes" },
+      el("label", {}, "Máximo de registros ", el("input", { type: "number", id: "max", value: 200, min: 1, style: "width:110px" })),
+      el("label", {}, "Separador CSV ", el("select", { id: "sep", style: "width:auto" }, el("option", { value: ";" }, "; (Excel)"), el("option", { value: "," }, ", (vírgula)")))),
+    el("div", { className: "acoes" },
+      el("button", { className: "primario", id: "btnConsultar", onclick: consultar }, "Consultar"),
+      el("button", { id: "btnCsv", onclick: () => baixar("csv"), disabled: true }, "Baixar CSV"),
+      el("button", { id: "btnJson", onclick: () => baixar("json"), disabled: true }, "Baixar JSON")),
+    el("div", { id: "msgs" }),
+    el("div", { id: "saida" }),
+  );
+  ultimoResultado = null;
+  mostrarVariaveis(atual.campos.map(c => c.nome), atual.campos);
+}
+
+function mostrarVariaveis(nomes, campos = []) {
+  const box = $("#vars"); box.replaceChildren();
+  if (!nomes.length) { box.append(el("span", { className: "vazio" }, "Nenhuma variável documentada. Preencha os filtros obrigatórios e clique em “Descobrir variáveis”. Sem seleção, todas as colunas são retornadas.")); return; }
+  const desc = Object.fromEntries(campos.map(c => [c.nome, c]));
+  for (const n of nomes) box.append(el("label", { title: [desc[n]?.tipo, desc[n]?.descricao].filter(Boolean).join(" · ") }, el("input", { type: "checkbox", value: n, checked: true }), " " + n));
+}
+const marcar = v => document.querySelectorAll("#vars input").forEach(c => c.checked = v);
+const mensagens = (lista, classe) => $("#msgs").replaceChildren(...lista.map(m => el("div", { className: "msg " + classe }, m)));
+
+function coletar() {
+  const filtros = {};
+  document.querySelectorAll(".campos [name]").forEach(i => { if (i.value !== "") filtros[i.name] = i.value; });
+  const todas = [...document.querySelectorAll("#vars input")];
+  const marcadas = todas.filter(c => c.checked).map(c => c.value);
+  return { filtros, colunas: marcadas.length && marcadas.length < todas.length ? marcadas : null, max_registros: Number($("#max").value) || 200 };
+}
+
+async function amostrar() {
+  try { mostrarVariaveis(await motor.amostra(atual.id, coletar().filtros), atual.campos); mensagens([], ""); }
+  catch (e) { mensagens([e.message], "erro"); }
+}
+
+async function consultar() {
+  const btn = $("#btnConsultar"); btn.disabled = true; btn.textContent = "Consultando...";
+  mensagens([], ""); $("#saida").replaceChildren();
+  try {
+    const r = await motor.dados(atual.id, coletar());
+    ultimoResultado = r; $("#btnCsv").disabled = $("#btnJson").disabled = false;
+    mensagens(r.avisos, "aviso");
+    $("#saida").append(
+      el("p", {}, `${r.total} registro(s) · ${r.paginas_consultadas} página(s) consultada(s).`),
+      r.url_origem ? el("div", { className: "url" }, "Primeira chamada à API oficial: " + r.url_origem) : "",
+      tabela(r.colunas, r.dados.slice(0, 500)),
+      r.total > 500 ? el("p", { className: "vazio" }, "Mostrando 500 linhas; baixe o CSV para ver tudo.") : "");
+  } catch (e) { mensagens([e.message], "erro"); }
+  finally { btn.disabled = false; btn.textContent = "Consultar"; }
+}
+
+function tabela(colunas, linhas) {
+  const t = el("table");
+  t.append(el("thead", {}, el("tr", {}, ...colunas.map(c => el("th", {}, c)))));
+  const tb = el("tbody");
+  for (const l of linhas) { const a = achatar(l); tb.append(el("tr", {}, ...colunas.map(c => el("td", {}, a[c] == null ? "" : String(a[c]))))); }
+  t.append(tb);
+  return el("div", { className: "tabela" }, t);
+}
+
+function baixar(formato) {
+  if (!ultimoResultado) return;
+  let conteudo, tipo;
+  if (formato === "csv") {
+    const sep = $("#sep").value;
+    const esc = v => { const s = v == null ? "" : String(v); return /["\n\r]/.test(s) || s.includes(sep) ? `"${s.replace(/"/g, '""')}"` : s; };
+    const linhas = [ultimoResultado.colunas.map(esc).join(sep)];
+    for (const r of ultimoResultado.dados) { const a = achatar(r); linhas.push(ultimoResultado.colunas.map(c => esc(a[c])).join(sep)); }
+    conteudo = "﻿" + linhas.join("\n") + "\n"; tipo = "text/csv;charset=utf-8";
+  } else {
+    conteudo = JSON.stringify(ultimoResultado, null, 2); tipo = "application/json";
+  }
+  const a = el("a", { href: URL.createObjectURL(new Blob([conteudo], { type: tipo })), download: `${atual.id}.${formato}` });
+  document.body.append(a); a.click(); a.remove();
+}
+
+let t; $("#busca").oninput = () => { clearTimeout(t); t = setTimeout(() => motor && carregarLista(), 250); };
+$("#grupo").onchange = () => motor && carregarLista();
+$("#aplicar").onclick = iniciar;
+document.querySelectorAll("input[name=modo]").forEach(r => r.onchange = iniciar);
+$("#urlBase").onchange = () => { $("#urlSpecs").placeholder = specsPadrao($("#urlBase").value).join(", "); };
+configurarCampos();
+iniciar();
+</script>
+</body>
+</html>
