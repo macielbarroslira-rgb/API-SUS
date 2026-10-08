@@ -124,7 +124,7 @@ def test_pagina_repetida_interrompe(cliente, api_falsa):
     api_falsa.ignorar_offset = True
     r = cliente.get("/api/datasets/cnes-estabelecimentos/dados", params={"max_registros": 100}).json()
     assert r["total"] == 20 and r["paginas_consultadas"] == 2
-    assert any("mesma página" in a for a in r["avisos"])
+    assert any("começou a repetir registros" in a for a in r["avisos"])
 
 
 def test_erro_da_api_oficial_vira_502(cliente):
@@ -302,4 +302,43 @@ def test_avisa_quando_a_api_ignora_a_pagina(config):
         r = c.get("/api/datasets/base/dados", params={"somar": "qt", "max_registros": 0}).json()
     assert r["total"] == 1 and r["paginas_consultadas"] == 2
     assert r["agregado"]["totais"] == {"registros": 1, "soma_qt": 2}
-    assert any("mesma página para páginas diferentes" in a for a in r["avisos"])
+    assert any("começou a repetir registros já recebidos (página 2)" in a for a in r["avisos"])
+
+
+def test_para_quando_a_api_volta_ao_inicio(config):
+    """Imita a base de UBS real: depois do fim, a API volta a devolver páginas antigas."""
+    import httpx
+
+    dados = [{"cnes": i, "uf": "SP" if i % 2 else "RJ"} for i in range(25)]
+
+    def handler(req):
+        if req.url.path == "/spec.json":
+            return httpx.Response(200, json=SPEC_SIMPLES)
+        lim, off = int(req.url.params["limit"]), int(req.url.params["offset"])
+        off = off % 3  # 25 registros = 3 páginas de 10; depois recomeça do início
+        return httpx.Response(200, json={"b": dados[off * 10:(off + 1) * 10]})
+
+    with _app_com(config, handler) as c:
+        c.app.state.catalogo.datasets["base"].param_limit.maximo = 10
+        r = c.get("/api/datasets/base/dados", params={"agrupar_por": "uf", "max_registros": 0}).json()
+    assert r["total"] == 25 and r["paginas_consultadas"] == 4
+    assert r["agregado"]["totais"]["registros"] == 25
+    assert {l["uf"]: l["registros"] for l in r["agregado"]["linhas"]} == {"SP": 12, "RJ": 13}
+    assert any("começou a repetir registros já recebidos (página 4)" in a for a in r["avisos"])
+
+
+def test_registros_identicos_nao_sao_contados_duas_vezes(config):
+    import httpx
+
+    def handler(req):
+        if req.url.path == "/spec.json":
+            return httpx.Response(200, json=SPEC_SIMPLES)
+        off = int(req.url.params["offset"])
+        paginas = [[{"id": 1}, {"id": 2}], [{"id": 2}, {"id": 3}], []]
+        return httpx.Response(200, json={"b": paginas[off] if off < 3 else []})
+
+    with _app_com(config, handler) as c:
+        c.app.state.catalogo.datasets["base"].param_limit.maximo = 2
+        r = c.get("/api/datasets/base/dados", params={"max_registros": 0}).json()
+    assert [d["id"] for d in r["dados"]] == [1, 2, 3]
+    assert any("1 registro(s) idêntico(s)" in a for a in r["avisos"])

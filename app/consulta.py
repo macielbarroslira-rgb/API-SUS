@@ -109,8 +109,8 @@ def colunas_presentes(registros: list[dict[str, Any]]) -> list[str]:
     return list(vistas)
 
 
-def _impressao_digital(registros: list[dict[str, Any]]) -> str:
-    return hashlib.sha1(json.dumps(registros, sort_keys=True, default=str).encode()).hexdigest()
+def _digital_registro(registro: Any) -> bytes:
+    return hashlib.blake2b(json.dumps(registro, sort_keys=True, default=str).encode(), digest_size=8).digest()
 
 
 # --------------------------------------------------------------------------- #
@@ -252,7 +252,8 @@ async def executar(
         tamanho = _tamanho_pagina(config, ds, query)
         # a maioria das bases começa em 0; algumas (ex.: "pagina") começam em 1 (default da spec)
         inicio = int(query.pop(off.nome, None) or off.padrao or 0)
-        anterior = None
+        vistos: set[bytes] = set()  # digitais dos registros já recebidos
+        repetidos = 0
         pagina_curta, prev_len = False, 0  # a página anterior veio com menos registros que o pedido
         incompleta: tuple[int, int] | None = None
         while contagem["buscados"] < max_registros and paginas < config.max_paginas_teto:
@@ -262,18 +263,26 @@ async def executar(
             paginas += 1
             if not pagina:
                 break
-            digital = _impressao_digital(pagina)
-            if digital == anterior:
+            # Algumas bases da API oficial não devolvem página vazia no fim: voltam a repetir
+            # registros já enviados (visto em out/2026). Uma página só com registros repetidos
+            # encerra a busca; registros idênticos a outros já recebidos não são contados de novo.
+            novos = []
+            for r in pagina:
+                d = _digital_registro(r)
+                if d not in vistos:
+                    vistos.add(d)
+                    novos.append(r)
+            repetidos += len(pagina) - len(novos)
+            if not novos:
                 avisos.append(
-                    "A API oficial devolveu a mesma página para páginas diferentes (ela não está paginando "
-                    "esta base corretamente); só os dados distintos foram considerados e os totais podem "
-                    "estar INCOMPLETOS."
+                    f"A API oficial começou a repetir registros já recebidos (página {paginas}); a busca "
+                    "parou aí para não duplicar dados. Se a base for maior do que o recebido, os totais "
+                    "podem estar INCOMPLETOS."
                 )
                 break
-            anterior = digital
             if pagina_curta and incompleta is None:
                 incompleta = (prev_len, tamanho)
-            consumir(pagina)
+            consumir(novos)
             if paginas % 20 == 0:
                 log.info("%s: %d páginas, %d registros", ds.id, paginas, contagem["buscados"])
             # Uma página curta normalmente é a última, mas algumas bases da API oficial devolvem
@@ -289,6 +298,8 @@ async def executar(
                 )
             else:
                 avisos.append(f"Limite de {config.max_paginas_teto} páginas atingido; pode haver mais dados.")
+        if repetidos:
+            avisos.append(f"{repetidos} registro(s) idêntico(s) a outros já recebidos foram ignorados.")
         if incompleta:
             avisos.append(
                 f"A API oficial devolveu páginas incompletas ({incompleta[0]} registro(s) quando foram pedidos "
