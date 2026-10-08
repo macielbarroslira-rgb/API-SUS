@@ -2,6 +2,7 @@
 
 import json
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -22,7 +23,7 @@ def get(url, metodo="GET", extra=None):
     cab.update(extra or {})
     req = urllib.request.Request(url, headers=cab, method=metodo)
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+        with urllib.request.urlopen(req, timeout=300) as r:
             return r.status, dict(r.headers), r.read()
     except urllib.error.HTTPError as e:
         return e.code, dict(e.headers), e.read()
@@ -87,3 +88,22 @@ status, cab, _ = get(
     BASE + "/cnes/estabelecimentos?limit=1", "OPTIONS", {"Access-Control-Request-Method": "GET"}
 )
 print(f"PREFLIGHT OPTIONS: status={status} cors={cors(cab)}")
+
+print("=" * 70)
+print("AMOSTRAS E TEMPOS")
+amostras = [
+    "/assistencia-a-saude/sia-procedimentos-ambulatoriais?limit=2&offset=0",
+    "/assistencia-a-saude/sih-procedimentos-hospitalares?limit=2&offset=0",
+    "/assistencia-a-saude/cnes-leitos?limit=2&offset=0",
+    "/assistencia-a-saude/cnes-profissionais?limit=1&offset=0",
+    "/arboviroses/dengue?nu_ano=2024&limit=1000&offset=0",
+    "/arboviroses/dengue?nu_ano=2024&id_municip=355030&limit=100&offset=0",
+]
+for t in amostras:
+    inicio = time.monotonic()
+    status, cab, corpo = get(BASE + t)
+    dur = time.monotonic() - inicio
+    texto = corpo.decode("utf-8", "replace")
+    print(f"{t}: status={status} {dur:.1f}s {len(corpo)} bytes")
+    if "limit=1000" not in t:
+        print(f"   {texto[:900]}")

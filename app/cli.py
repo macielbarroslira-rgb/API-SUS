@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import Any
@@ -17,7 +18,20 @@ from typing import Any
 from .catalogo import ErroCatalogo, carregar_catalogo
 from .cliente import ClienteDataSUS, ErroUpstream
 from .config import Config
-from .consulta import Consulta, ErroConsulta, achatar, amostrar_variaveis, executar, para_csv, para_xlsx
+from .consulta import (
+    Consulta,
+    ErroConsulta,
+    achatar,
+    amostrar_variaveis,
+    executar,
+    para_csv,
+    para_csv_agregado,
+    para_xlsx,
+)
+
+
+def _lista(texto: str | None) -> list[str]:
+    return [c.strip() for c in (texto or "").split(",") if c.strip()]
 
 
 def _filtros(pares: list[str]) -> dict[str, Any]:
@@ -69,8 +83,10 @@ async def _rodar(args: argparse.Namespace) -> int:
             ds,
             Consulta(
                 filtros=_filtros(args.filtro),
-                colunas=[c.strip() for c in args.colunas.split(",")] if args.colunas else None,
+                colunas=_lista(args.colunas) or None,
                 max_registros=args.max_registros,
+                agrupar_por=_lista(args.agrupar_por),
+                somar=_lista(args.somar),
             ),
         )
         for aviso in resultado.avisos:
@@ -79,7 +95,13 @@ async def _rodar(args: argparse.Namespace) -> int:
         if destino and destino.suffix.lower() == ".xlsx":
             destino.write_bytes(para_xlsx(resultado))
         elif destino and destino.suffix.lower() == ".csv":
-            destino.write_text(para_csv(resultado, args.separador), encoding="utf-8")
+            if resultado.agregado is not None:
+                destino.write_text(para_csv_agregado(resultado, args.separador), encoding="utf-8")
+                if resultado.registros:
+                    detalhe = destino.with_name(destino.stem + "_dados.csv")
+                    detalhe.write_text(para_csv(resultado, args.separador), encoding="utf-8")
+            else:
+                destino.write_text(para_csv(resultado, args.separador), encoding="utf-8")
         else:
             texto = json.dumps(resultado.como_dict(), ensure_ascii=False, indent=2, default=str)
             if destino:
@@ -117,6 +139,24 @@ def _resumo_markdown(resultado, linhas_previa: int = 10) -> str:
         f"**Variáveis ({len(resultado.colunas)}):** " + ", ".join(f"`{c}`" for c in resultado.colunas),
         "",
     ]
+    ag = resultado.agregado
+    if ag is not None:
+        def fmt(v: Any) -> str:
+            if isinstance(v, (int, float)) and not isinstance(v, bool):
+                return f"{v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".").removesuffix(",00")
+            return celula(v)
+
+        titulo = " e ".join(f"`{c}`" for c in ag["agrupar_por"]) or "total geral"
+        partes.append(f"### Resumo por {titulo} ({ag['grupos']} grupo(s); mostrando até 30)")
+        partes.append("")
+        partes.append("| " + " | ".join(ag["colunas"]) + " |")
+        partes.append("|" + "---|" * len(ag["colunas"]))
+        for linha in ag["linhas"][:30]:
+            partes.append("| " + " | ".join(fmt(linha.get(c)) for c in ag["colunas"]) + " |")
+        total = ["**TOTAL**" if i == 0 else "" for i in range(len(ag["agrupar_por"]))]
+        total += [f"**{fmt(ag['totais'][c])}**" for c in ag["colunas"][len(ag["agrupar_por"]):]]
+        partes.append("| " + " | ".join(total) + " |")
+        partes.append("")
     if resultado.registros:
         cols = resultado.colunas[:12]
         partes.append(f"### Prévia ({min(linhas_previa, resultado.total)} primeiras linhas, até 12 colunas)")
@@ -146,11 +186,15 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("base")
     p.add_argument("-f", "--filtro", action="append", default=[], help="nome=valor (repetível)")
     p.add_argument("-c", "--colunas", help="variáveis separadas por vírgula")
-    p.add_argument("-n", "--max-registros", type=int)
+    p.add_argument("-n", "--max-registros", type=int, help="máximo de registros (0 = todos)")
+    p.add_argument("-g", "--agrupar-por", help="variáveis categóricas para agrupar, separadas por vírgula")
+    p.add_argument("-s", "--somar", help="variáveis numéricas a somar, separadas por vírgula")
     p.add_argument("-o", "--saida", help="arquivo .xlsx, .csv ou .json (padrão: imprime JSON)")
     p.add_argument("--separador", default=",")
     p.add_argument("--resumo", help="grava um resumo em Markdown neste arquivo")
 
+    logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stderr)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
     return asyncio.run(_rodar(parser.parse_args(argv)))
 
 

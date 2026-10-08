@@ -20,13 +20,16 @@ jobs:
           python-version: "3.12"
       - run: python scripts/diagnostico.py
       - name: Teste real de geração de planilhas
+        env:
+          DATASUS_TIMEOUT: "300"
         run: |
           pip install -q -r requirements.txt
           mkdir -p saida
-          python -m app.cli dados arboviroses-dengue -f "nu_ano=2024; id_municip=355030" -c dt_notific,nu_ano,id_municip,cs_sexo -n 2500 -o saida/dengue.xlsx --resumo saida/dengue.md
-          python -m app.cli dados cnes-estabelecimentos -f "codigo_uf=35" -n 50 -o saida/cnes.csv --separador ";" --resumo saida/cnes.md
+          python -m app.cli dados arboviroses-dengue -f "nu_ano=2024" -c dt_notific,nu_ano,id_municip,cs_sexo -g cs_sexo -n 2500 -o saida/dengue.xlsx --resumo saida/dengue.md || true
+          python -m app.cli dados cnes-estabelecimentos -f "codigo_uf=35" -n 50 -o saida/cnes.csv --separador ";" --resumo saida/cnes.md || true
+          python -m app.cli dados assistencia-a-saude-cnes-leitos -g ds_leito -s qt_existente,qt_sus -n 3000 -o saida/leitos.xlsx --resumo saida/leitos.md || true
           python -m app.cli dados economia-da-saude-bps -f "codigoCatmat=BR0267530" -n 150 -o saida/bps.xlsx --resumo saida/bps.md || true
-          cat saida/*.md >> "$GITHUB_STEP_SUMMARY"
+          cat saida/*.md >> "$GITHUB_STEP_SUMMARY" || true
           cat saida/*.md
           ls -la saida
       - uses: actions/upload-artifact@v4

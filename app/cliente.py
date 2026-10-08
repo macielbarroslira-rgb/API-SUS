@@ -54,8 +54,16 @@ class ClienteDataSUS:
                 await asyncio.sleep(min(2**tentativa, 10))
             try:
                 resp = await self._http.get(url, params=params)
+            except httpx.TimeoutException as exc:
+                ultimo_erro = ErroUpstream(
+                    f"Tempo esgotado ({self.config.timeout:.0f}s) esperando {url} ({type(exc).__name__}). "
+                    "A API oficial pode estar lenta para este filtro; tente filtros mais restritos ou "
+                    "aumente DATASUS_TIMEOUT.",
+                    url=url,
+                )
+                continue
             except httpx.HTTPError as exc:
-                ultimo_erro = ErroUpstream(f"Falha de conexão com {url}: {exc}", url=url)
+                ultimo_erro = ErroUpstream(f"Falha de conexão com {url}: {type(exc).__name__} {exc}", url=url)
                 continue
 
             if resp.status_code >= 500 or resp.status_code == 429:

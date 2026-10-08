@@ -7,12 +7,17 @@ import csv
 import hashlib
 import io
 import json
+import logging
 from dataclasses import dataclass, field
 from typing import Any
 
+from .agregacao import Agregador
 from .catalogo import Catalogo, Dataset, Parametro, montar_url
 from .cliente import ClienteDataSUS
 from .config import Config
+
+
+log = logging.getLogger("api_sus")
 
 
 class ErroConsulta(Exception):
@@ -24,8 +29,10 @@ class Consulta:
     filtros: dict[str, Any] = field(default_factory=dict)
     colunas: list[str] | None = None
     filtros_locais: dict[str, Any] | None = None
-    max_registros: int | None = None
+    max_registros: int | None = None  # 0 = todos (até o teto configurado)
     paginar: bool = True
+    agrupar_por: list[str] = field(default_factory=list)
+    somar: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -38,18 +45,24 @@ class Resultado:
     total: int
     avisos: list[str]
     registros: list[dict[str, Any]]
+    registros_buscados: int = 0
+    agregado: dict[str, Any] | None = None
 
     def como_dict(self) -> dict[str, Any]:
-        return {
+        d = {
             "dataset": self.dataset,
             "url_origem": self.url,
             "filtros": self.filtros,
             "colunas": self.colunas,
             "paginas_consultadas": self.paginas_consultadas,
+            "registros_buscados": self.registros_buscados,
             "total": self.total,
             "avisos": self.avisos,
-            "dados": self.registros,
         }
+        if self.agregado is not None:
+            d["agregado"] = self.agregado
+        d["dados"] = self.registros
+        return d
 
 
 # --------------------------------------------------------------------------- #
@@ -195,21 +208,53 @@ async def executar(
     cliente: ClienteDataSUS, config: Config, catalogo: Catalogo, ds: Dataset, consulta: Consulta
 ) -> Resultado:
     query, path = validar_filtros(ds, consulta.filtros)
-    _campos_para_api(ds, consulta.colunas, query)
+    agrupar_por, somar = list(consulta.agrupar_por or []), list(consulta.somar or [])
+    if consulta.colunas:
+        _campos_para_api(ds, [*consulta.colunas, *agrupar_por, *somar], query)
     url = montar_url(config, catalogo, ds, path)
-    max_registros = min(consulta.max_registros or config.max_registros_padrao, config.max_registros_teto)
-    if max_registros < 1:
-        raise ErroConsulta("max_registros deve ser >= 1.")
+    if consulta.max_registros is not None and consulta.max_registros < 0:
+        raise ErroConsulta("max_registros deve ser >= 0 (0 = todos).")
+    pedido = config.max_registros_teto if consulta.max_registros == 0 else consulta.max_registros
+    max_registros = min(pedido or config.max_registros_padrao, config.max_registros_teto)
+
     avisos: list[str] = []
     registros: list[dict[str, Any]] = []
-    paginas = 0
+    agregador = Agregador(agrupar_por, somar) if (agrupar_por or somar) else None
+    alvo = _alvo_local(consulta.filtros_locais) if consulta.filtros_locais else None
+    vistas: dict[str, None] = {}
+    contagem = {"buscados": 0, "total": 0}
+    guardar = True
 
+    def consumir(pagina: list[dict[str, Any]]) -> None:
+        nonlocal guardar
+        for r in pagina[: max_registros - contagem["buscados"]]:
+            contagem["buscados"] += 1
+            plano = achatar(r)
+            if alvo and not _casa(plano, alvo):
+                continue
+            contagem["total"] += 1
+            for k in plano:
+                vistas.setdefault(k, None)
+            if agregador:
+                agregador.adicionar(plano)
+            if guardar:
+                if len(registros) >= config.max_linhas_detalhe:
+                    guardar = False
+                    registros.clear()
+                    avisos.append(
+                        f"Mais de {config.max_linhas_detalhe} linhas: os dados detalhados foram omitidos "
+                        "(o resumo agregado considera todas)."
+                    )
+                else:
+                    registros.append({c: plano.get(c) for c in consulta.colunas} if consulta.colunas else r)
+
+    paginas = 0
     if not ds.paginavel or not consulta.paginar:
-        registros = extrair_registros(await cliente.get_json(url, query), ds.chave_lista)
+        pagina = extrair_registros(await cliente.get_json(url, query), ds.chave_lista)
         paginas = 1
-        if len(registros) > max_registros:
+        if len(pagina) > max_registros:
             avisos.append(f"Resultado truncado em {max_registros} registros.")
-            registros = registros[:max_registros]
+        consumir(pagina)
     else:
         lim, off = ds.param_limit, ds.param_offset
         assert lim is not None and off is not None
@@ -217,7 +262,7 @@ async def executar(
         # a maioria das bases começa em 0; algumas (ex.: "pagina") começam em 1 (default da spec)
         inicio = int(query.pop(off.nome, None) or off.padrao or 0)
         anterior = None
-        while len(registros) < max_registros and paginas < config.max_paginas_teto:
+        while contagem["buscados"] < max_registros and paginas < config.max_paginas_teto:
             deslocamento = inicio + (paginas if config.modo_offset == "pagina" else paginas * tamanho)
             params = {**query, lim.nome: tamanho, off.nome: deslocamento}
             pagina = extrair_registros(await cliente.get_json(url, params), ds.chave_lista)
@@ -232,33 +277,34 @@ async def executar(
                 )
                 break
             anterior = digital
-            registros.extend(pagina)
+            consumir(pagina)
+            if paginas % 20 == 0:
+                log.info("%s: %d páginas, %d registros", ds.id, paginas, contagem["buscados"])
             if len(pagina) < tamanho:
                 break
             if config.pausa_entre_paginas:
                 await asyncio.sleep(config.pausa_entre_paginas)
         else:
-            if len(registros) >= max_registros:
+            if contagem["buscados"] >= max_registros:
                 avisos.append(
                     f"Limite de {max_registros} registros atingido; pode haver mais dados. "
-                    "Aumente max_registros para buscar mais."
+                    "Aumente max_registros (0 = todos) para buscar mais."
                 )
             else:
                 avisos.append(f"Limite de {config.max_paginas_teto} páginas atingido; pode haver mais dados.")
-        registros = registros[:max_registros]
 
-    if consulta.filtros_locais:
-        registros = _filtrar_localmente(registros, consulta.filtros_locais)
-
-    colunas_disponiveis = colunas_presentes(registros)
     if consulta.colunas:
-        ausentes = [c for c in consulta.colunas if c not in colunas_disponiveis]
-        if ausentes and registros:
+        ausentes = [c for c in consulta.colunas if c not in vistas]
+        if ausentes and contagem["total"]:
             avisos.append(f"Coluna(s) não encontrada(s) nos dados: {ausentes}.")
-        registros = [{c: achatar(r).get(c) for c in consulta.colunas} for r in registros]
         colunas = list(consulta.colunas)
     else:
-        colunas = colunas_disponiveis
+        colunas = list(vistas)
+
+    agregado = None
+    if agregador:
+        agregado = agregador.resultado()
+        avisos.extend(agregado.pop("avisos"))
 
     return Resultado(
         dataset=ds.id,
@@ -266,25 +312,24 @@ async def executar(
         filtros={**path, **query},
         colunas=colunas,
         paginas_consultadas=paginas,
-        total=len(registros),
+        total=contagem["total"],
         avisos=avisos,
         registros=registros,
+        registros_buscados=contagem["buscados"],
+        agregado=agregado,
     )
 
 
-def _filtrar_localmente(registros: list[dict[str, Any]], filtros: dict[str, Any]) -> list[dict[str, Any]]:
-    """Filtro por igualdade (texto, sem diferenciar maiúsculas). Aceita lista de valores."""
+def _alvo_local(filtros: dict[str, Any]) -> dict[str, set[str]]:
+    return {k: {_normal(x) for x in (v if isinstance(v, list) else [v])} for k, v in filtros.items()}
 
-    def normal(v: Any) -> str:
-        return str(v).strip().lower()
 
-    alvo = {k: {normal(x) for x in (v if isinstance(v, list) else [v])} for k, v in filtros.items()}
-    saida = []
-    for r in registros:
-        plano = achatar(r)
-        if all(normal(plano.get(k)) in valores for k, valores in alvo.items()):
-            saida.append(r)
-    return saida
+def _normal(v: Any) -> str:
+    return str(v).strip().lower()
+
+
+def _casa(plano: dict[str, Any], alvo: dict[str, set[str]]) -> bool:
+    return all(_normal(plano.get(k)) in valores for k, valores in alvo.items())
 
 
 async def amostrar_variaveis(
@@ -309,6 +354,7 @@ async def amostrar_variaveis(
 
 
 def para_csv(resultado: Resultado, separador: str = ",") -> str:
+    """CSV dos dados detalhados."""
     buffer = io.StringIO()
     escritor = csv.DictWriter(
         buffer, fieldnames=resultado.colunas, delimiter=separador, extrasaction="ignore", lineterminator="\n"
@@ -326,18 +372,41 @@ def para_xlsx(resultado: Resultado) -> bytes:
     from openpyxl.styles import Font
 
     wb = Workbook(write_only=True)
+    negrito = Font(bold=True)
+
+    def cabecalho(aba, nomes):
+        celulas = []
+        for n in nomes:
+            c = WriteOnlyCell(aba, value=n)
+            c.font = negrito
+            celulas.append(c)
+        aba.append(celulas)
+
+    if resultado.agregado is not None:
+        ag = resultado.agregado
+        resumo = wb.create_sheet("resumo")
+        cabecalho(resumo, ag["colunas"])
+        for linha in ag["linhas"]:
+            resumo.append([linha.get(c) for c in ag["colunas"]])
+        total = []
+        for v in _linha_total(ag):
+            c = WriteOnlyCell(resumo, value=v)
+            c.font = negrito
+            total.append(c)
+        resumo.append(total)
+
     dados = wb.create_sheet("dados")
-    dados.append(resultado.colunas)
+    cabecalho(dados, resultado.colunas)
     for r in resultado.registros:
         plano = achatar(r)
         dados.append([plano.get(c) for c in resultado.colunas])
 
     info = wb.create_sheet("consulta")
-    negrito = Font(bold=True)
     linhas = [
         ("Base", resultado.dataset),
         ("Origem", resultado.url),
         ("Filtros", json.dumps(resultado.filtros, ensure_ascii=False)),
+        ("Registros buscados na API", resultado.registros_buscados),
         ("Registros", resultado.total),
         ("Páginas consultadas", resultado.paginas_consultadas),
         *[("Aviso", a) for a in resultado.avisos],
@@ -350,3 +419,21 @@ def para_xlsx(resultado: Resultado) -> bytes:
     buffer = io.BytesIO()
     wb.save(buffer)
     return buffer.getvalue()
+
+
+def para_csv_agregado(resultado: Resultado, separador: str = ",") -> str:
+    """CSV do resumo agregado (com linha de TOTAL)."""
+    assert resultado.agregado is not None
+    ag = resultado.agregado
+    buffer = io.StringIO()
+    escritor = csv.writer(buffer, delimiter=separador, lineterminator="\n")
+    escritor.writerow(ag["colunas"])
+    for linha in ag["linhas"]:
+        escritor.writerow(["" if linha.get(c) is None else linha.get(c) for c in ag["colunas"]])
+    escritor.writerow(_linha_total(ag))
+    return "\ufeff" + buffer.getvalue()
+
+
+def _linha_total(ag: dict[str, Any]) -> list[Any]:
+    linha = ["TOTAL" if i == 0 else "" for i in range(len(ag["agrupar_por"]))]
+    return linha + [ag["totais"][c] for c in ag["colunas"][len(ag["agrupar_por"]):]]

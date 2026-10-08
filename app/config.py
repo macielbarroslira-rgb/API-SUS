@@ -49,6 +49,8 @@ class Config:
     max_registros_padrao: int = 1000
     max_registros_teto: int = 100_000
     max_paginas_teto: int = 5_000
+    # Acima disso, os dados detalhados não são guardados (o resumo agregado continua).
+    max_linhas_detalhe: int = 1_000_000
     pausa_entre_paginas: float = 0.0
 
     cors_origens: list[str] = field(default_factory=lambda: ["*"])
@@ -73,6 +75,7 @@ class Config:
         cfg.tamanho_pagina_padrao = int(env.get("DATASUS_TAMANHO_PAGINA", cfg.tamanho_pagina_padrao))
         cfg.max_registros_padrao = int(env.get("DATASUS_MAX_REGISTROS", cfg.max_registros_padrao))
         cfg.max_registros_teto = int(env.get("DATASUS_MAX_REGISTROS_TETO", cfg.max_registros_teto))
+        cfg.max_linhas_detalhe = int(env.get("DATASUS_MAX_LINHAS_DETALHE", cfg.max_linhas_detalhe))
         cfg.pausa_entre_paginas = float(env.get("DATASUS_PAUSA_ENTRE_PAGINAS", cfg.pausa_entre_paginas))
         cfg.cors_origens = _lista(env.get("CORS_ORIGENS"), cfg.cors_origens)
         return cfg

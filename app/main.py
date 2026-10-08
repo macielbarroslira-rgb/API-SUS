@@ -17,12 +17,20 @@ from . import __version__
 from .catalogo import Catalogo, Dataset, ErroCatalogo, carregar_catalogo
 from .cliente import ClienteDataSUS, ErroUpstream
 from .config import Config
-from .consulta import Consulta, ErroConsulta, amostrar_variaveis, executar, para_csv, para_xlsx
+from .consulta import (
+    Consulta,
+    ErroConsulta,
+    amostrar_variaveis,
+    executar,
+    para_csv,
+    para_csv_agregado,
+    para_xlsx,
+)
 
 PASTA_STATIC = Path(__file__).parent / "static"
 
 # Parâmetros de controle do GET /dados; todo o resto da query string é repassado como filtro.
-PARAMS_CONTROLE = {"colunas", "formato", "max_registros", "paginar", "separador", "amostra"}
+PARAMS_CONTROLE = {"colunas", "formato", "max_registros", "paginar", "separador", "amostra", "agrupar_por", "somar"}
 PREFIXO_LOCAL = "local."
 
 
@@ -32,7 +40,9 @@ class CorpoConsulta(BaseModel):
     filtros_locais: dict[str, Any] | None = Field(
         None, description="Filtros de igualdade aplicados aqui, sobre os dados já baixados."
     )
-    max_registros: int | None = Field(None, ge=1, description="Máximo de registros a buscar.")
+    max_registros: int | None = Field(None, ge=0, description="Máximo de registros a buscar (0 = todos).")
+    agrupar_por: list[str] = Field(default_factory=list, description="Variáveis categóricas para agrupar.")
+    somar: list[str] = Field(default_factory=list, description="Variáveis numéricas a somar em cada grupo.")
     paginar: bool = Field(True, description="Percorrer as páginas automaticamente.")
     formato: Literal["json", "csv", "xlsx"] = "json"
     separador: str = Field(",", min_length=1, max_length=1)
@@ -41,9 +51,10 @@ class CorpoConsulta(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "filtros": {"nu_ano": 2024, "id_municip": "355030"},
-                    "colunas": ["dt_notific", "id_municip", "classi_fin"],
-                    "max_registros": 200,
+                    "filtros": {"nu_comp": 202401, "co_ibge": 355030},
+                    "agrupar_por": ["ds_procedimento"],
+                    "somar": ["qt_procedimento", "nu_valor_procedimento"],
+                    "max_registros": 0,
                     "formato": "json",
                 }
             ]
@@ -185,7 +196,8 @@ def criar_app(config: Config | None = None, transport: httpx.AsyncBaseTransport 
             "Qualquer parâmetro da query string que não seja de controle é repassado como filtro para a "
             "API oficial (ex.: `?nu_ano=2024&id_municip=355030`). Filtros locais usam o prefixo "
             "`local.` (ex.: `local.sg_uf=SP`). Controle: `colunas` (separadas por vírgula), `formato` "
-            "(json|csv|xlsx), `max_registros`, `paginar`, `separador`."
+            "(json|csv|xlsx), `max_registros` (0 = todos), `paginar`, `separador`, `agrupar_por` e "
+            "`somar` (separados por vírgula; ex.: `agrupar_por=ds_procedimento&somar=qt_procedimento`)."
         ),
     )
     async def dados_get(
@@ -193,14 +205,22 @@ def criar_app(config: Config | None = None, transport: httpx.AsyncBaseTransport 
         dataset_id: str,
         colunas: str | None = Query(None, description="Variáveis a retornar, separadas por vírgula."),
         formato: Literal["json", "csv", "xlsx"] = "json",
-        max_registros: int | None = Query(None, ge=1),
+        max_registros: int | None = Query(None, ge=0, description="0 = todos"),
+        agrupar_por: str | None = Query(None, description="Variáveis categóricas, separadas por vírgula."),
+        somar: str | None = Query(None, description="Variáveis numéricas a somar, separadas por vírgula."),
         paginar: bool = True,
         separador: str = Query(",", min_length=1, max_length=1),
     ):
         filtros, locais = _separar_query(request)
+
+        def lista(texto: str | None) -> list[str]:
+            return [c.strip() for c in (texto or "").split(",") if c.strip()]
+
         corpo = CorpoConsulta(
             filtros=filtros,
-            colunas=[c.strip() for c in colunas.split(",") if c.strip()] if colunas else None,
+            colunas=lista(colunas) or None,
+            agrupar_por=lista(agrupar_por),
+            somar=lista(somar),
             filtros_locais=locais or None,
             max_registros=max_registros,
             paginar=paginar,
@@ -277,6 +297,8 @@ async def _consultar(app: FastAPI, dataset_id: str, corpo: CorpoConsulta):
             filtros_locais=corpo.filtros_locais,
             max_registros=corpo.max_registros,
             paginar=corpo.paginar,
+            agrupar_por=corpo.agrupar_por,
+            somar=corpo.somar,
         ),
     )
     if corpo.formato == "xlsx":
@@ -289,8 +311,13 @@ async def _consultar(app: FastAPI, dataset_id: str, corpo: CorpoConsulta):
             },
         )
     if corpo.formato == "csv":
+        conteudo = (
+            para_csv_agregado(resultado, corpo.separador)
+            if resultado.agregado is not None
+            else para_csv(resultado, corpo.separador)
+        )
         return Response(
-            content=para_csv(resultado, corpo.separador),
+            content=conteudo,
             media_type="text/csv; charset=utf-8",
             headers={
                 "Content-Disposition": f'attachment; filename="{ds.id}.csv"',
