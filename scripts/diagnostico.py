@@ -107,3 +107,32 @@ for t in amostras:
     print(f"{t}: status={status} {dur:.1f}s {len(corpo)} bytes")
     if "limit=1000" not in t:
         print(f"   {texto[:900]}")
+
+print("=" * 70)
+print("SONDAGEM: paginação das bases de assistência e efeito do parâmetro 'campos'")
+
+
+def sonda(caminho):
+    inicio = time.monotonic()
+    status, _, corpo = get(BASE + caminho)
+    dur = time.monotonic() - inicio
+    try:
+        dados = json.loads(corpo)
+        lista = next(iter(dados.values())) if isinstance(dados, dict) else dados
+        n = len(lista)
+        chaves = [(r.get("nu_comp"), r.get("co_ibge") or r.get("id_municip"), r.get("co_cnes")) for r in lista[:3]]
+    except Exception:  # noqa: BLE001
+        n, chaves = None, corpo[:150]
+    print(f"{caminho}\n   status={status} {dur:.1f}s registros={n} amostra={chaves}")
+
+
+for base in ["/assistencia-a-saude/cnes-leitos", "/assistencia-a-saude/sia-procedimentos-ambulatoriais"]:
+    for q in ["limit=10&offset=0", "limit=10&offset=1", "limit=10&offset=2", "limit=100&offset=0",
+              "limit=1000&offset=0", "limit=1000&offset=1",
+              "nu_comp=202401&limit=1000&offset=0", "nu_comp=202401&co_ibge=355030&limit=1000&offset=0",
+              "co_ibge=355030&limit=1000&offset=0"]:
+        sonda(f"{base}?{q}")
+for q in ["nu_ano=2024&limit=1000&offset=0&campos=dt_notific,cs_sexo",
+          "nu_ano=2024&limit=100&offset=0&campos=dt_notific,cs_sexo",
+          "nu_ano=2024&limit=1000&offset=1"]:
+    sonda(f"/arboviroses/dengue?{q}")
