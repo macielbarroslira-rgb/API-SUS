@@ -334,11 +334,34 @@ def test_registros_identicos_nao_sao_contados_duas_vezes(config):
         if req.url.path == "/spec.json":
             return httpx.Response(200, json=SPEC_SIMPLES)
         off = int(req.url.params["offset"])
-        paginas = [[{"id": 1}, {"id": 2}], [{"id": 2}, {"id": 3}], []]
+        paginas = [[{"id": 1}, {"id": 2}, {"id": 3}], [{"id": 3}, {"id": 4}, {"id": 5}], []]
         return httpx.Response(200, json={"b": paginas[off] if off < 3 else []})
 
     with _app_com(config, handler) as c:
-        c.app.state.catalogo.datasets["base"].param_limit.maximo = 2
+        c.app.state.catalogo.datasets["base"].param_limit.maximo = 3
         r = c.get("/api/datasets/base/dados", params={"max_registros": 0}).json()
-    assert [d["id"] for d in r["dados"]] == [1, 2, 3]
+    assert [d["id"] for d in r["dados"]] == [1, 2, 3, 4, 5]
     assert any("1 registro(s) idêntico(s)" in a for a in r["avisos"])
+
+
+def test_detecta_offset_por_registro(config):
+    """Imita a base de UBS real: offset é a posição do registro, não o número da página."""
+    import httpx
+
+    dados = [{"cnes": i, "uf": ["SP", "RJ", "MG"][i % 3]} for i in range(2500)]
+    chamadas = []
+
+    def handler(req):
+        if req.url.path == "/spec.json":
+            return httpx.Response(200, json=SPEC_SIMPLES)
+        lim, off = int(req.url.params["limit"]), int(req.url.params["offset"])
+        chamadas.append(off)
+        return httpx.Response(200, json={"b": dados[off:off + lim]})
+
+    with _app_com(config, handler) as c:
+        r = c.get("/api/datasets/base/dados", params={"agrupar_por": "uf", "max_registros": 0}).json()
+    assert r["total"] == 2500 and r["agregado"]["totais"]["registros"] == 2500
+    assert {l["uf"]: l["registros"] for l in r["agregado"]["linhas"]} == {"SP": 834, "RJ": 833, "MG": 833}
+    assert chamadas == [0, 1, 1001, 2001, 2500]
+    assert any("offset como posição do registro" in a for a in r["avisos"])
+    assert not any("idêntico" in a for a in r["avisos"])

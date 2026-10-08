@@ -252,12 +252,14 @@ async def executar(
         tamanho = _tamanho_pagina(config, ds, query)
         # a maioria das bases começa em 0; algumas (ex.: "pagina") começam em 1 (default da spec)
         inicio = int(query.pop(off.nome, None) or off.padrao or 0)
+        modo = config.modo_offset
+        deslocamento = inicio
+        primeira: list[dict[str, Any]] = []
         vistos: set[bytes] = set()  # digitais dos registros já recebidos
         repetidos = 0
         pagina_curta, prev_len = False, 0  # a página anterior veio com menos registros que o pedido
         incompleta: tuple[int, int] | None = None
         while contagem["buscados"] < max_registros and paginas < config.max_paginas_teto:
-            deslocamento = inicio + (paginas if config.modo_offset == "pagina" else paginas * tamanho)
             params = {**query, lim.nome: tamanho, off.nome: deslocamento}
             pagina = extrair_registros(await cliente.get_json(url, params), ds.chave_lista)
             paginas += 1
@@ -272,7 +274,20 @@ async def executar(
                 if d not in vistos:
                     vistos.add(d)
                     novos.append(r)
-            repetidos += len(pagina) - len(novos)
+            sobreposicao = len(pagina) - len(novos)
+            repetidos += sobreposicao
+            # A documentação diz que offset é o número da página, mas algumas bases (ex.: UBS)
+            # tratam offset como a posição do registro: offset=1 devolve os registros 2..1001.
+            # Detectado na 2ª página (= 1ª deslocada de um registro), passa a avançar por registros.
+            if paginas == 1:
+                primeira = pagina
+            elif paginas == 2 and modo == "pagina" and len(primeira) > 2 and primeira[1:] == pagina[: len(primeira) - 1]:
+                modo = "registro"
+                repetidos -= sobreposicao
+                avisos.append(
+                    "Esta base usa o offset como posição do registro (e não como número da página, como diz a "
+                    "documentação oficial); a paginação foi ajustada automaticamente."
+                )
             if not novos:
                 avisos.append(
                     f"A API oficial começou a repetir registros já recebidos (página {paginas}); a busca "
@@ -288,6 +303,7 @@ async def executar(
             # Uma página curta normalmente é a última, mas algumas bases da API oficial devolvem
             # páginas incompletas no meio: por isso só paramos quando vem uma página vazia.
             pagina_curta, prev_len = len(pagina) < tamanho, len(pagina)
+            deslocamento += 1 if modo == "pagina" else len(pagina)
             if config.pausa_entre_paginas:
                 await asyncio.sleep(config.pausa_entre_paginas)
         else:

@@ -8,6 +8,7 @@ on:
   schedule:
     - cron: "17 6 * * 1"
   push:
+    branches: [main]
     paths:
       - .github/workflows/atualizar-catalogo.yml
       - scripts/gerar_variaveis.py

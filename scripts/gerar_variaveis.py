@@ -24,8 +24,8 @@ from app.catalogo import montar_url  # noqa: E402
 
 
 async def testar_paginacao(cliente, config, catalogo, ds) -> dict:
-    """ok: paginação normal. incompleta: página curta seguida de mais dados.
-    repetida: páginas diferentes devolvem o mesmo conteúdo."""
+    """ok: paginação normal. registro: offset é a posição do registro (ajustado automaticamente).
+    incompleta: página curta seguida de mais dados. repetida: páginas diferentes devolvem o mesmo."""
     lim, off = ds.param_limit, ds.param_offset
     if not (lim and off):
         return {"paginacao": "sem paginação"}
@@ -36,6 +36,8 @@ async def testar_paginacao(cliente, config, catalogo, ds) -> dict:
     p1 = extrair_registros(await cliente.get_json(url, {lim.nome: tamanho, off.nome: inicio + 1}), ds.chave_lista)
     if p0 and p1 and p0 == p1:
         estado = "repetida"
+    elif len(p0) > 1 and p0[1:] == p1[: len(p0) - 1]:
+        estado = "registro"
     elif 0 < len(p0) < tamanho and p1:
         estado = "incompleta"
     else:
@@ -79,9 +81,9 @@ async def main(spec_path: str, saida: str) -> None:
     )
     ok = sum(1 for r in resultado.values() if "variaveis" in r)
     print(f"{ok}/{len(resultado)} bases com variáveis descobertas.")
-    for estado in ("ok", "incompleta", "repetida", "sem paginação"):
+    for estado in ("ok", "registro", "incompleta", "repetida", "sem paginação"):
         ids = [k for k, r in resultado.items() if r.get("paginacao") == estado]
-        print(f"paginação {estado}: {len(ids)} {ids if estado != 'ok' else ''}")
+        print(f"paginação {estado}: {len(ids)} {ids if estado not in ('ok', 'registro') else ''}")
 
 
 if __name__ == "__main__":
