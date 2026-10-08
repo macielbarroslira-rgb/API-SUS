@@ -159,10 +159,57 @@ def test_catalogo_indisponivel_vira_503(tmp_path):
     from app.config import Config
     from app.main import criar_app
 
-    cfg = Config(base_url="https://x", spec_urls=["https://x/s"], spec_cache=tmp_path / "nada.json", tentativas=1)
+    cfg = Config(
+        base_url="https://x", spec_urls=["https://x/s"], spec_cache=tmp_path / "nada.json", tentativas=1, spec_reserva=None
+    )
     with TestClient(criar_app(cfg, transport=httpx.MockTransport(lambda _: httpx.Response(503)))) as c:
         assert c.get("/health").json()["catalogo_carregado"] is False
         assert c.get("/api/datasets").status_code == 503
+
+
+def test_catalogo_de_reserva_quando_offline(tmp_path):
+    """Sem internet e sem cache, usa a especificação que acompanha o app (docs/swagger.json)."""
+    import httpx
+    from fastapi.testclient import TestClient
+
+    from app.config import Config, recurso
+    from app.main import criar_app
+
+    cfg = Config(base_url="https://x", spec_urls=["https://x/s"], spec_cache=tmp_path / "nada.json", tentativas=1)
+    assert cfg.spec_reserva == recurso("docs/swagger.json")
+    with TestClient(criar_app(cfg, transport=httpx.MockTransport(lambda _: httpx.Response(503)))) as c:
+        cat = c.get("/api/catalogo").json()
+    assert cat["origem"].startswith("reserva:") and cat["total_bases"] > 100
+
+
+def test_executar_com_consumidor_nao_guarda_registros(config, api_falsa):
+    import asyncio
+
+    import httpx
+
+    from app.catalogo import carregar_catalogo
+    from app.cliente import ClienteDataSUS
+    from app.consulta import Consulta, executar
+
+    async def rodar():
+        cliente = ClienteDataSUS(config, transport=httpx.MockTransport(api_falsa))
+        cat = await carregar_catalogo(config, cliente)
+        lotes, progresso = [], []
+        res = await executar(
+            cliente, config, cat, cat.datasets["cnes-estabelecimentos"],
+            Consulta(max_registros=0, agrupar_por=["endereco.uf"]),
+            consumidor=lotes.append, progresso=lambda p, n: progresso.append((p, n)),
+        )
+        await cliente.fechar()
+        return res, lotes, progresso
+
+    res, lotes, progresso = asyncio.run(rodar())
+    assert res.registros == [] and res.total == 45
+    assert [len(l) for l in lotes] == [20, 20, 5]
+    assert lotes[0][0] == {"codigo_cnes": 0, "nome_fantasia": "UBS 0", "endereco.uf": "SP"}  # já achatado
+    assert progresso == [(1, 20), (2, 40), (3, 45), ]
+    assert res.agregado["totais"]["registros"] == 45
+
 
 
 def test_extrair_registros_formatos():

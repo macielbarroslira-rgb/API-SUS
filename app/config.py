@@ -3,10 +3,22 @@
 from __future__ import annotations
 
 import os
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
 RAIZ_PROJETO = Path(__file__).resolve().parent.parent
+
+
+def recurso(relativo: str) -> Path:
+    """Arquivo do projeto (ex.: "docs/index.html"), também quando empacotado pelo PyInstaller."""
+    base = Path(getattr(sys, "_MEIPASS", RAIZ_PROJETO))
+    return base / relativo
+
+
+def pasta_dados_padrao() -> Path:
+    """Onde o app guarda bases baixadas e exportações (padrão: ~/API-SUS-dados)."""
+    return Path(os.environ.get("API_SUS_PASTA") or Path.home() / "API-SUS-dados")
 
 
 def _bool(valor: str | None, padrao: bool) -> bool:
@@ -35,6 +47,10 @@ class Config:
     spec_arquivo: Path | None = None
     # Cópia da última especificação baixada com sucesso (usada se o site cair).
     spec_cache: Path = RAIZ_PROJETO / "data" / "swagger_cache.json"
+    # Última reserva: a especificação que acompanha o projeto/app (docs/swagger.json).
+    spec_reserva: Path | None = field(default_factory=lambda: recurso("docs/swagger.json"))
+    # Pasta do app local: bases baixadas (bases/) e exportações (exportacoes/).
+    pasta_dados: Path = field(default_factory=pasta_dados_padrao)
     # Concatenar o basePath declarado na especificação à base_url.
     respeitar_basepath: bool = False
 
@@ -78,4 +94,6 @@ class Config:
         cfg.max_linhas_detalhe = int(env.get("DATASUS_MAX_LINHAS_DETALHE", cfg.max_linhas_detalhe))
         cfg.pausa_entre_paginas = float(env.get("DATASUS_PAUSA_ENTRE_PAGINAS", cfg.pausa_entre_paginas))
         cfg.cors_origens = _lista(env.get("CORS_ORIGENS"), cfg.cors_origens)
+        if getattr(sys, "frozen", False) and not env.get("DATASUS_SPEC_CACHE"):
+            cfg.spec_cache = cfg.pasta_dados / "swagger_cache.json"
         return cfg

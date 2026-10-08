@@ -350,6 +350,14 @@ async def carregar_catalogo(config: Config, cliente: ClienteDataSUS) -> Catalogo
         except (OSError, ValueError, ErroCatalogo) as exc:
             tentativas.append(f"{config.spec_cache}: {exc}")
 
+    reserva = config.spec_reserva
+    if reserva and Path(reserva).exists() and Path(reserva) != Path(config.spec_cache):
+        try:
+            spec = json.loads(Path(reserva).read_text(encoding="utf-8"))
+            return Catalogo(spec, f"reserva:{reserva}", _agora(), montar_datasets(spec))
+        except (OSError, ValueError, ErroCatalogo) as exc:
+            tentativas.append(f"{reserva}: {exc}")
+
     raise ErroCatalogo(
         "Não foi possível carregar a especificação da API de Dados Abertos. Tentativas: "
         + " | ".join(tentativas)

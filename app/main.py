@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 from . import __version__
 from .catalogo import Catalogo, Dataset, ErroCatalogo, carregar_catalogo
 from .cliente import ClienteDataSUS, ErroUpstream
-from .config import Config
+from .config import Config, recurso
 from .consulta import (
     Consulta,
     ErroConsulta,
@@ -28,7 +28,7 @@ from .consulta import (
 )
 
 # A mesma página do GitHub Pages; aberta pelo servidor, ela detecta a API e passa a usá-la.
-PAGINA = Path(__file__).resolve().parent.parent / "docs" / "index.html"
+PAGINA = recurso("docs/index.html")
 
 # Parâmetros de controle do GET /dados; todo o resto da query string é repassado como filtro.
 PARAMS_CONTROLE = {"colunas", "formato", "max_registros", "paginar", "separador", "amostra", "agrupar_por", "somar"}

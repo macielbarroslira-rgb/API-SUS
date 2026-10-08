@@ -9,7 +9,7 @@ import io
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Callable
 
 from .agregacao import Agregador
 from .catalogo import Catalogo, Dataset, Parametro, montar_url
@@ -196,8 +196,21 @@ def _tamanho_pagina(config: Config, ds: Dataset, query: dict[str, Any]) -> int:
 
 
 async def executar(
-    cliente: ClienteDataSUS, config: Config, catalogo: Catalogo, ds: Dataset, consulta: Consulta
+    cliente: ClienteDataSUS,
+    config: Config,
+    catalogo: Catalogo,
+    ds: Dataset,
+    consulta: Consulta,
+    *,
+    consumidor: Callable[[list[dict[str, Any]]], None] | None = None,
+    progresso: Callable[[int, int], None] | None = None,
 ) -> Resultado:
+    """Busca os dados (paginando) e aplica filtros locais, seleção de colunas e agregação.
+
+    Com ``consumidor``, cada lote de registros (já achatados e filtrados) é entregue a ele em vez
+    de ficar na memória (usado para gravar bases grandes em disco); ``Resultado.registros`` vem
+    vazio. ``progresso(paginas, registros_buscados)`` é chamado após cada página.
+    """
     query, path = validar_filtros(ds, consulta.filtros)
     agrupar_por, somar = list(consulta.agrupar_por or []), list(consulta.somar or [])
     # A seleção de colunas é feita aqui. O parâmetro "campos" da API oficial não é usado
@@ -218,6 +231,7 @@ async def executar(
 
     def consumir(pagina: list[dict[str, Any]]) -> None:
         nonlocal guardar
+        lote: list[dict[str, Any]] = []
         for r in pagina[: max_registros - contagem["buscados"]]:
             contagem["buscados"] += 1
             plano = achatar(r)
@@ -228,7 +242,9 @@ async def executar(
                 vistas.setdefault(k, None)
             if agregador:
                 agregador.adicionar(plano)
-            if guardar:
+            if consumidor is not None:
+                lote.append({c: plano.get(c) for c in consulta.colunas} if consulta.colunas else plano)
+            elif guardar:
                 if len(registros) >= config.max_linhas_detalhe:
                     guardar = False
                     registros.clear()
@@ -238,6 +254,8 @@ async def executar(
                     )
                 else:
                     registros.append({c: plano.get(c) for c in consulta.colunas} if consulta.colunas else r)
+        if consumidor is not None and lote:
+            consumidor(lote)
 
     paginas = 0
     if not ds.paginavel or not consulta.paginar:
@@ -246,6 +264,8 @@ async def executar(
         if len(pagina) > max_registros:
             avisos.append(f"Resultado truncado em {max_registros} registros.")
         consumir(pagina)
+        if progresso:
+            progresso(paginas, contagem["buscados"])
     else:
         lim, off = ds.param_limit, ds.param_offset
         assert lim is not None and off is not None
@@ -298,6 +318,8 @@ async def executar(
             if pagina_curta and incompleta is None:
                 incompleta = (prev_len, tamanho)
             consumir(novos)
+            if progresso:
+                progresso(paginas, contagem["buscados"])
             if paginas % 20 == 0:
                 log.info("%s: %d páginas, %d registros", ds.id, paginas, contagem["buscados"])
             # Uma página curta normalmente é a última, mas algumas bases da API oficial devolvem
