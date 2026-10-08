@@ -339,6 +339,8 @@ async def amostrar_variaveis(
     filtros = dict(filtros)
     if ds.param_limit and ds.param_limit.nome not in filtros:
         filtros[ds.param_limit.nome] = 5
+    if ds.param_offset and ds.param_offset.nome not in filtros:
+        filtros[ds.param_offset.nome] = ds.param_offset.padrao or 0
     res = await executar(cliente, config, catalogo, ds, Consulta(filtros=filtros, max_registros=5, paginar=False))
     exemplos: dict[str, Any] = {}
     for r in res.registros:

@@ -55,6 +55,9 @@
   th, td { padding: 5px 8px; border-bottom: 1px solid var(--borda); text-align: left; white-space: nowrap; }
   th { position: sticky; top: 0; background: var(--painel); }
   .vazio { color: var(--suave); }
+  .dica { font-size: 12px; color: var(--suave); margin: 4px 0 0; }
+  tr.total td { font-weight: 700; border-top: 2px solid var(--borda); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
   a { color: var(--destaque); }
 </style>
 </head>
@@ -79,7 +82,9 @@
 </header>
 <main>
   <section>
-    <h2>Bases disponíveis</h2>
+    <h2>Consultas prontas</h2>
+    <select id="pronta"><option value="">Escolha uma consulta pronta...</option></select>
+    <h2 style="margin-top:16px">Bases disponíveis</h2>
     <input type="text" id="busca" placeholder="Buscar (ex.: dengue, cnes, leitos)">
     <div style="margin-top:8px"><select id="grupo"><option value="">Todos os grupos</option></select></div>
     <ul class="lista" id="lista"></ul>
@@ -350,6 +355,7 @@ class MotorDireto {
     const ds = await this.detalhe(id);
     const f = { ...filtros };
     if (ds.parametro_limit && !(ds.parametro_limit in f)) f[ds.parametro_limit] = 5;
+    if (ds.parametro_offset && !(ds.parametro_offset in f)) f[ds.parametro_offset] = ds.parametros.find(p => p.nome === ds.parametro_offset).padrao ?? 0;
     const r = await this.dados(id, { filtros: f, max_registros: 5, paginar: false });
     return r.colunas;
   }
@@ -377,12 +383,42 @@ class MotorServidor {
     return this.req(`/api/datasets/${encodeURIComponent(id)}/dados`, {
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...corpo, formato: "json" }) });
   }
+  urlArquivo(id, corpo, formato) {
+    const p = new URLSearchParams(corpo.filtros);
+    if (corpo.colunas) p.set("colunas", corpo.colunas.join(","));
+    if (corpo.agrupar_por.length) p.set("agrupar_por", corpo.agrupar_por.join(","));
+    if (corpo.somar.length) p.set("somar", corpo.somar.join(","));
+    p.set("max_registros", corpo.max_registros); p.set("formato", formato); p.set("separador", ";");
+    return `${this.url}/api/datasets/${encodeURIComponent(id)}/dados?${p}`;
+  }
   async amostra(id, filtros) {
     const r = await this.req(`/api/datasets/${encodeURIComponent(id)}/variaveis?` + new URLSearchParams({ ...filtros, amostra: "true" }));
     if (!r.amostra) throw new Error(r.aviso || "Amostra indisponível.");
     return r.amostra.variaveis;
   }
 }
+
+// Consultas prontas. As colunas foram confirmadas nos dados reais (docs/variaveis.json).
+const PRONTAS = [
+  { nome: "Produção ambulatorial (SIA) por procedimento", base: "assistencia-a-saude-sia-procedimentos-ambulatoriais", agrupar: ["ds_procedimento"], somar: ["qt_procedimento", "nu_valor_procedimento"], dica: "Filtre por competência (nu_comp), município (co_ibge) ou estabelecimento (co_cnes)." },
+  { nome: "Produção ambulatorial (SIA) por complexidade", base: "assistencia-a-saude-sia-procedimentos-ambulatoriais", agrupar: ["ds_complex_procedimento"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
+  { nome: "Produção ambulatorial (SIA) por estabelecimento", base: "assistencia-a-saude-sia-procedimentos-ambulatoriais", agrupar: ["co_cnes", "no_fantasia"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
+  { nome: "Produção hospitalar (SIH) por procedimento", base: "assistencia-a-saude-sih-procedimentos-hospitalares", agrupar: ["ds_procedimento"], somar: ["qt_procedimento", "nu_valor_procedimento"], dica: "Filtre por competência (nu_comp), município (co_ibge) ou estabelecimento (co_cnes)." },
+  { nome: "Produção hospitalar (SIH) por financiamento", base: "assistencia-a-saude-sih-procedimentos-hospitalares", agrupar: ["ds_financiamento"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
+  { nome: "Produção hospitalar (SIH) por estabelecimento", base: "assistencia-a-saude-sih-procedimentos-hospitalares", agrupar: ["co_cnes", "no_fantasia"], somar: ["qt_procedimento", "nu_valor_procedimento"] },
+  { nome: "CNES: leitos por tipo", base: "assistencia-a-saude-cnes-leitos", agrupar: ["ds_leito"], somar: ["qt_existente", "qt_sus"] },
+  { nome: "CNES: leitos por estabelecimento", base: "assistencia-a-saude-cnes-leitos", agrupar: ["co_cnes"], somar: ["qt_existente", "qt_sus"] },
+  { nome: "CNES: equipamentos por tipo", base: "assistencia-a-saude-cnes-equipamentos", agrupar: ["ds_equipamento"], somar: ["qt_existente", "qt_uso"] },
+  { nome: "CNES: profissionais por ocupação (CBO)", base: "assistencia-a-saude-cnes-profissionais", agrupar: ["ds_cbo"], somar: ["nu_carga_horaria_total"] },
+  { nome: "CNES: profissionais por vínculo", base: "assistencia-a-saude-cnes-profissionais", agrupar: ["ds_vinculo"], somar: [] },
+  { nome: "CNES: estabelecimentos por classificação", base: "assistencia-a-saude-cnes-estabelecimentos", agrupar: ["ds_class_estab"], somar: [] },
+  { nome: "CNES: serviços especializados por serviço", base: "assistencia-a-saude-cnes-servicos-especializados", agrupar: ["ds_servico"], somar: [] },
+  { nome: "Hospitais e leitos por UF", base: "assistencia-a-saude-hospitais-e-leitos", agrupar: ["unidade_da_federacao_onde_fica_o_hospital"], somar: ["quantidade_total_de_leitos_do_hosptial", "quantidade_total_de_leitos_sus_do_hosptial", "quantidade_de_leitos_de_uti_do_hosptial"] },
+  { nome: "Dengue: notificações por sexo", base: "arboviroses-dengue", agrupar: ["cs_sexo"], somar: [], dica: "Informe o ano (nu_ano) e, se quiser, o município (id_municip)." },
+];
+
+// Heurística só para ordenar as listas: valores numéricos primeiro em "Somar".
+const PARECE_NUMERO = /^(qt_|quantidade|nu_valor|vl_|valor|total|nu_carga)/i;
 
 // =========================================================================
 // Interface
@@ -397,8 +433,15 @@ const guardar = (k, v) => { try { localStorage.setItem("apisus." + k, v); } catc
 const lerGuardado = k => { try { return localStorage.getItem("apisus." + k); } catch { return null; } };
 let motor = null, atual = null, ultimoResultado = null;
 
-function configurarCampos() {
+async function configurarCampos() {
   const qs = new URLSearchParams(location.search);
+  // Aberta pelo próprio servidor API-SUS (Codespaces, computador): usa-o diretamente.
+  if (!qs.get("servidor") && location.protocol.startsWith("http") && !location.hostname.endsWith("github.io")) {
+    try {
+      const h = await (await fetch(new URL("health", location.href))).json();
+      if ("catalogo_carregado" in h) qs.set("servidor", new URL(".", location.href).href);
+    } catch {}
+  }
   const modo = qs.get("servidor") ? "servidor" : (lerGuardado("modo") || "direto");
   document.querySelector(`input[name=modo][value=${modo}]`).checked = true;
   $("#urlServidor").value = qs.get("servidor") || lerGuardado("servidor") || "";
@@ -447,7 +490,7 @@ async function carregarLista() {
   }
 }
 
-async function abrir(id) {
+async function abrir(id, pronta = null) {
   const box = $("#detalhe");
   box.replaceChildren(el("p", { className: "vazio" }, "Carregando..."));
   try { atual = await motor.detalhe(id); } catch (e) { box.replaceChildren(el("p", { className: "msg erro" }, e.message)); return; }
@@ -478,28 +521,51 @@ async function abrir(id) {
       el("button", { onclick: () => marcar(true) }, "Marcar todas"),
       el("button", { onclick: () => marcar(false) }, "Desmarcar"),
       el("button", { onclick: amostrar }, "Descobrir variáveis com amostra real")),
-    el("h3", {}, motor.podeConsultar ? "3. Resultado" : "3. Baixar a planilha"),
+    el("h3", {}, "3. Resumo por categorias (opcional)"),
+    el("p", { className: "dica" }, "Agrupar por: variáveis categóricas (ex.: procedimento, tipo de leito, município). Somar: variáveis numéricas (ex.: quantidade, valor). Para cada grupo saem a contagem de registros e as somas, com uma linha TOTAL."),
+    el("div", { className: "campos" },
+      el("label", {}, "Agrupar por", el("div", { id: "agrupar", className: "vars" })),
+      el("label", {}, "Somar", el("div", { id: "somar", className: "vars" }))),
+    pronta && pronta.dica ? el("p", { className: "msg aviso" }, "Dica: " + pronta.dica) : "",
+    el("h3", {}, motor.podeConsultar ? "4. Resultado" : "4. Baixar a planilha"),
     el("div", { className: "acoes" },
-      el("label", {}, "Máximo de linhas ", el("input", { type: "number", id: "max", value: motor.podeConsultar ? 200 : 1000, min: 1, style: "width:110px" })),
+      el("label", {}, "Máximo de linhas (0 = todas) ", el("input", { type: "number", id: "max", value: pronta ? 0 : (motor.podeConsultar ? 200 : 1000), min: 0, style: "width:110px" })),
       motor.podeConsultar ? el("label", {}, "Separador CSV ", el("select", { id: "sep", style: "width:auto" }, el("option", { value: ";" }, "; (Excel)"), el("option", { value: "," }, ", (vírgula)"))) : ""),
     motor.podeConsultar
       ? el("div", { className: "acoes" },
           el("button", { className: "primario", id: "btnConsultar", onclick: consultar }, "Consultar"),
-          el("button", { id: "btnCsv", onclick: () => baixar("csv"), disabled: true }, "Baixar CSV"),
-          el("button", { id: "btnJson", onclick: () => baixar("json"), disabled: true }, "Baixar JSON"))
+          el("button", { id: "btnXlsx", onclick: () => baixar("xlsx") }, "Baixar Excel"),
+          el("button", { id: "btnCsv", onclick: () => baixar("csv") }, "Baixar CSV"))
       : el("div", { className: "acoes" }, el("button", { className: "primario", onclick: prepararPlanilha }, "Gerar planilha")),
     el("div", { id: "msgs" }),
     el("div", { id: "saida" }),
   );
   ultimoResultado = null;
-  mostrarVariaveis(atual.campos.map(c => c.nome), atual.campos);
+  let nomes = atual.campos.map(c => c.nome);
+  if (!nomes.length && motor instanceof MotorServidor) {
+    $("#vars").replaceChildren(el("span", { className: "vazio" }, "Descobrindo variáveis com uma amostra real..."));
+    try { nomes = await motor.amostra(atual.id, {}); } catch (e) { mensagens([e.message], "aviso"); }
+  }
+  if (pronta) nomes = [...new Set([...nomes, ...pronta.agrupar, ...pronta.somar])];
+  mostrarVariaveis(nomes, atual.campos);
+  if (pronta) {
+    for (const [caixa, nomes] of [["#agrupar", pronta.agrupar], ["#somar", pronta.somar]])
+      document.querySelectorAll(`${caixa} input`).forEach(c => c.checked = nomes.includes(c.value));
+  }
 }
 
 function mostrarVariaveis(nomes, campos = []) {
   const box = $("#vars"); box.replaceChildren();
-  if (!nomes.length) { box.append(el("span", { className: "vazio" }, "Nenhuma variável documentada. Preencha os filtros obrigatórios e clique em “Descobrir variáveis”. Sem seleção, todas as colunas são retornadas.")); return; }
+  for (const id of ["#agrupar", "#somar"]) $(id).replaceChildren();
+  if (!nomes.length) {
+    box.append(el("span", { className: "vazio" }, "Nenhuma variável conhecida ainda. Preencha os filtros obrigatórios e clique em “Descobrir variáveis”. Sem seleção, todas as colunas são retornadas."));
+    return;
+  }
   const desc = Object.fromEntries(campos.map(c => [c.nome, c]));
   for (const n of nomes) box.append(el("label", { title: [desc[n]?.tipo, desc[n]?.descricao].filter(Boolean).join(" · ") }, el("input", { type: "checkbox", value: n, checked: true }), " " + n));
+  const numericas = nomes.filter(n => PARECE_NUMERO.test(n)), outras = nomes.filter(n => !PARECE_NUMERO.test(n));
+  for (const n of [...outras, ...numericas]) $("#agrupar").append(el("label", {}, el("input", { type: "checkbox", value: n }), " " + n));
+  for (const n of [...numericas, ...outras]) $("#somar").append(el("label", {}, el("input", { type: "checkbox", value: n }), " " + n));
 }
 const marcar = v => document.querySelectorAll("#vars input").forEach(c => c.checked = v);
 const mensagens = (lista, classe) => $("#msgs").replaceChildren(...lista.map(m => el("div", { className: "msg " + classe }, m)));
@@ -509,7 +575,13 @@ function coletar() {
   document.querySelectorAll(".campos [name]").forEach(i => { if (i.value !== "") filtros[i.name] = i.value; });
   const todas = [...document.querySelectorAll("#vars input")];
   const marcadas = todas.filter(c => c.checked).map(c => c.value);
-  return { filtros, colunas: marcadas.length && marcadas.length < todas.length ? marcadas : null, max_registros: Number($("#max").value) || 200 };
+  const marcados = id => [...document.querySelectorAll(`${id} input`)].filter(c => c.checked).map(c => c.value);
+  const max = $("#max").value.trim();
+  return {
+    filtros, colunas: marcadas.length && marcadas.length < todas.length ? marcadas : null,
+    agrupar_por: marcados("#agrupar"), somar: marcados("#somar"),
+    max_registros: max === "" ? 200 : Math.max(0, Number(max) || 0),
+  };
 }
 
 async function amostrar() {
@@ -522,23 +594,26 @@ async function consultar() {
   mensagens([], ""); $("#saida").replaceChildren();
   try {
     const r = await motor.dados(atual.id, coletar());
-    ultimoResultado = r; $("#btnCsv").disabled = $("#btnJson").disabled = false;
+    ultimoResultado = r;
     mensagens(r.avisos, "aviso");
+    if (r.agregado) $("#saida").append(tabelaAgregada(r.agregado));
     $("#saida").append(
       el("p", {}, `${r.total} registro(s) · ${r.paginas_consultadas} página(s) consultada(s).`),
       r.url_origem ? el("div", { className: "url" }, "Primeira chamada à API oficial: " + r.url_origem) : "",
-      tabela(r.colunas, r.dados.slice(0, 500)),
-      r.total > 500 ? el("p", { className: "vazio" }, "Mostrando 500 linhas; baixe o CSV para ver tudo.") : "");
+      r.dados.length ? tabela(r.colunas, r.dados.slice(0, 500)) : "",
+      r.dados.length > 500 ? el("p", { className: "vazio" }, "Mostrando 500 linhas; baixe a planilha para ver tudo.") : "");
   } catch (e) { mensagens([e.message], "erro"); }
   finally { btn.disabled = false; btn.textContent = "Consultar"; }
 }
 
 function prepararPlanilha() {
-  const { filtros, colunas, max_registros } = coletar();
+  const { filtros, colunas, agrupar_por, somar, max_registros } = coletar();
   const valores = [
     ["base", atual.id],
     ["filtros", Object.entries(filtros).map(([k, v]) => `${k}=${v}`).join("; ")],
     ["colunas", (colunas || []).join(",")],
+    ["agrupar_por", agrupar_por.join(",")],
+    ["somar", somar.join(",")],
     ["max_registros", String(max_registros)],
   ];
   const linha = ([nome, valor]) => {
@@ -555,9 +630,25 @@ function prepararPlanilha() {
     el("div", { className: "tabela" }, tab),
     el("ol", { start: 3 },
       el("li", {}, "Clique no botão verde ", el("b", {}, "Run workflow"), ". Aguarde a execução ficar com ✅ (atualize a página)."),
-      el("li", {}, "Clique na execução: aparece um resumo com a prévia dos dados. No fim da página, em ", el("b", {}, "Artifacts"), ", baixe ", el("b", {}, `planilha-${atual.id}`), " (um .zip com o Excel)."),
+      el("li", {}, "Clique na execução: aparece um resumo com os totais e a prévia dos dados. No fim da página, em ", el("b", {}, "Artifacts"), ", baixe ", el("b", {}, `planilha-${atual.id}`), " (um .zip com o Excel: aba “resumo” com os totais por categoria e aba “dados”)."),
     ),
   );
+}
+
+const fmtNum = v => typeof v === "number" ? v.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) : (v == null ? "" : String(v));
+
+function tabelaAgregada(ag) {
+  const t = el("table");
+  t.append(el("thead", {}, el("tr", {}, ...ag.colunas.map(c => el("th", {}, c)))));
+  const tb = el("tbody");
+  const celula = v => el("td", { className: typeof v === "number" ? "num" : "" }, fmtNum(v));
+  for (const l of ag.linhas.slice(0, 1000)) tb.append(el("tr", {}, ...ag.colunas.map(c => celula(l[c]))));
+  const total = ag.colunas.map((c, i) => i < ag.agrupar_por.length ? (i === 0 ? "TOTAL" : "") : ag.totais[c]);
+  tb.append(el("tr", { className: "total" }, ...total.map(celula)));
+  t.append(tb);
+  const titulo = ag.agrupar_por.length ? `Resumo por ${ag.agrupar_por.join(" e ")} (${ag.grupos} grupo(s))` : "Total geral";
+  return el("div", {}, el("h3", {}, titulo), el("div", { className: "tabela" }, t),
+    ag.linhas.length > 1000 ? el("p", { className: "vazio" }, "Mostrando 1000 grupos; baixe a planilha para ver todos.") : "");
 }
 
 function tabela(colunas, linhas) {
@@ -570,9 +661,11 @@ function tabela(colunas, linhas) {
 }
 
 function baixar(formato) {
+  if (motor.urlArquivo) { window.location.href = motor.urlArquivo(atual.id, coletar(), formato); return; }
   if (!ultimoResultado) return;
   let conteudo, tipo;
-  if (formato === "csv") {
+  if (formato !== "json") {  // modo de teste sem servidor: Excel vira CSV
+    formato = "csv";
     const sep = $("#sep").value;
     const esc = v => { const s = v == null ? "" : String(v); return /["\n\r]/.test(s) || s.includes(sep) ? `"${s.replace(/"/g, '""')}"` : s; };
     const linhas = [ultimoResultado.colunas.map(esc).join(sep)];
@@ -589,8 +682,12 @@ let t; $("#busca").oninput = () => { clearTimeout(t); t = setTimeout(() => motor
 $("#grupo").onchange = () => motor && carregarLista();
 $("#aplicar").onclick = iniciar;
 document.querySelectorAll("input[name=modo]").forEach(r => r.onchange = iniciar);
-configurarCampos();
-iniciar();
+for (const [i, pr] of PRONTAS.entries()) $("#pronta").append(el("option", { value: i }, pr.nome));
+$("#pronta").onchange = () => {
+  const pr = PRONTAS[$("#pronta").value];
+  if (pr && motor) { document.querySelectorAll(".lista li").forEach(x => x.classList.remove("ativo")); abrir(pr.base, pr); }
+};
+configurarCampos().then(iniciar);
 </script>
 </body>
 </html>

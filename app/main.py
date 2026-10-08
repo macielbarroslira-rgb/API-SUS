@@ -27,7 +27,8 @@ from .consulta import (
     para_xlsx,
 )
 
-PASTA_STATIC = Path(__file__).parent / "static"
+# A mesma página do GitHub Pages; aberta pelo servidor, ela detecta a API e passa a usá-la.
+PAGINA = Path(__file__).resolve().parent.parent / "docs" / "index.html"
 
 # Parâmetros de controle do GET /dados; todo o resto da query string é repassado como filtro.
 PARAMS_CONTROLE = {"colunas", "formato", "max_registros", "paginar", "separador", "amostra", "agrupar_por", "somar"}
@@ -108,7 +109,7 @@ def criar_app(config: Config | None = None, transport: httpx.AsyncBaseTransport 
 
     @app.get("/", include_in_schema=False)
     async def interface():
-        return FileResponse(PASTA_STATIC / "index.html")
+        return FileResponse(PAGINA)
 
     @app.get("/health", tags=["Sistema"])
     async def health(request: Request):

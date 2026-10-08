@@ -128,8 +128,16 @@ on:
         description: "Colunas separadas por vírgula (vazio = todas)"
         type: string
         required: false
+      agrupar_por:
+        description: "Resumo: agrupar por estas variáveis (ex.: ds_procedimento)"
+        type: string
+        required: false
+      somar:
+        description: "Resumo: somar estas variáveis (ex.: qt_procedimento,nu_valor_procedimento)"
+        type: string
+        required: false
       max_registros:
-        description: "Máximo de linhas"
+        description: "Máximo de linhas (0 = todas)"
         type: string
         default: "1000"
       formato:
@@ -147,7 +155,7 @@ jobs:
   planilha:
     name: ${{ inputs.base }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -162,12 +170,18 @@ jobs:
           COLUNAS: ${{ inputs.colunas }}
           MAX: ${{ inputs.max_registros }}
           FORMATO: ${{ inputs.formato }}
+          AGRUPAR: ${{ inputs.agrupar_por }}
+          SOMAR: ${{ inputs.somar }}
           DATASUS_SPEC_CACHE: docs/swagger.json
+          DATASUS_TIMEOUT: "300"
+          DATASUS_MAX_REGISTROS_TETO: "3000000"
         run: |
           mkdir -p saida
           args=(dados "$BASE" -n "$MAX" -o "saida/$BASE.$FORMATO" --separador ";" --resumo resumo.md)
           if [ -n "$FILTROS" ]; then args+=(-f "$FILTROS"); fi
           if [ -n "$COLUNAS" ]; then args+=(-c "$COLUNAS"); fi
+          if [ -n "$AGRUPAR" ]; then args+=(-g "$AGRUPAR"); fi
+          if [ -n "$SOMAR" ]; then args+=(-s "$SOMAR"); fi
           if ! python -m app.cli "${args[@]}" 2> erro.log; then
             {
               echo "## ❌ Não foi possível gerar a planilha"
