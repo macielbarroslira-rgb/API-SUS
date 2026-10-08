@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-10-08T02:16:40+00:00",
+ "gerado_em": "2026-10-08T02:33:40+00:00",
  "bases": {
   "arboviroses-chikungunya": {
    "variaveis": [
@@ -129,7 +129,7 @@
     "dt_digita",
     "migrado_w"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "arboviroses-dengue": {
@@ -331,7 +331,7 @@
     "nduplic",
     "in_aids"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "arboviroses-febre-amarela-epzootias": {
@@ -347,7 +347,7 @@
     "ano_ocor",
     "monitoramento_ocor"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "arboviroses-febre-amarela-humanos-primatas-nao-humanos": {
@@ -367,7 +367,7 @@
     "obito",
     "cod_uf_lpi"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "arboviroses-zikavirus": {
@@ -414,7 +414,7 @@
     "ano_nasc",
     "dt_digita"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "assistencia-a-saude-cnes-equipamentos": {
@@ -568,7 +568,7 @@
     "quantidade_de_leitos_de_uti_sus_coronariana_do_hosptial",
     "codigo_ibge_do_municipio"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "assistencia-a-saude-registro-de-ocupacao-hospitalar-covid-19": {
@@ -595,7 +595,7 @@
     "estadonotificacao",
     "datanotificacao"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "assistencia-a-saude-sia-procedimentos-ambulatoriais": {
@@ -655,7 +655,7 @@
     "longitude",
     "nome"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-cadastro-vinculado-programa-previne-brasil": {
@@ -671,7 +671,7 @@
     "pessoas_vinculadas_criterios_ponderacao",
     "pessoas_vinculadas_equipe_municipio"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-enani-2019": {
@@ -1418,7 +1418,7 @@
     "vd_mielo_final",
     "peso_crianca_y_1c"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 10: página 1 = 10, página 2 = 10"
   },
   "atencao-primaria-indicador-desempenho-programa-previne-brasil": {
@@ -1440,7 +1440,7 @@
     "competencia",
     "percentual"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-pmmb-consolidado": {
@@ -1504,7 +1504,7 @@
     "nac_venezuelano",
     "ativos_tutores"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-pmmb-especialista-consolidado": {
@@ -1528,7 +1528,7 @@
     "qtd_ciclo_2",
     "qtd_ciclo_3"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-pmmb-especialista-relacao-nominal-ativo": {
@@ -1552,7 +1552,7 @@
     "regiao",
     "dt_referencia"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-pmmb-especialista-serie-historica": {
@@ -1574,7 +1574,7 @@
     "qtd_sexo_nao_informado",
     "ivs"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-pmmb-relacao-nominal-ativo": {
@@ -1597,7 +1597,7 @@
     "programa_vaga",
     "no_profissional"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-pmmb-relacao-nominal-coparticipacao": {
@@ -1609,7 +1609,7 @@
     "dt_referencia",
     "dt_atualizacao"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-pmmb-relatorio-historico-cadastro-cnes": {
@@ -1633,7 +1633,7 @@
     "prof_celetista_vinculados",
     "prof_tutor_vinculados"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-pmme-instituicoes-formadoras": {
@@ -1642,7 +1642,7 @@
     "no_rede_formadora",
     "no_instituicao_formadora"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-siaps-atendimento-individual": {
@@ -1667,7 +1667,7 @@
     "qtd_registros_atendimento",
     "qtd_pessoas_atendidas"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "atencao-primaria-siaps-cadastro-individual": {
@@ -1690,7 +1690,7 @@
     "tipo_de_equipe",
     "qtd_pessoas_cadastradas"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "ciencia-tecnologia-dgits-contribuicoes-consultas-publicas": {
@@ -1701,7 +1701,7 @@
     "total",
     "data_da_consulta"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "ciencia-tecnologia-dgits-controle-demandas-conitec": {
@@ -1712,7 +1712,7 @@
     "tema_da_saude",
     "nome_do_demandante"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "ciencia-tecnologia-dgits-controle-pcdt": {
@@ -1721,7 +1721,7 @@
     "status",
     "descricao_do_tipo"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "ciencia-tecnologia-dgits-tecnologias-diretrizes": {
@@ -1743,7 +1743,7 @@
     "notas_tecnicas",
     "despacho"
    ],
-   "paginacao": "incompleta",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 10, página 2 = 9"
   },
   "ciencia-tecnologia-plataformabr-pesquisa-saude": {
@@ -1796,7 +1796,7 @@
     "codigo_esfera_administrativa_unidade",
     "data_atualizacao"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 20: página 1 = 20, página 2 = 20"
   },
   "cnes-estabelecimentos-codigo_cnes": {
@@ -1840,7 +1840,7 @@
     "longitude",
     "email"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "economia-da-saude-bps": {
@@ -1858,7 +1858,7 @@
     "municipio",
     "longitude"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "educacao-em-saude-pvc": {
@@ -1869,7 +1869,7 @@
     "nu_beneficiario",
     "vl_total"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "educacao-saude-pet-saude": {
@@ -1881,7 +1881,7 @@
     "ds_ies",
     "ds_seretaria_saude"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "educacao-saude-sig-residencia-area-profissional": {
@@ -1923,7 +1923,7 @@
     "ingresso",
     "egresso"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "educacao-saude-sig-residencia-medica": {
@@ -1950,7 +1950,7 @@
     "ingresso",
     "egresso"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "macrorregiao-e-regiao-de-saude-municipio": {
@@ -1967,7 +1967,7 @@
     "municipio",
     "populacao_estimada_ibge_2022"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "outros-temas-ced": {
@@ -1976,7 +1976,7 @@
     "gestor",
     "sigla_sistema"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "ouvidoria-ouvidor2": {
@@ -2009,7 +2009,7 @@
     "medicamento",
     "status_problema"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "ouvidoria-ouvidor3": {
@@ -2040,7 +2040,7 @@
     "medicamento",
     "status_problema"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "prevencao-e-promocao-distribuicao-epi-insumo": {
@@ -2053,7 +2053,7 @@
     "status",
     "requisitante_destino"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-acompanhamento-obra-infraestrutura-saude": {
@@ -2069,7 +2069,7 @@
     "atuacao",
     "categoria_profissional"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-planilha-de-fornecimento-e-monitoramento-da-qualidade-da-agua-acesso-a-agua": {
@@ -2097,7 +2097,7 @@
     "requer_substituicao__aldeia",
     "sem_info__aldeia"
    ],
-   "paginacao": "incompleta",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 34, página 2 = 33"
   },
   "saude-indigena-planilha-registros-habilitacao-recebimento-incentivo": {
@@ -2113,7 +2113,7 @@
     "mesano_publicacao",
     "portaria"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sasi-sus-gerenciamento-de-residuos-solidos": {
@@ -2141,7 +2141,7 @@
     "pratica_de_queima_de_residuos_pela_comunidade_percentual_de_aldeias_que_nao_possuem_a_pratica_de_queima_dos_residuos",
     "pratica_de_queima_de_residuos_pela_comunidade_percentual_de_aldeias_sem_informacao_sobre_a_pratica_de_queima_dos_residuos"
    ],
-   "paginacao": "incompleta",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 35, página 2 = 34"
   },
   "saude-indigena-sasisus-esgotamento-sanitario": {
@@ -2170,7 +2170,7 @@
     "exist_estrut_perc_ald_casinha_latrina",
     "exist_estrut_perc_ald_banheiro_particular"
    ],
-   "paginacao": "incompleta",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 35, página 2 = 34"
   },
   "saude-indigena-sesai-acidentes-ofidicos": {
@@ -2187,7 +2187,7 @@
     "no_categoria_subcategoria",
     "dt_atendimento"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-arboviroses": {
@@ -2204,7 +2204,7 @@
     "no_categoria_subcategoria",
     "dt_atendimento"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-assistencia-farmaceutica": {
@@ -2214,7 +2214,7 @@
     "unidade_de_medida",
     "qtd_entregue"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-atendimentos": {
@@ -2239,7 +2239,7 @@
     "todos",
     "ds_tipo_aldeia"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-cobertura-vacinal": {
@@ -2266,7 +2266,7 @@
     "trip_viral",
     "homogeneidade_do_polo"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-covid19": {
@@ -2295,7 +2295,7 @@
     "st_neoplasia",
     "st_obesidade"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-demografico": {
@@ -2319,7 +2319,7 @@
     "idade",
     "faixa_etaria"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-doencas-diarreicas-agudas": {
@@ -2336,7 +2336,7 @@
     "idade",
     "faixa_etaria"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-doencas-imunopreveniveis": {
@@ -2353,7 +2353,7 @@
     "no_categoria_subcategoria",
     "dt_atendimento"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-doencas-respiratorias": {
@@ -2372,7 +2372,7 @@
     "tp_criterio_confirmacao",
     "faixa_etaria"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-doencas-zoonoticas": {
@@ -2389,7 +2389,7 @@
     "no_categoria_subcategoria",
     "dt_atendimento"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sesai-hepatites-virais": {
@@ -2414,7 +2414,7 @@
     "faixa_etaria",
     "sg_sexo"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-siasi-acompanhamento-gestacional": {
@@ -2443,7 +2443,7 @@
     "descricao_do_cbo_da_ocupacao",
     "status_do_motivo_da_finalizacao"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-siasi-modulo-morbidades": {
@@ -2473,7 +2473,7 @@
     "codigo_da_familia_cbo",
     "descricao_do_cbo_da_familia"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-siasi-modulo-saude-bucal-ficha3": {
@@ -2498,7 +2498,7 @@
     "creme_dental_distribuido",
     "fio_dental_distribuido"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-siasi-modulo-saude-bucal-ficha4": {
@@ -2534,7 +2534,7 @@
     "data_de_nascimento",
     "idade_na_consulta"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-siasi-modulo-saude-bucal-ficha7": {
@@ -2586,7 +2586,7 @@
     "outra_prescricao",
     "tatramento_odontologico_basico"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "saude-indigena-sistema-de-atencao-a-saude-indigena-modulo-de-vigilancia-alimentar-e-nutricional": {
@@ -2617,7 +2617,7 @@
     "codigo_cbo_da_ocupacao",
     "descricao_do_cbo_da_ocupacao"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-cadastro-carro-pipa-populacao": {
@@ -2646,7 +2646,7 @@
     "data_de_criacao",
     "cnpj_da_instituicao"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-cadastro-carro-pipa-procedencia": {
@@ -2665,7 +2665,7 @@
     "c001",
     "c002"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-controle-mensal-amostras-fora-do-padrao": {
@@ -2702,7 +2702,7 @@
     "uf",
     "tipo_do_local"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-controle-mensal-demais-parametros": {
@@ -2736,7 +2736,7 @@
     "codigo_ibge",
     "categoria_do_ponto_de_captacao_subterranea"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-controle-mensal-infraestrutura-operacional": {
@@ -2770,7 +2770,7 @@
     "data_de_registro",
     "municipio"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-controle-mensal-parametros-basicos": {
@@ -2798,7 +2798,7 @@
     "campo",
     "valor"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-controle-mensal-plano-amostragem": {
@@ -2834,7 +2834,7 @@
     "tipo_da_instituicao",
     "valor"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-controle-semestral": {
@@ -2876,7 +2876,7 @@
     "unidade",
     "vmp"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-pontos-de-captacao": {
@@ -2906,7 +2906,7 @@
     "sigla_da_instituicao",
     "outorga"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-populacao-abastecida": {
@@ -2949,7 +2949,7 @@
     "cnpj_da_instituicao",
     "populacao_estimada"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-tratamento-de-agua": {
@@ -3018,7 +3018,7 @@
     "nome_da_eta",
     "desinf_com_isocianuratos_clorados"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-vigilancia-cianobacterias-e-cianotoxinas": {
@@ -3054,7 +3054,7 @@
     "ponto_de_coleta",
     "regiao_geografica"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-vigilancia-demais-parametros": {
@@ -3093,7 +3093,7 @@
     "ponto_de_coleta",
     "data_de_registro_no_sisagua"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisagua-vigilancia-parametros-basicos": {
@@ -3133,7 +3133,7 @@
     "resultado",
     "providencia"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "sisvan-estado-nutricional": {
@@ -3172,7 +3172,7 @@
     "sistema_origem_acompanhamento",
     "codigo_sequencial_acompanhamento"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 20: página 1 = 20, página 2 = 20"
   },
   "vacinacao-doses-aplicadas-pni-2020": {
@@ -3209,7 +3209,7 @@
     "codigo_vacina",
     "descricao_vacina_fabricante"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-doses-aplicadas-pni-2021": {
@@ -3245,7 +3245,7 @@
     "codigo_vacina_grupo_atendimento",
     "codigo_documento"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-doses-aplicadas-pni-2022": {
@@ -3280,7 +3280,7 @@
     "descricao_nacionalidade_paciente",
     "cep_paciente"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-doses-aplicadas-pni-2023": {
@@ -3315,7 +3315,7 @@
     "nome_fantasia_estalecimento",
     "pais_paciente"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-doses-aplicadas-pni-2024": {
@@ -3369,7 +3369,7 @@
     "codigo_troca_documento",
     "codigo_dose_vacina"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-doses-aplicadas-pni-2025": {
@@ -3424,7 +3424,7 @@
     "codigo_troca_documento",
     "codigo_dose_vacina"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-doses-aplicadas-pni-2026": {
@@ -3479,7 +3479,7 @@
     "codigo_troca_documento",
     "codigo_dose_vacina"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-esavi": {
@@ -3558,7 +3558,7 @@
     "descricao_gravidade_ea",
     "descricao_conduta"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-sistema-de-informacao-de-insumos-estrategicos": {
@@ -3572,7 +3572,7 @@
     "ano",
     "tx_insumo"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-mpox": {
@@ -3633,7 +3633,7 @@
     "herpes_genital",
     "dt_conclusao"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2020": {
@@ -3702,7 +3702,7 @@
     "codigo_estrategia_covid",
     "codigo_triagem_populacao_especifica"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2021": {
@@ -3771,7 +3771,7 @@
     "codigo_estrategia_covid",
     "codigo_triagem_populacao_especifica"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2022": {
@@ -3840,7 +3840,7 @@
     "codigo_estrategia_covid",
     "codigo_triagem_populacao_especifica"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2023": {
@@ -3909,7 +3909,7 @@
     "codigo_estrategia_covid",
     "codigo_triagem_populacao_especifica"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2024": {
@@ -3978,7 +3978,7 @@
     "codigo_estrategia_covid",
     "codigo_triagem_populacao_especifica"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-sistema-de-informacao-sobre-mortalidade": {
@@ -4070,7 +4070,7 @@
     "escfalagr1",
     "stdonova"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-sistema-de-informacao-sobre-nascidos-vivos": {
@@ -4189,7 +4189,7 @@
     "st_tipofi",
     "renal"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-srag-2013-2018": {
@@ -4303,7 +4303,7 @@
     "st_tipofi",
     "renal"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-srag-2019-2026": {
@@ -4503,7 +4503,7 @@
     "vg_codest",
     "reinf"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vigilancia-e-meio-ambiente-svsa-populacao-residente": {
@@ -4514,7 +4514,7 @@
     "ano",
     "idade"
    ],
-   "paginacao": "ok",
+   "paginacao": "registro",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   }
  }
