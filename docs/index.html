@@ -279,10 +279,9 @@ class MotorDireto {
   }
   async detalhe(id) {
     const d = this.datasets[id]; if (!d) throw new Error(`Base '${id}' não encontrada.`);
-    if (!d.campos.length) {
-      const v = (await this.variaveisSalvas())[id];
-      if (v && v.variaveis) d.campos = v.variaveis.map(nome => ({ nome, tipo: "", descricao: "" }));
-    }
+    const v = (await this.variaveisSalvas())[id];
+    if (!d.campos.length && v && v.variaveis) d.campos = v.variaveis.map(nome => ({ nome, tipo: "", descricao: "" }));
+    if (v && v.paginacao) { d.paginacao = v.paginacao; d.teste_paginacao = v.teste_paginacao; }
     return d;
   }
   converter(p, v) {
@@ -513,6 +512,11 @@ async function abrir(id, pronta = null) {
     el("h2", {}, atual.resumo || atual.caminho),
     el("div", { className: "res" }, `${atual.grupo} · `, el("code", {}, atual.caminho), atual.paginavel ? " · paginação automática" : ""),
     atual.descricao ? el("p", {}, atual.descricao) : "",
+    ["incompleta", "repetida"].includes(atual.paginacao)
+      ? el("p", { className: "msg erro" }, "⚠️ Atenção: no teste automático, a API oficial não paginou esta base corretamente (" +
+          (atual.paginacao === "repetida" ? "devolve sempre a mesma página" : "devolve páginas incompletas") +
+          `; ${atual.teste_paginacao}). Contagens e somas podem sair INCOMPLETAS. Isso é uma limitação da API do Ministério.`)
+      : "",
     el("h3", {}, "1. Filtros (enviados à API oficial)"),
     filtros.length ? campos : el("p", { className: "vazio" }, "Esta base não declara filtros."),
     el("h3", {}, "2. Variáveis (colunas) a retornar"),

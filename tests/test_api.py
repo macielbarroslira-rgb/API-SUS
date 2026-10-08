@@ -29,15 +29,15 @@ def test_detalhe_e_404(cliente):
 
 def test_paginacao_automatica_por_numero_de_pagina(cliente, api_falsa):
     r = cliente.get("/api/datasets/arboviroses-dengue/dados", params={"nu_ano": 2024}).json()
-    assert r["total"] == 7
-    assert r["paginas_consultadas"] == 3
-    assert [str(u.params["offset"]) for u in api_falsa.chamadas[1:]] == ["0", "1", "2"]
+    assert r["total"] == 7 and not r["avisos"]
+    assert r["paginas_consultadas"] == 4  # 3 + 3 + 1 e a página vazia que confirma o fim
+    assert [str(u.params["offset"]) for u in api_falsa.chamadas[1:]] == ["0", "1", "2", "3"]
     assert all(u.params["limit"] == "3" for u in api_falsa.chamadas[1:])  # default do parâmetro na spec
 
 
 def test_respeita_maximo_do_limit(cliente, api_falsa):
     r = cliente.get("/api/datasets/cnes-estabelecimentos/dados", params={"max_registros": 1000}).json()
-    assert r["total"] == 45 and r["paginas_consultadas"] == 3
+    assert r["total"] == 45 and r["paginas_consultadas"] == 4
     assert {u.params["limit"] for u in api_falsa.chamadas[1:]} == {"20"}
 
 
@@ -181,7 +181,7 @@ def test_maximo_lido_da_descricao():
     assert _maximo_da_descricao("Quantidade por página") is None
 
 
-def test_paginacao_que_comeca_em_1_e_parametro_campos(config, api_falsa):
+def test_paginacao_que_comeca_em_1_sem_enviar_campos(config, api_falsa):
     import httpx
     from fastapi.testclient import TestClient
 
@@ -211,9 +211,11 @@ def test_paginacao_que_comeca_em_1_e_parametro_campos(config, api_falsa):
 
     with TestClient(criar_app(config, transport=httpx.MockTransport(handler))) as c:
         r = c.get("/api/datasets/bps/dados", params={"colunas": "id,preco", "max_registros": 5000}).json()
-    assert r["total"] == 700 and r["paginas_consultadas"] == 2
-    assert [u.params["pagina"] for u in chamadas[1:]] == ["1", "2"]
-    assert all(u.params["tamanhoPagina"] == "500" and u.params["campos"] == "id,preco" for u in chamadas[1:])
+    assert r["total"] == 700 and r["paginas_consultadas"] == 3
+    assert r["dados"][0] == {"id": 0, "preco": 0}
+    assert [u.params["pagina"] for u in chamadas[1:]] == ["1", "2", "3"]
+    # "campos" derruba a API oficial (502), então nunca é enviado automaticamente
+    assert all(u.params["tamanhoPagina"] == "500" and "campos" not in u.params for u in chamadas[1:])
 
 
 def test_saida_xlsx(cliente):
@@ -250,3 +252,54 @@ def test_cli_filtros_e_resumo(tmp_path, monkeypatch, api_falsa, config):
     assert codigo == 0 and saida.stat().st_size > 0
     texto = resumo.read_text()
     assert "7 registro(s)" in texto and "| dt_notific | id_municip | classi_fin |" in texto
+
+
+def _app_com(config, handler):
+    import httpx
+    from fastapi.testclient import TestClient
+
+    from app.main import criar_app
+
+    return TestClient(criar_app(config, transport=httpx.MockTransport(handler)))
+
+
+SPEC_SIMPLES = {
+    "swagger": "2.0",
+    "paths": {"/base": {"get": {"parameters": [
+        {"name": "limit", "in": "query", "type": "integer", "description": "Deve ser menor ou igual 1000."},
+        {"name": "offset", "in": "query", "type": "integer", "default": 0},
+    ]}}},
+}
+
+
+def test_avisa_quando_a_api_devolve_paginas_incompletas(config):
+    """Imita o SIA real: pede 1000, vem 1 registro por página, mas as páginas seguintes têm dados."""
+    import httpx
+
+    def handler(req):
+        if req.url.path == "/spec.json":
+            return httpx.Response(200, json=SPEC_SIMPLES)
+        off = int(req.url.params["offset"])
+        return httpx.Response(200, json={"b": [{"id": off, "qt": 1}] if off < 5 else []})
+
+    with _app_com(config, handler) as c:
+        r = c.get("/api/datasets/base/dados", params={"somar": "qt", "max_registros": 0}).json()
+    assert r["total"] == 5 and r["paginas_consultadas"] == 6
+    assert any("páginas incompletas (1 registro(s) quando foram pedidos 1000)" in a for a in r["avisos"])
+    assert any("INCOMPLETOS" in a for a in r["avisos"])
+
+
+def test_avisa_quando_a_api_ignora_a_pagina(config):
+    """Imita o CNES-leitos real: qualquer offset devolve o mesmo registro."""
+    import httpx
+
+    def handler(req):
+        if req.url.path == "/spec.json":
+            return httpx.Response(200, json=SPEC_SIMPLES)
+        return httpx.Response(200, json={"b": [{"id": 1, "qt": 2}]})
+
+    with _app_com(config, handler) as c:
+        r = c.get("/api/datasets/base/dados", params={"somar": "qt", "max_registros": 0}).json()
+    assert r["total"] == 1 and r["paginas_consultadas"] == 2
+    assert r["agregado"]["totais"] == {"registros": 1, "soma_qt": 2}
+    assert any("mesma página para páginas diferentes" in a for a in r["avisos"])

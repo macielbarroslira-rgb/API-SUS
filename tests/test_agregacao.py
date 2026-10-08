@@ -70,7 +70,7 @@ def test_soma_de_producao_por_procedimento(api):
         "/api/datasets/sia/dados",
         params={"agrupar_por": "ds_procedimento", "somar": "qt_procedimento,nu_valor_procedimento", "max_registros": 0},
     ).json()
-    assert r["paginas_consultadas"] == 3 and r["registros_buscados"] == 10
+    assert r["paginas_consultadas"] == 4 and r["registros_buscados"] == 10  # 4+4+2 e a vazia
     ag = r["agregado"]
     assert ag["colunas"] == ["ds_procedimento", "registros", "soma_qt_procedimento", "soma_nu_valor_procedimento"]
     por_proc = {linha["ds_procedimento"]: linha for linha in ag["linhas"]}

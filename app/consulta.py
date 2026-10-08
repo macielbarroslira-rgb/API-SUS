@@ -195,22 +195,13 @@ def _tamanho_pagina(config: Config, ds: Dataset, query: dict[str, Any]) -> int:
     return config.tamanho_pagina_padrao
 
 
-def _campos_para_api(ds: Dataset, colunas: list[str] | None, query: dict[str, Any]) -> None:
-    """Se a base aceita o parâmetro "campos", pede à API só as colunas escolhidas."""
-    param = ds.parametro("campos")
-    if not colunas or param is None or param.local != "query" or "campos" in query:
-        return
-    nomes = list(dict.fromkeys(c.split(".")[0] for c in colunas))
-    query["campos"] = ",".join(nomes)
-
-
 async def executar(
     cliente: ClienteDataSUS, config: Config, catalogo: Catalogo, ds: Dataset, consulta: Consulta
 ) -> Resultado:
     query, path = validar_filtros(ds, consulta.filtros)
     agrupar_por, somar = list(consulta.agrupar_por or []), list(consulta.somar or [])
-    if consulta.colunas:
-        _campos_para_api(ds, [*consulta.colunas, *agrupar_por, *somar], query)
+    # A seleção de colunas é feita aqui. O parâmetro "campos" da API oficial não é usado
+    # automaticamente: testado em out/2026, ele fazia a API responder 502 após ~60 s.
     url = montar_url(config, catalogo, ds, path)
     if consulta.max_registros is not None and consulta.max_registros < 0:
         raise ErroConsulta("max_registros deve ser >= 0 (0 = todos).")
@@ -262,6 +253,8 @@ async def executar(
         # a maioria das bases começa em 0; algumas (ex.: "pagina") começam em 1 (default da spec)
         inicio = int(query.pop(off.nome, None) or off.padrao or 0)
         anterior = None
+        pagina_curta, prev_len = False, 0  # a página anterior veio com menos registros que o pedido
+        incompleta: tuple[int, int] | None = None
         while contagem["buscados"] < max_registros and paginas < config.max_paginas_teto:
             deslocamento = inicio + (paginas if config.modo_offset == "pagina" else paginas * tamanho)
             params = {**query, lim.nome: tamanho, off.nome: deslocamento}
@@ -272,16 +265,20 @@ async def executar(
             digital = _impressao_digital(pagina)
             if digital == anterior:
                 avisos.append(
-                    "A API devolveu a mesma página duas vezes; a paginação foi interrompida. "
-                    "Verifique DATASUS_MODO_OFFSET ('pagina' ou 'registro')."
+                    "A API oficial devolveu a mesma página para páginas diferentes (ela não está paginando "
+                    "esta base corretamente); só os dados distintos foram considerados e os totais podem "
+                    "estar INCOMPLETOS."
                 )
                 break
             anterior = digital
+            if pagina_curta and incompleta is None:
+                incompleta = (prev_len, tamanho)
             consumir(pagina)
             if paginas % 20 == 0:
                 log.info("%s: %d páginas, %d registros", ds.id, paginas, contagem["buscados"])
-            if len(pagina) < tamanho:
-                break
+            # Uma página curta normalmente é a última, mas algumas bases da API oficial devolvem
+            # páginas incompletas no meio: por isso só paramos quando vem uma página vazia.
+            pagina_curta, prev_len = len(pagina) < tamanho, len(pagina)
             if config.pausa_entre_paginas:
                 await asyncio.sleep(config.pausa_entre_paginas)
         else:
@@ -292,6 +289,12 @@ async def executar(
                 )
             else:
                 avisos.append(f"Limite de {config.max_paginas_teto} páginas atingido; pode haver mais dados.")
+        if incompleta:
+            avisos.append(
+                f"A API oficial devolveu páginas incompletas ({incompleta[0]} registro(s) quando foram pedidos "
+                f"{incompleta[1]}) e mesmo assim havia mais dados nas páginas seguintes. Esta base não pagina "
+                "corretamente na API oficial: os totais podem estar INCOMPLETOS."
+            )
 
     if consulta.colunas:
         ausentes = [c for c in consulta.colunas if c not in vistas]
