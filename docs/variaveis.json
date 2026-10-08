@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-10-08T02:07:30+00:00",
+ "gerado_em": "2026-10-08T02:16:40+00:00",
  "bases": {
   "arboviroses-chikungunya": {
    "variaveis": [
@@ -619,7 +619,7 @@
     "co_pa_complexidade"
    ],
    "paginacao": "incompleta",
-   "teste_paginacao": "pedidos 50: página 1 = 1, página 2 = 1"
+   "teste_paginacao": "pedidos 50: página 1 = 2, página 2 = 2"
   },
   "assistencia-a-saude-sih-procedimentos-hospitalares": {
    "variaveis": [
