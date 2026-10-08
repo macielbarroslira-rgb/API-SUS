@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+from urllib.parse import urlsplit
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Literal
@@ -10,10 +11,11 @@ from typing import Any, Literal
 import httpx
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel, Field
 
-from . import __version__
+from . import __version__, rotas_downloads, rotas_local
 from .catalogo import Catalogo, Dataset, ErroCatalogo, carregar_catalogo
 from .cliente import ClienteDataSUS, ErroUpstream
 from .config import Config, recurso
@@ -77,7 +79,11 @@ def criar_app(config: Config | None = None, transport: httpx.AsyncBaseTransport 
         except HTTPException:
             pass  # tenta de novo na primeira requisição
         yield
-        await app.state.cliente.fechar()
+        try:
+            # Antes de fechar o cliente: cancela os downloads em andamento e apaga os arquivos parciais.
+            await rotas_downloads.encerrar_downloads(app)
+        finally:
+            await app.state.cliente.fechar()
 
     app = FastAPI(
         title="API-SUS",
@@ -85,14 +91,41 @@ def criar_app(config: Config | None = None, transport: httpx.AsyncBaseTransport 
         description=(
             "Consulta as bases da API de Dados Abertos do Ministério da Saúde "
             "(https://apidadosabertos.saude.gov.br/v1/). Liste as bases, veja as variáveis "
-            "disponíveis e baixe os dados filtrados em JSON ou CSV."
+            "disponíveis e baixe os dados filtrados em JSON ou CSV. No app local, baixe bases inteiras "
+            "para o computador e filtre, agrupe e exporte sem depender da API oficial."
         ),
         lifespan=ciclo_de_vida,
     )
     app.state.config = config
+    # App local: baixar bases para o computador e consultá-las (pasta de dados: config.pasta_dados).
+    app.include_router(rotas_downloads.router)
+    app.include_router(rotas_local.router)
     app.add_middleware(
-        CORSMiddleware, allow_origins=config.cors_origens, allow_methods=["*"], allow_headers=["*"]
+        CORSMiddleware,
+        allow_origins=config.cors_origens,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        # a página (mesmo aberta de outro endereço) lê o nome do arquivo exportado e onde a cópia ficou
+        expose_headers=["Content-Disposition", "X-Arquivo-Salvo", "X-Total-Registros"],
     )
+    if config.hosts_permitidos:
+        app.add_middleware(TrustedHostMiddleware, allowed_hosts=config.hosts_permitidos)
+
+    @app.middleware("http")
+    async def _bloquear_outros_sites(request: Request, chamar):
+        """Proteção contra CSRF: pedidos que alteram algo (POST/PUT/PATCH/DELETE) vindos de páginas de
+        outra origem só passam se a origem estiver em cors_origens. Sem isso, qualquer site aberto no
+        navegador poderia, por exemplo, apagar bases do app local com um formulário."""
+        origem = request.headers.get("origin")
+        if (
+            origem
+            and request.method in {"POST", "PUT", "PATCH", "DELETE"}
+            and "*" not in config.cors_origens
+            and origem not in config.cors_origens
+            and urlsplit(origem).netloc != request.headers.get("host", "")
+        ):
+            return JSONResponse(status_code=403, content={"erro": "Pedido de outra origem bloqueado."})
+        return await chamar(request)
 
     @app.exception_handler(ErroConsulta)
     async def _erro_consulta(_: Request, exc: ErroConsulta):
@@ -120,6 +153,8 @@ def criar_app(config: Config | None = None, transport: httpx.AsyncBaseTransport 
             "catalogo_carregado": cat is not None,
             "origem_catalogo": cat.origem if cat else None,
             "erro_catalogo": request.app.state.erro_catalogo,
+            # a página mostra a aba "Minhas bases" só quando o servidor tem as rotas do app local
+            "app_local": True,
         }
 
     @app.get("/api/catalogo", tags=["Catálogo"], summary="Resumo do catálogo e grupos temáticos")

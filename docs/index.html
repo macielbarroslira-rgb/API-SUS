@@ -59,6 +59,59 @@
   tr.total td { font-weight: 700; border-top: 2px solid var(--borda); }
   td.num { text-align: right; font-variant-numeric: tabular-nums; }
   a { color: var(--destaque); }
+  [hidden] { display: none !important; }
+  /* App local (modo servidor): abas, downloads e bases no computador */
+  .abas { display: flex; gap: 2px; padding: 0 16px; background: var(--painel); border-bottom: 1px solid var(--borda); }
+  .abas button { border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; padding: 10px 12px 8px; color: var(--suave); text-align: left; }
+  .abas button:hover { color: var(--texto); }
+  .abas button[aria-selected=true] { color: var(--texto); border-bottom-color: var(--destaque); font-weight: 600; }
+  @media (max-width: 480px) { .abas { padding: 0 8px; } .abas button { padding: 10px 8px 8px; font-size: 14px; } }
+  .contador { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 6px; border-radius: 999px; background: var(--destaque); color: var(--destaque-texto); font-size: 12px; font-weight: 600; text-align: center; }
+  .local { display: grid; gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; }
+  .grade-base { display: grid; grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 860px) { .grade-base { grid-template-columns: minmax(0, 1fr); } }
+  .cartoes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .cartao { border: 1px solid var(--borda); border-radius: 8px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+  .cartao .info { flex: 1 1 260px; min-width: 0; }
+  .cartao .acoes { margin-top: 0; }
+  .titulo { font-weight: 600; overflow-wrap: anywhere; }
+  .mono { font-family: ui-monospace, monospace; font-size: 13px; overflow-wrap: anywhere; }
+  .etiqueta { display: inline-block; font-size: 12px; padding: 0 8px; border-radius: 999px; border: 1px solid var(--borda); color: var(--suave); white-space: nowrap; vertical-align: 1px; }
+  .etiqueta.ativo { border-color: var(--destaque); color: var(--destaque); }
+  .etiqueta.concluido { background: var(--sel); border-color: var(--destaque); color: var(--destaque); }
+  .etiqueta.erro { border-color: var(--erro); color: var(--erro); }
+  .barra { height: 6px; border-radius: 3px; background: var(--borda); overflow: hidden; margin-top: 6px; }
+  .barra span { display: block; height: 100%; width: 100%; background: var(--destaque); border-radius: 3px; }
+  .barra.indeterminada span { width: 35%; animation: vaivem 1.3s ease-in-out infinite; }
+  @keyframes vaivem { from { transform: translateX(-100%); } to { transform: translateX(290%); } }
+  @media (prefers-reduced-motion: reduce) { .barra.indeterminada span { animation: none; width: 100%; opacity: .45; } }
+  .pasta { font-size: 13px; color: var(--suave); margin: 0 0 10px; }
+  .pasta code { color: var(--texto); overflow-wrap: anywhere; }
+  .link { background: none; border: 0; padding: 0; color: var(--destaque); text-decoration: underline; font-size: 13px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chip { display: inline-flex; align-items: center; max-width: 100%; border: 1px solid var(--destaque); background: var(--sel); border-radius: 999px; font-size: 13px; }
+  .chip button { border: 0; background: none; border-radius: 999px; padding: 3px 2px 3px 10px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chip button.x { padding: 1px 10px 3px 6px; font-size: 17px; line-height: 1; color: var(--suave); flex: none; }
+  .chip button.x:hover { color: var(--erro); }
+  .painel { margin-top: 10px; border: 1px solid var(--borda); border-radius: 8px; padding: 10px; background: var(--bg); }
+  .painel .acoes { margin-top: 8px; }
+  .valores { max-height: 320px; overflow: auto; margin-top: 8px; border: 1px solid var(--borda); border-radius: 6px; background: var(--painel); }
+  .valores label { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-bottom: 1px solid var(--borda); font-size: 13px; cursor: pointer; }
+  .valores label:hover { background: var(--sel); }
+  .valores .v { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .valores p { margin: 0; padding: 8px; }
+  .n { color: var(--suave); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 12px; }
+  .tag { font-size: 10px; text-transform: uppercase; letter-spacing: .03em; padding: 0 5px; margin-left: 4px; border-radius: 4px; background: var(--sel); color: var(--destaque); white-space: nowrap; }
+  .colunas-base { list-style: none; margin: 8px 0 0; padding: 0; max-height: 320px; overflow: auto; border: 1px solid var(--borda); border-radius: 6px; }
+  .colunas-base li { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-bottom: 1px solid var(--borda); font-size: 13px; }
+  .colunas-base .nome { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+  .colunas-base .n { white-space: normal; text-align: right; }
+  .colunas-base button { padding: 2px 8px; font-size: 12px; flex: none; }
+  .rotulo { font-size: 13px; margin-bottom: 4px; }
+  .total-consulta { font-size: 15px; margin: 12px 0 0; }
+  .caixa { margin-top: 16px; padding: 12px; border: 1px dashed var(--destaque); border-radius: 8px; background: var(--sel); }
+  .caixa .dica { margin-top: 8px; }
+  .msg.ok { color: var(--destaque); overflow-wrap: anywhere; }
 </style>
 </head>
 <body>
@@ -80,7 +133,11 @@
     </label>
   </details>
 </header>
-<main>
+<nav class="abas" id="abas" role="tablist" aria-label="Telas do app" hidden>
+  <button type="button" role="tab" id="abaApi" aria-selected="true" aria-controls="telaApi">Consultar API</button>
+  <button type="button" role="tab" id="abaLocal" aria-selected="false" aria-controls="telaLocal">Minhas bases (no computador)<span class="contador" id="contador" hidden></span></button>
+</nav>
+<main id="telaApi">
   <section>
     <h2>Consultas prontas</h2>
     <select id="pronta"><option value="">Escolha uma consulta pronta...</option></select>
@@ -93,6 +150,7 @@
     <p class="vazio">Selecione uma base à esquerda.</p>
   </section>
 </main>
+<div id="telaLocal" class="local" role="tabpanel" aria-labelledby="abaLocal" hidden></div>
 <script>
 "use strict";
 // =========================================================================
@@ -359,6 +417,24 @@ class MotorDireto {
   }
 }
 
+// Mensagem de erro de uma resposta do servidor ({"erro"} do API-SUS ou {"detail"} do FastAPI).
+function mensagemErro(corpo, r) {
+  if (corpo.erro) return corpo.erro;
+  const d = corpo.detail;
+  if (typeof d === "string") return d;
+  if (Array.isArray(d)) return d.map(x => [(x.loc || []).slice(1).join("."), x.msg].filter(Boolean).join(": ")).join("; ");
+  return d ? JSON.stringify(d) : `${r.status} ${r.statusText}`.trim();
+}
+const decodificar = t => { try { return decodeURIComponent(t); } catch { return t; } };
+// Nome do arquivo no cabeçalho Content-Disposition (filename*=utf-8''... ou filename="...").
+function nomeDoArquivo(cd) {
+  if (!cd) return null;
+  const estendido = /filename\*\s*=\s*[\w-]+'[^']*'([^;]+)/i.exec(cd);
+  if (estendido) return decodificar(estendido[1].trim().replace(/^"|"$/g, ""));
+  const simples = /filename\s*=\s*"([^"]*)"/i.exec(cd) || /filename\s*=\s*([^;]+)/i.exec(cd);
+  return simples ? simples[1].trim() : null;
+}
+
 // Motor "servidor": usa os endpoints do backend API-SUS (FastAPI).
 class MotorServidor {
   constructor(url) { this.url = url.replace(/\/+$/, ""); }
@@ -368,8 +444,28 @@ class MotorServidor {
     try { r = await fetch(this.url + caminho, opcoes); }
     catch { throw new Error(`Não foi possível acessar ${this.url}. Verifique se o servidor está no ar e se a porta está pública.`); }
     const corpo = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(corpo.erro || (typeof corpo.detail === "string" ? corpo.detail : JSON.stringify(corpo.detail)) || r.statusText);
+    if (!r.ok) throw new Error(mensagemErro(corpo, r));
     return corpo;
+  }
+  // Pedido com corpo JSON (POST, DELETE...).
+  async enviar(caminho, metodo, corpo) {
+    const opcoes = { method: metodo };
+    if (corpo !== undefined) Object.assign(opcoes, { headers: { "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+    return this.req(caminho, opcoes);
+  }
+  // O servidor tem as rotas do app local (baixar bases e consultá-las no computador)?
+  async temAppLocal() {
+    try { return (await this.req("/health")).app_local === true; } catch { return false; }
+  }
+  // POST que devolve um arquivo (exportação): { blob, nome, salvoEm }.
+  async arquivo(caminho, corpo) {
+    let r;
+    try {
+      r = await fetch(this.url + caminho, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+    } catch { throw new Error(`Não foi possível acessar ${this.url}. Verifique se o app está aberto.`); }
+    if (!r.ok) throw new Error(mensagemErro(await r.json().catch(() => ({})), r));
+    const salvo = r.headers.get("X-Arquivo-Salvo");
+    return { blob: await r.blob(), nome: nomeDoArquivo(r.headers.get("Content-Disposition")), salvoEm: salvo ? decodificar(salvo) : null };
   }
   async catalogo() { const c = await this.req("/api/catalogo"); return { ...c, origem: `${this.url} (${c.origem})` }; }
   async listar(q, grupo) {
@@ -425,7 +521,10 @@ const PARECE_NUMERO = /^(qt_|quantidade|nu_valor|vl_|valor|total|nu_carga)/i;
 // =========================================================================
 const $ = (s, el = document) => el.querySelector(s);
 const el = (tag, props = {}, ...filhos) => {
-  const n = document.createElement(tag); Object.assign(n, props);
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (k === "role" || k.startsWith("aria-")) n.setAttribute(k, v); else n[k] = v;
+  }
   for (const f of filhos) n.append(f instanceof Node ? f : document.createTextNode(f ?? ""));
   return n;
 };
@@ -465,11 +564,15 @@ function criarMotor() {
 }
 
 async function iniciar() {
+  desativarAppLocal();
   $("#lista").replaceChildren(); $("#detalhe").replaceChildren(el("p", { className: "vazio" }, "Selecione uma base à esquerda."));
   $("#grupo").replaceChildren(el("option", { value: "" }, "Todos os grupos"));
   $("#status").textContent = "Carregando catálogo...";
   try {
     motor = criarMotor();
+    // A aba "Minhas bases" aparece só no modo servidor, e mesmo sem catálogo (as bases baixadas funcionam offline).
+    const m = motor;
+    if (m instanceof MotorServidor) m.temAppLocal().then(ok => { if (ok && m === motor) ativarAppLocal(); });
     const cat = await motor.catalogo();
     $("#status").textContent = `${cat.total_bases} bases · ${cat.titulo_api_oficial || ""} ${cat.versao_api_oficial || ""} · origem: ${cat.origem}`;
     for (const [g, n] of Object.entries(cat.grupos)) $("#grupo").append(el("option", { value: g }, `${g} (${n})`));
@@ -542,6 +645,13 @@ async function abrir(id, pronta = null) {
           el("button", { id: "btnXlsx", onclick: () => baixar("xlsx") }, "Baixar Excel"),
           el("button", { id: "btnCsv", onclick: () => baixar("csv") }, "Baixar CSV"))
       : el("div", { className: "acoes" }, el("button", { className: "primario", onclick: prepararPlanilha }, "Gerar planilha")),
+    motor instanceof MotorServidor && loc.ativo
+      ? el("div", { className: "caixa" },
+          el("button", { className: "primario", id: "btnBaixarBase", onclick: baixarParaComputador }, ROTULO_BAIXAR_BASE),
+          el("p", { className: "dica" }, "Baixa TODOS os registros com os filtros do item 1 (sem limite de linhas) e guarda a base no seu computador. " +
+            "Depois, na aba “Minhas bases”, você filtra por categorias, agrupa, soma e exporta para Excel sem depender da API. " +
+            "Sem filtros, a base inteira pode ter milhões de linhas e o download pode demorar bastante."))
+      : "",
     el("div", { id: "msgs" }),
     el("div", { id: "saida" }),
   );
@@ -652,13 +762,16 @@ function tabelaAgregada(ag) {
   t.append(el("thead", {}, el("tr", {}, ...ag.colunas.map(c => el("th", {}, c)))));
   const tb = el("tbody");
   const celula = v => el("td", { className: typeof v === "number" ? "num" : "" }, fmtNum(v));
-  for (const l of ag.linhas.slice(0, 1000)) tb.append(el("tr", {}, ...ag.colunas.map(c => celula(l[c]))));
+  // grupo sem valor (nulo) nas bases do computador
+  const celulaGrupo = v => v === null ? el("td", { className: "vazio" }, "(vazio)") : celula(v);
+  const mostrados = ag.linhas.slice(0, 1000);
+  for (const l of mostrados) tb.append(el("tr", {}, ...ag.colunas.map((c, i) => i < ag.agrupar_por.length ? celulaGrupo(l[c]) : celula(l[c]))));
   const total = ag.colunas.map((c, i) => i < ag.agrupar_por.length ? (i === 0 ? "TOTAL" : "") : ag.totais[c]);
   tb.append(el("tr", { className: "total" }, ...total.map(celula)));
   t.append(tb);
-  const titulo = ag.agrupar_por.length ? `Resumo por ${ag.agrupar_por.join(" e ")} (${ag.grupos} grupo(s))` : "Total geral";
+  const titulo = ag.agrupar_por.length ? `Resumo por ${ag.agrupar_por.join(" e ")} (${fmtNum(ag.grupos)} grupo(s))` : "Total geral";
   return el("div", {}, el("h3", {}, titulo), el("div", { className: "tabela" }, t),
-    ag.linhas.length > 1000 ? el("p", { className: "vazio" }, "Mostrando 1000 grupos; baixe a planilha para ver todos.") : "");
+    ag.grupos > mostrados.length ? el("p", { className: "vazio" }, `Mostrando ${fmtNum(mostrados.length)} de ${fmtNum(ag.grupos)} grupos; baixe a planilha para ver todos.`) : "");
 }
 
 function tabela(colunas, linhas) {
@@ -687,6 +800,513 @@ function baixar(formato) {
   const a = el("a", { href: URL.createObjectURL(new Blob([conteudo], { type: tipo })), download: `${atual.id}.${formato}` });
   document.body.append(a); a.click(); a.remove();
 }
+
+// =========================================================================
+// App local (só no modo servidor): baixar bases inteiras para o computador
+// e filtrar por categorias, agrupar, somar e exportar sem depender da API.
+// Rotas: /api/downloads e /api/local/bases (app/rotas_downloads.py e app/rotas_local.py).
+// =========================================================================
+const ATIVOS = new Set(["na_fila", "baixando", "convertendo"]);
+const STATUS = { na_fila: "Na fila", baixando: "Baixando", convertendo: "Convertendo", concluido: "Concluído", erro: "Erro", cancelado: "Cancelado" };
+const ROTULO_BAIXAR_BASE = "⬇️ Baixar base para o computador";
+const LIMITE_PREVIA = 500, LIMITE_CATEGORIAS = 200, INTERVALO_DOWNLOADS = 2000;
+const HASH_LOCAL = "minhas-bases";
+const enc = encodeURIComponent;
+// Estado do app local. "estados" guarda, por base, os filtros e o resumo escolhidos (enquanto a página estiver aberta).
+const loc = { ativo: false, downloads: [], timer: null, estados: {}, base: null, painel: null, seq: {} };
+const proximo = chave => (loc.seq[chave] = (loc.seq[chave] || 0) + 1);
+const vigente = (chave, n) => loc.seq[chave] === n;
+
+const fmtInt = n => n == null ? "?" : Number(n).toLocaleString("pt-BR");
+function fmtTamanho(bytes) {
+  if (bytes == null) return "";
+  const unidades = ["bytes", "KB", "MB", "GB", "TB"];
+  let v = Number(bytes), i = 0;
+  while (v >= 1024 && i < unidades.length - 1) { v /= 1024; i++; }
+  return `${v.toLocaleString("pt-BR", { maximumFractionDigits: i ? 1 : 0 })} ${unidades[i]}`;
+}
+function fmtData(iso) {
+  const d = new Date(iso);
+  return iso && !Number.isNaN(d.getTime()) ? d.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : String(iso ?? "");
+}
+function textoFiltros(filtros, rotulo = "filtros") {
+  const itens = Object.entries(filtros || {});
+  if (!itens.length) return "sem filtros (base inteira)";
+  return `${rotulo}: ` + itens.map(([k, v]) => `${k} = ${Array.isArray(v) ? v.join(", ") : v}`).join("; ");
+}
+const rotuloValor = v => v === null || v === undefined ? "(vazio)" : v === "" ? "(texto vazio)" : String(v);
+const plural = (n, um, varios) => `${fmtInt(n)} ${n === 1 ? um : varios}`;
+const mensagensLocal = (lista, classe) => { const box = $("#msgsLocal"); if (box) box.replaceChildren(...lista.map(m => el("div", { className: "msg " + classe }, m))); };
+
+// ---------------------------------------------------------------- abas e rotas
+function lerRota() {
+  let h = "";
+  try { h = decodeURIComponent(location.hash.slice(1)); } catch {}
+  if (h === HASH_LOCAL) return { tela: "local", base: null };
+  if (h.startsWith(HASH_LOCAL + "/")) return { tela: "local", base: h.slice(HASH_LOCAL.length + 1) };
+  return { tela: "api", base: null };
+}
+function irPara(hash) {
+  if (decodificar(location.hash.slice(1)) === hash) aplicarRota();
+  else location.hash = hash;
+}
+function mostrarTela(tela) {
+  const local = tela === "local";
+  $("#telaApi").hidden = local; $("#telaLocal").hidden = !local;
+  $("#abaApi").setAttribute("aria-selected", String(!local));
+  $("#abaLocal").setAttribute("aria-selected", String(local));
+  document.title = local ? "API-SUS · Minhas bases" : "API-SUS · Consulta";
+}
+function aplicarRota() {
+  if (!loc.ativo) { mostrarTela("api"); return; }
+  const r = lerRota();
+  mostrarTela(r.tela);
+  if (r.tela !== "local") return;
+  if (r.base) abrirBaseLocal(r.base); else mostrarListaLocal();
+}
+function ativarAppLocal() {
+  loc.ativo = true;
+  $("#abas").hidden = false;
+  aplicarRota();
+  atualizarDownloads();
+}
+function desativarAppLocal() {
+  clearTimeout(loc.timer);
+  Object.assign(loc, { ativo: false, downloads: [], timer: null, base: null, painel: null });
+  proximo("downloads"); proximo("bases"); proximo("base");
+  $("#abas").hidden = true;
+  $("#contador").hidden = true;
+  $("#telaLocal").replaceChildren();
+  mostrarTela("api");
+}
+
+// ---------------------------------------------------------------- downloads
+async function baixarParaComputador() {
+  const { filtros } = coletar();
+  if (!Object.keys(filtros).length && !confirm(
+    "Nenhum filtro foi preenchido: a base INTEIRA será baixada.\n\n" +
+    "Ela pode ter milhões de linhas e o download pode demorar muito (em bases grandes, horas). " +
+    "Para algo mais rápido, preencha filtros como ano, UF ou município.\n\nBaixar a base inteira mesmo assim?")) return;
+  const btn = $("#btnBaixarBase");
+  if (btn) { btn.disabled = true; btn.textContent = "Iniciando o download..."; }
+  try {
+    const d = await motor.enviar("/api/downloads", "POST", { dataset: atual.id, filtros, nome: null });
+    loc.downloads = [d, ...loc.downloads.filter(x => x.id !== d.id)];
+    atualizarContador();
+    irPara(HASH_LOCAL);
+    atualizarDownloads();
+  } catch (e) {
+    mensagens(["Não foi possível iniciar o download: " + e.message], "erro");
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = ROTULO_BAIXAR_BASE; }
+  }
+}
+
+async function atualizarDownloads() {
+  clearTimeout(loc.timer); loc.timer = null;
+  if (!loc.ativo) return;
+  const m = motor, n = proximo("downloads");
+  let lista;
+  try {
+    lista = (await m.req("/api/downloads")).downloads;
+  } catch (e) {
+    if (!vigente("downloads", n) || m !== motor) return;
+    const box = $("#erroDownloads");
+    if (box) box.textContent = "Não foi possível atualizar os downloads: " + e.message;
+    agendarDownloads();
+    return;
+  }
+  if (!vigente("downloads", n) || m !== motor || !loc.ativo) return;
+  const erro = $("#erroDownloads"); if (erro) erro.textContent = "";
+  const antes = new Map(loc.downloads.map(d => [d.id, d.status]));
+  loc.downloads = lista;
+  // algum download terminou desde a última consulta: a lista de bases mudou
+  const terminou = lista.some(d => !ATIVOS.has(d.status) && ATIVOS.has(antes.get(d.id)));
+  renderDownloads();
+  atualizarContador();
+  if (terminou && $("#bases")) carregarBases();
+  agendarDownloads();
+}
+function agendarDownloads() {
+  clearTimeout(loc.timer);
+  loc.timer = loc.ativo && loc.downloads.some(d => ATIVOS.has(d.status)) ? setTimeout(atualizarDownloads, INTERVALO_DOWNLOADS) : null;
+}
+function atualizarContador() {
+  const n = loc.downloads.filter(d => ATIVOS.has(d.status)).length, c = $("#contador");
+  c.hidden = !n; c.textContent = String(n);
+  c.title = `${plural(n, "download", "downloads")} em andamento`;
+}
+
+function renderDownloads() {
+  const box = $("#downloads");
+  if (!box) return;
+  box.closest("section").hidden = !loc.downloads.length;
+  box.replaceChildren(el("ul", { className: "cartoes" }, ...loc.downloads.map(cartaoDownload)));
+}
+function etiqueta(status) {
+  return el("span", { className: "etiqueta " + (ATIVOS.has(status) ? "ativo" : status) }, STATUS[status] || status);
+}
+function cartaoDownload(d) {
+  const ativo = ATIVOS.has(d.status);
+  const andamento = [plural(d.registros, "registro", "registros"), plural(d.paginas, "página", "páginas")];
+  if (d.status === "na_fila") andamento.push("aguardando a vez (até 2 downloads ao mesmo tempo)");
+  if (d.status === "convertendo") andamento.push("gravando no computador...");
+  if (!ativo && d.terminado_em) andamento.push("terminado em " + fmtData(d.terminado_em));
+  return el("li", { className: "cartao" },
+    el("div", { className: "info" },
+      el("div", {}, el("span", { className: "titulo" }, d.nome), " ", etiqueta(d.status)),
+      el("div", { className: "res" }, `${d.dataset} · ${textoFiltros(d.filtros)}`),
+      el("div", { className: "res" }, andamento.join(" · ")),
+      ativo ? el("div", { className: "barra indeterminada", role: "progressbar", "aria-label": `Download de ${d.nome} em andamento` }, el("span"))
+        : d.status === "concluido" ? el("div", { className: "barra", "aria-hidden": "true" }, el("span")) : "",
+      d.erro ? el("div", { className: "msg erro" }, d.erro) : "",
+      ...(d.avisos || []).map(a => el("div", { className: "msg aviso" }, a))),
+    el("div", { className: "acoes" },
+      ativo ? el("button", { onclick: () => cancelarDownload(d) }, "Cancelar") : "",
+      d.status === "concluido" && d.registros > 0
+        ? el("button", { className: "primario", onclick: () => irPara(`${HASH_LOCAL}/${d.nome}`) }, "Abrir") : ""));
+}
+async function cancelarDownload(d) {
+  if (!confirm(`Cancelar o download de “${d.nome}”? O que já foi baixado será descartado.`)) return;
+  try {
+    const atualizado = await motor.enviar(`/api/downloads/${enc(d.id)}`, "DELETE");
+    loc.downloads = loc.downloads.map(x => x.id === atualizado.id ? atualizado : x);
+    renderDownloads(); atualizarContador();
+  } catch (e) {
+    const box = $("#erroDownloads"); if (box) box.textContent = "Não foi possível cancelar: " + e.message;
+  }
+  atualizarDownloads();
+}
+
+// ---------------------------------------------------------------- bases no computador
+function mostrarListaLocal() {
+  loc.base = null; loc.painel = null; proximo("base");
+  $("#telaLocal").replaceChildren(
+    el("section", { hidden: !loc.downloads.length },
+      el("h2", {}, "Downloads"),
+      el("div", { id: "erroDownloads", className: "msg erro" }),
+      el("div", { id: "downloads" })),
+    el("section", {},
+      el("h2", {}, "Bases no computador"),
+      el("p", { id: "pasta", className: "pasta" }, "Carregando..."),
+      el("div", { id: "bases" })));
+  renderDownloads();
+  carregarBases();
+  atualizarDownloads();
+}
+async function carregarBases() {
+  const m = motor, n = proximo("bases");
+  let r;
+  try { r = await m.req("/api/local/bases"); }
+  catch (e) {
+    if (vigente("bases", n) && $("#bases")) $("#bases").replaceChildren(el("p", { className: "msg erro" }, "Não foi possível listar as bases: " + e.message));
+    return;
+  }
+  const box = $("#bases");
+  if (!vigente("bases", n) || m !== motor || !box) return;
+  $("#pasta").replaceChildren("📁 Seus dados ficam em ", el("code", {}, r.pasta),
+    " (bases em ", el("code", {}, "bases"), ", planilhas exportadas em ", el("code", {}, "exportacoes"), ").");
+  if (!r.bases.length) {
+    box.replaceChildren(el("p", { className: "vazio" }, "Nenhuma base baixada ainda. Na aba “Consultar API”, escolha uma base, " +
+      `preencha os filtros (ex.: ano, UF) e clique em “${ROTULO_BAIXAR_BASE}”.`));
+    return;
+  }
+  box.replaceChildren(el("ul", { className: "cartoes" }, ...r.bases.map(cartaoBase)),
+    el("p", { className: "dica" }, `Para baixar outra base: aba “Consultar API” → escolha a base → “${ROTULO_BAIXAR_BASE}”.`));
+}
+function cartaoBase(b) {
+  const linha = [b.registros == null ? "registros: ?" : plural(b.registros, "registro", "registros"), fmtTamanho(b.tamanho_bytes)];
+  if (b.baixado_em) linha.push("baixada em " + fmtData(b.baixado_em));
+  return el("li", { className: "cartao" },
+    el("div", { className: "info" },
+      el("div", { className: "titulo" }, b.titulo || b.nome),
+      el("div", { className: "mono" }, b.nome),
+      el("div", { className: "res" }, linha.join(" · ")),
+      el("div", { className: "res" }, (b.dataset ? `origem: ${b.dataset} · ` : "") + textoFiltros(b.filtros)),
+      avisosRecolhidos(b.avisos)),
+    el("div", { className: "acoes" },
+      el("button", { className: "primario", onclick: () => irPara(`${HASH_LOCAL}/${b.nome}`) }, "Abrir"),
+      el("button", { onclick: () => excluirBase(b) }, "Excluir")));
+}
+function avisosRecolhidos(avisos) {
+  if (!avisos || !avisos.length) return "";
+  return el("details", {}, el("summary", {}, plural(avisos.length, "aviso do download", "avisos do download")),
+    ...avisos.map(a => el("div", { className: "msg aviso" }, a)));
+}
+async function excluirBase(b) {
+  if (!confirm(`Excluir a base “${b.titulo || b.nome}” (${b.nome}) do computador?\n\nOs arquivos da base serão apagados. ` +
+    "As planilhas já exportadas continuam na pasta exportacoes.")) return;
+  try {
+    await motor.enviar(`/api/local/bases/${enc(b.nome)}`, "DELETE");
+    delete loc.estados[b.nome];
+  } catch (e) { alert("Não foi possível excluir a base: " + e.message); }
+  carregarBases();
+}
+
+// ---------------------------------------------------------------- uma base: filtros, resumo e resultado
+const botaoVoltar = () => el("button", { className: "link", onclick: () => irPara(HASH_LOCAL) }, "← Minhas bases");
+
+async function abrirBaseLocal(nome) {
+  const n = proximo("base"), m = motor;
+  loc.base = null; loc.painel = null;
+  $("#telaLocal").replaceChildren(el("section", {}, botaoVoltar(), el("p", { className: "vazio" }, `Abrindo a base ${nome}...`)));
+  let lista, info;
+  try {
+    [lista, info] = await Promise.all([m.req("/api/local/bases"), m.req(`/api/local/bases/${enc(nome)}/colunas`)]);
+  } catch (e) {
+    if (vigente("base", n)) $("#telaLocal").replaceChildren(el("section", {}, botaoVoltar(), el("p", { className: "msg erro" }, e.message)));
+    return;
+  }
+  if (!vigente("base", n) || m !== motor) return;
+  const estado = loc.estados[nome] || (loc.estados[nome] = { filtros: {}, agrupar: [], somar: [] });
+  const existe = new Set(info.colunas.map(c => c.nome));  // a base pode ter sido baixada de novo
+  for (const c of Object.keys(estado.filtros)) if (!existe.has(c)) delete estado.filtros[c];
+  estado.agrupar = estado.agrupar.filter(c => existe.has(c));
+  estado.somar = estado.somar.filter(c => existe.has(c));
+  loc.base = { nome, meta: lista.bases.find(b => b.nome === nome) || { nome }, colunas: info.colunas, registros: info.registros, estado };
+  renderBaseLocal();
+  atualizarResultado();
+}
+
+function renderBaseLocal() {
+  const b = loc.base, meta = b.meta;
+  const numericas = b.colunas.filter(c => c.numerica), outras = b.colunas.filter(c => !c.numerica);
+  const linha = [plural(b.registros, "registro", "registros"), plural(b.colunas.length, "coluna", "colunas")];
+  if (meta.baixado_em) linha.push("baixada em " + fmtData(meta.baixado_em));
+  $("#telaLocal").replaceChildren(
+    el("section", {},
+      botaoVoltar(),
+      el("h2", { style: "margin:8px 0 4px" }, meta.titulo || b.nome),
+      el("div", { className: "res" }, el("span", { className: "mono" }, b.nome), " · " + linha.join(" · ")),
+      el("div", { className: "res" }, (meta.dataset ? `origem: ${meta.dataset} · ` : "") + textoFiltros(meta.filtros, "filtros do download")),
+      avisosRecolhidos(meta.avisos)),
+    el("div", { className: "grade-base" },
+      el("section", {},
+        el("h3", { style: "margin-top:0" }, "1. Filtrar por categorias"),
+        el("p", { className: "dica", style: "margin:0 0 8px" }, "Escolha uma coluna, marque os valores e clique em “Aplicar filtro”. " +
+          "Valores da mesma coluna valem qualquer um (OU); filtros de colunas diferentes valem juntos (E)."),
+        el("div", { id: "chips", className: "chips" }),
+        el("label", { style: "display:block;margin-top:10px;font-size:13px" }, "Coluna", seletorColuna()),
+        el("div", { id: "painelCategorias" }),
+        el("h3", {}, "2. Resumo por categorias (opcional)"),
+        el("p", { className: "dica", style: "margin:0 0 8px" }, "Agrupar por: colunas de categorias (ex.: UF, sexo, procedimento). " +
+          "Somar: colunas numéricas (ex.: quantidade, valor). A ordem em que você marca é a ordem das colunas; a 1ª soma ordena o resumo."),
+        el("div", { className: "campos" },
+          el("div", {}, el("div", { className: "rotulo" }, "Agrupar por"), caixaMarcar("agrupar", [...outras, ...numericas])),
+          el("div", {}, el("div", { className: "rotulo" }, "Somar (numéricas primeiro)"), caixaMarcar("somar", [...numericas, ...outras]))),
+        el("p", { id: "ordemResumo", className: "dica" }),
+        el("details", { open: true, style: "margin-top:12px" },
+          el("summary", {}, `Colunas da base (${b.colunas.length})`), listaColunas())),
+      el("section", {},
+        el("h3", { style: "margin-top:0" }, "3. Resultado"),
+        el("div", { className: "acoes", style: "margin-top:0" },
+          el("button", { className: "primario", id: "btnAtualizar", onclick: atualizarResultado }, "Atualizar resultado"),
+          el("button", { id: "btnExpXlsx", onclick: () => exportarLocal("xlsx") }, "Exportar Excel"),
+          el("button", { id: "btnExpCsv", onclick: () => exportarLocal("csv") }, "Exportar CSV")),
+        el("p", { className: "dica" }, "A exportação leva TODOS os registros filtrados. Excel: abas “resumo” (se houver), “dados” e “consulta”. " +
+          "CSV (separador “;”): o resumo, se houver; senão, os dados."),
+        el("div", { id: "avisoResumo", className: "msg aviso" }),
+        el("div", { id: "msgsLocal" }),
+        el("div", { id: "resultadoLocal" }, el("p", { className: "vazio" }, "Carregando...")))));
+  renderChips();
+  renderOrdemResumo();
+}
+
+function seletorColuna() {
+  const s = el("select", { id: "colunaFiltro" }, el("option", { value: "" }, "Escolha uma coluna para filtrar..."));
+  for (const c of loc.base.colunas) s.append(el("option", { value: c.nome }, `${c.nome} (${plural(c.distintos, "valor", "valores")})`));
+  s.onchange = () => s.value ? abrirCategorias(s.value) : fecharCategorias();
+  return s;
+}
+function caixaMarcar(tipo, colunas) {
+  const estado = loc.base.estado, box = el("div", { className: "vars" });
+  for (const c of colunas) {
+    const cb = el("input", { type: "checkbox", checked: estado[tipo].includes(c.nome) });
+    cb.onchange = () => {
+      estado[tipo] = estado[tipo].filter(x => x !== c.nome);
+      if (cb.checked) estado[tipo].push(c.nome);
+      renderOrdemResumo();
+      $("#avisoResumo").textContent = "O resumo mudou: clique em “Atualizar resultado”.";
+    };
+    box.append(el("label", { title: c.exemplo != null ? `Exemplo: ${c.exemplo}` : "" }, cb, " " + c.nome, c.numerica ? el("span", { className: "tag" }, "numérica") : ""));
+  }
+  return box;
+}
+function renderOrdemResumo() {
+  const { agrupar, somar } = loc.base.estado, box = $("#ordemResumo");
+  box.textContent = agrupar.length || somar.length
+    ? [agrupar.length ? "Agrupar por " + agrupar.join(" → ") : "Sem agrupar (um total geral)", somar.length ? "somar " + somar.join(", ") : "só contar registros"].join("; ") + "."
+    : "Sem resumo: o resultado mostra o total de registros e a prévia dos dados.";
+}
+function listaColunas() {
+  const ul = el("ul", { className: "colunas-base" });
+  for (const c of loc.base.colunas) {
+    const detalhes = [plural(c.distintos, "valor", "valores")];
+    if (c.nulos) detalhes.push(plural(c.nulos, "vazio", "vazios"));
+    ul.append(el("li", { title: c.exemplo != null ? `Exemplo: ${c.exemplo}` : "" },
+      el("span", { className: "nome" }, c.nome, c.numerica ? el("span", { className: "tag" }, "numérica") : ""),
+      el("span", { className: "n" }, detalhes.join(" · ")),
+      el("button", { onclick: () => abrirCategorias(c.nome), "aria-label": `Filtrar por ${c.nome}` }, "Filtrar")));
+  }
+  return ul;
+}
+
+// Filtros das outras colunas (filtros em cascata: a lista de valores mostra o que ainda pode ser escolhido).
+function outrosFiltros(coluna) {
+  return Object.fromEntries(Object.entries(loc.base.estado.filtros).filter(([c]) => c !== coluna));
+}
+function abrirCategorias(coluna) {
+  const b = loc.base, info = b.colunas.find(c => c.nome === coluna);
+  if (!info) return;
+  $("#colunaFiltro").value = coluna;
+  const p = loc.painel = { coluna, selecao: new Set(b.estado.filtros[coluna] || []), busca: "" };
+  const busca = el("input", { type: "text", placeholder: "Buscar valor (parte do texto, sem acento)", "aria-label": `Buscar valor de ${coluna}` });
+  let espera;
+  busca.oninput = () => { clearTimeout(espera); espera = setTimeout(() => { p.busca = busca.value.trim(); carregarCategorias(); }, 300); };
+  const temOutros = Object.keys(outrosFiltros(coluna)).length > 0;
+  const painel = el("div", { className: "painel" },
+    el("div", {}, el("b", {}, coluna), el("span", { className: "res" }, ` · ${plural(info.distintos, "valor", "valores")} na base`)),
+    el("p", { className: "dica", style: "margin:2px 0 8px" }, temOutros
+      ? "Contagens de registros considerando os filtros das outras colunas." : "Contagem de registros de cada valor."),
+    busca,
+    el("div", { className: "acoes" },
+      el("button", { onclick: () => marcarVisiveis(true) }, "Marcar visíveis"),
+      el("button", { onclick: () => marcarVisiveis(false) }, "Desmarcar todos"),
+      el("span", { id: "contSelecao", className: "res" })),
+    el("div", { id: "valoresCategoria", className: "valores" }, el("p", { className: "vazio" }, "Carregando valores...")),
+    el("p", { id: "notaCategorias", className: "dica" }),
+    el("div", { className: "acoes" },
+      el("button", { className: "primario", id: "btnAplicarFiltro", onclick: aplicarCategorias }, "Aplicar filtro"),
+      el("button", { onclick: fecharCategorias }, "Fechar")));
+  $("#painelCategorias").replaceChildren(painel);
+  atualizarContSelecao();
+  carregarCategorias();
+  painel.scrollIntoView({ block: "nearest" });
+}
+function fecharCategorias() {
+  loc.painel = null; proximo("categorias");
+  $("#painelCategorias")?.replaceChildren();
+  const s = $("#colunaFiltro"); if (s) s.value = "";
+}
+async function carregarCategorias() {
+  const p = loc.painel, b = loc.base;
+  if (!p || !b) return;
+  const n = proximo("categorias");
+  const q = new URLSearchParams({ limite: LIMITE_CATEGORIAS });
+  if (p.busca) q.set("busca", p.busca);
+  const outros = outrosFiltros(p.coluna);
+  if (Object.keys(outros).length) q.set("filtros", JSON.stringify(outros));
+  let r;
+  try { r = await motor.req(`/api/local/bases/${enc(b.nome)}/categorias/${enc(p.coluna)}?${q}`); }
+  catch (e) {
+    if (vigente("categorias", n)) $("#valoresCategoria")?.replaceChildren(el("p", { className: "msg erro" }, e.message));
+    return;
+  }
+  if (!vigente("categorias", n) || p !== loc.painel) return;
+  p.visiveis = r.valores.map(v => v.valor);
+  const box = $("#valoresCategoria");
+  if (!r.valores.length) {
+    box.replaceChildren(el("p", { className: "vazio" }, p.busca ? "Nenhum valor contém esse texto." : "Nenhum registro com os filtros das outras colunas."));
+  } else {
+    box.replaceChildren(...r.valores.map(v => {
+      const cb = el("input", { type: "checkbox", checked: p.selecao.has(v.valor) });
+      cb.onchange = () => { if (cb.checked) p.selecao.add(v.valor); else p.selecao.delete(v.valor); atualizarContSelecao(); };
+      return el("label", {}, cb, el("span", { className: "v" + (v.valor == null || v.valor === "" ? " vazio" : "") }, rotuloValor(v.valor)),
+        el("span", { className: "n" }, fmtInt(v.registros)));
+    }));
+  }
+  $("#notaCategorias").textContent = r.truncado
+    ? `Mostrando os ${fmtInt(r.valores.length)} valores mais frequentes de ${fmtInt(r.total_distintos)}. Use a busca para encontrar os demais.`
+    : `${plural(r.total_distintos, "valor", "valores")}${p.busca ? " encontrado(s)" : ""}.`;
+}
+function marcarVisiveis(marcar) {
+  const p = loc.painel; if (!p) return;
+  if (marcar) (p.visiveis || []).forEach(v => p.selecao.add(v)); else p.selecao.clear();
+  document.querySelectorAll("#valoresCategoria input").forEach(cb => { cb.checked = marcar; });
+  atualizarContSelecao();
+}
+function atualizarContSelecao() {
+  const p = loc.painel, box = $("#contSelecao");
+  if (p && box) box.textContent = p.selecao.size ? `${plural(p.selecao.size, "valor marcado", "valores marcados")}` : "nenhum valor marcado";
+}
+function aplicarCategorias() {
+  const p = loc.painel, filtros = loc.base.estado.filtros;
+  if (!p) return;
+  if (p.selecao.size) filtros[p.coluna] = [...p.selecao]; else delete filtros[p.coluna];
+  fecharCategorias();
+  filtrosMudaram();
+}
+function removerFiltro(coluna) {
+  delete loc.base.estado.filtros[coluna];
+  if (loc.painel && loc.painel.coluna === coluna) fecharCategorias();
+  filtrosMudaram();
+}
+function filtrosMudaram() {
+  renderChips();
+  if (loc.painel) carregarCategorias();  // contagens em cascata do painel aberto
+  atualizarResultado();
+}
+function renderChips() {
+  const filtros = loc.base.estado.filtros, box = $("#chips"), itens = Object.entries(filtros);
+  if (!itens.length) { box.replaceChildren(el("span", { className: "res" }, "Nenhum filtro: todos os registros da base.")); return; }
+  box.replaceChildren(...itens.map(([coluna, valores]) => {
+    const texto = `${coluna}: ${valores.slice(0, 3).map(rotuloValor).join(", ")}${valores.length > 3 ? ` e mais ${valores.length - 3}` : ""}`;
+    return el("span", { className: "chip" },
+      el("button", { title: `${coluna}: ${valores.map(rotuloValor).join(", ")} (clique para editar)`, onclick: () => abrirCategorias(coluna) }, texto),
+      el("button", { className: "x", title: `Remover o filtro de ${coluna}`, "aria-label": `Remover o filtro de ${coluna}`, onclick: () => removerFiltro(coluna) }, "×"));
+  }), itens.length > 1 ? el("button", { className: "link", onclick: () => { loc.base.estado.filtros = {}; fecharCategorias(); filtrosMudaram(); } }, "Limpar todos") : "");
+}
+
+function corpoLocal() {
+  const { filtros, agrupar, somar } = loc.base.estado;
+  return { filtros, colunas: null, agrupar_por: agrupar, somar };
+}
+async function atualizarResultado() {
+  const b = loc.base;
+  if (!b) return;
+  const n = proximo("consulta"), btn = $("#btnAtualizar");
+  btn.disabled = true; btn.textContent = "Atualizando...";
+  mensagensLocal([], "");
+  try {
+    const r = await motor.enviar(`/api/local/bases/${enc(b.nome)}/consulta`, "POST", { ...corpoLocal(), limite: LIMITE_PREVIA });
+    if (!vigente("consulta", n) || b !== loc.base) return;
+    const filtrado = Object.keys(b.estado.filtros).length > 0;
+    $("#resultadoLocal").replaceChildren(
+      el("p", { className: "total-consulta" }, el("b", { id: "totalLocal" }, fmtInt(r.total)),
+        ` ${r.total === 1 ? "registro" : "registros"}` + (filtrado ? ` com os filtros (de ${fmtInt(b.registros)} na base)` : " (todos os registros da base)")),
+      r.agregado ? tabelaAgregada(r.agregado) : "",
+      el("h3", {}, "Prévia dos dados"),
+      r.linhas.length ? tabela(r.colunas, r.linhas) : el("p", { className: "vazio" }, "Nenhum registro com esses filtros."),
+      r.total > r.linhas.length
+        ? el("p", { className: "dica" }, `Mostrando as primeiras ${fmtInt(r.linhas.length)} linhas de ${fmtInt(r.total)}. Exporte para ter todas.`) : "");
+    $("#avisoResumo").textContent = "";
+  } catch (e) {
+    if (vigente("consulta", n)) mensagensLocal([e.message], "erro");
+  } finally {
+    if (vigente("consulta", n)) { btn.disabled = false; btn.textContent = "Atualizar resultado"; }
+  }
+}
+async function exportarLocal(formato) {
+  const b = loc.base, btn = $(formato === "xlsx" ? "#btnExpXlsx" : "#btnExpCsv"), rotulo = btn.textContent;
+  btn.disabled = true; btn.textContent = "Gerando...";
+  mensagensLocal([], "");
+  try {
+    const arq = await motor.arquivo(`/api/local/bases/${enc(b.nome)}/exportar`, { ...corpoLocal(), formato });
+    const nome = arq.nome || `${b.nome}.${formato}`, url = URL.createObjectURL(arq.blob);
+    const a = el("a", { href: url, download: nome });
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    if (b === loc.base) mensagensLocal([`Planilha “${nome}” baixada.` + (arq.salvoEm ? ` Uma cópia ficou em ${arq.salvoEm}` : "")], "ok");
+  } catch (e) {
+    if (b === loc.base) mensagensLocal(["Não foi possível exportar: " + e.message], "erro");
+  } finally {
+    btn.disabled = false; btn.textContent = rotulo;
+  }
+}
+
+$("#abaApi").onclick = () => irPara("consultar");
+$("#abaLocal").onclick = () => irPara(HASH_LOCAL);
+window.addEventListener("hashchange", aplicarRota);
 
 let t; $("#busca").oninput = () => { clearTimeout(t); t = setTimeout(() => motor && carregarLista(), 250); };
 $("#grupo").onchange = () => motor && carregarLista();

@@ -20,6 +20,112 @@ Ministério publica uma base nova, basta chamar `POST /api/catalogo/recarregar`.
 Quando a especificação não documenta as variáveis de uma base, a API consulta alguns
 registros reais (amostra) para descobrir quais colunas existem.
 
+## App no computador
+
+Um programa para usar no seu computador, **sem instalar Python**: ele baixa as bases do
+Ministério da Saúde para uma pasta sua e deixa explorar os dados pelo navegador, mesmo sem
+depender do GitHub.
+
+### Baixar e abrir
+
+1. Abra a release **app**: <https://github.com/macielbarroslira-rgb/API-SUS/releases/tag/app>
+   e baixe o arquivo do seu sistema:
+
+   | Sistema | Arquivo |
+   |---|---|
+   | Windows 10/11 (64 bits) | `API-SUS-windows.exe` |
+   | macOS com chip Apple (M1 ou mais novo) | `API-SUS-macos.zip` |
+   | Linux (64 bits) | `API-SUS-linux` |
+
+2. **Dois cliques** no arquivo. Abre uma janela de terminal (é o app rodando) e, alguns
+   segundos depois, o navegador em <http://127.0.0.1:8765/>. Se o navegador não abrir,
+   digite esse endereço nele.
+3. Para encerrar, **feche a janela do terminal** (ou aperte `Ctrl+C` nela).
+
+O app só atende o próprio computador (`127.0.0.1`): ninguém na rede acessa. Se você der dois
+cliques de novo com ele já aberto, ele só abre o navegador no app que já está rodando.
+
+### Avisos na primeira vez (o executável não é assinado)
+
+Os executáveis **não são assinados digitalmente** (a assinatura exige certificados pagos da
+Microsoft e da Apple). Eles são gerados pelo próprio GitHub, a partir deste código, pelo workflow
+[`App no computador`](.github/workflows/app-desktop.yml), que também testa cada um antes de publicar.
+Por isso o sistema avisa na primeira vez:
+
+- **Windows**: aparece "O Windows protegeu o computador" (SmartScreen). Clique em
+  **Mais informações** → **Executar assim mesmo**. Alguns antivírus desconfiam de programas
+  feitos com PyInstaller; se o seu bloquear, use a alternativa com Python abaixo.
+- **macOS**: dê dois cliques no `.zip` para extrair o `API-SUS-macos`. Depois, **botão direito
+  (ou Control+clique) no arquivo → Abrir → Abrir**. No macOS 15 (Sequoia) ou mais novo esse
+  atalho não aparece: tente abrir uma vez, vá em **Ajustes do Sistema → Privacidade e
+  Segurança** e clique em **Abrir Mesmo Assim**. Se você baixou o arquivo sem o `.zip`, ele
+  chega sem permissão de execução; no Terminal: `chmod +x ~/Downloads/API-SUS-macos`.
+- **Linux**: o arquivo chega sem permissão de execução. Rode no terminal
+  `chmod +x API-SUS-linux && ./API-SUS-linux` (pelo terminal você vê as mensagens e encerra com
+  `Ctrl+C`).
+
+### Onde ficam os dados
+
+Na pasta **`API-SUS-dados`** dentro da sua pasta pessoal (`~/API-SUS-dados`; no Windows,
+`C:\Users\<seu usuário>\API-SUS-dados`). O endereço também aparece na janela do terminal.
+
+- `bases/`: cada base baixada vira um arquivo Parquet (todas as colunas como texto) e um `.json`
+  com a origem, os filtros usados, a data do download e os avisos. Dá para abrir o Parquet em
+  outras ferramentas (DuckDB, Python, R, Power BI).
+- `exportacoes/`: cópia de cada planilha exportada.
+
+Apagar o app não apaga os dados. Para usar outra pasta, defina a variável `API_SUS_PASTA`.
+
+### O que dá para fazer
+
+1. **Baixar bases**: escolha a base e os filtros da API oficial (ano, município...). O download
+   roda em segundo plano, mostra o andamento, pode ser cancelado e fica salvo na pasta.
+2. **Filtrar por categorias**: para cada coluna o app lista os valores existentes e quantos
+   registros cada um tem; marque os que interessam. Os filtros são em cascata (ao filtrar uma
+   coluna, as outras mostram só os valores que sobraram).
+3. **Agrupar e somar**: resumo por categorias com contagem de registros, somas e linha TOTAL.
+4. **Exportar**: Excel (abas `resumo`, `dados` e `consulta`) ou CSV (separador `;`, abre direto
+   no Excel em português).
+
+Como tudo acontece sobre a cópia local, filtrar e resumir é rápido e não depende da API oficial
+(a internet só é necessária para baixar). As 7 bases de assistência que paginam com defeito na
+API oficial (veja [Comportamento da API oficial](#comportamento-da-api-oficial)) continuam
+podendo vir incompletas; o app avisa quando isso acontece.
+
+### Alternativa com Python (sem o executável)
+
+Para quem tem **Python 3.10 ou mais novo**: baixe o código (**Code → Download ZIP** ou
+`git clone`) e dê dois cliques no lançador do seu sistema:
+
+| Sistema | Lançador |
+|---|---|
+| Windows | `iniciar-windows.bat` |
+| macOS | `iniciar-mac.command` (na primeira vez: botão direito → Abrir) |
+| Linux | `iniciar-linux.sh` (ou `./iniciar-linux.sh` no terminal) |
+
+Na primeira vez o lançador cria o ambiente `.venv` e instala as dependências (precisa de
+internet e demora alguns minutos); depois abre direto. É o mesmo que rodar `python -m app.desktop`.
+
+### Limitações
+
+- Executáveis sem assinatura digital (veja os avisos acima).
+- O executável de macOS é só para Macs com chip Apple; em Macs com processador Intel, use o
+  lançador com Python.
+- O executável de Linux é gerado no Ubuntu mais recente; em distribuições antigas ele pode não
+  abrir (erro de `GLIBC`). Nesse caso, use o lançador com Python.
+- Na primeira abertura o executável demora alguns segundos (ele se descompacta antes de rodar).
+
+### Opções
+
+| Variável | Padrão | Descrição |
+|---|---|---|
+| `API_SUS_PASTA` | `~/API-SUS-dados` | Pasta das bases baixadas e das exportações |
+| `API_SUS_PORTA` | `8765` (ou outra livre) | Porta fixa do app |
+| `API_SUS_NAO_ABRIR` | | `1` = não abre o navegador sozinho |
+
+Para gerar o executável na sua máquina: `pip install -r requirements.txt pyinstaller` e
+`pyinstaller --noconfirm --clean api-sus.spec` (sai em `dist/`).
+
 ## Instalação
 
 ```bash

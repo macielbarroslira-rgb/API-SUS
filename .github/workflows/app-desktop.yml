@@ -1,0 +1,144 @@
+name: App no computador
+
+# Gera o executável do API-SUS (dois cliques, sem instalar Python) para Windows,
+# macOS e Linux com o PyInstaller (api-sus.spec), testa cada um de verdade e,
+# em push na main, publica os arquivos na release "app":
+# https://github.com/macielbarroslira-rgb/API-SUS/releases/tag/app
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - docs/index.html
+      - docs/swagger.json
+      - api-sus.spec
+      - requirements.txt
+      - .github/workflows/app-desktop.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: app-desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    name: Executável ${{ matrix.sistema }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            sistema: linux
+            binario: dist/API-SUS
+            arquivo: API-SUS-linux
+          - os: windows-latest
+            sistema: windows
+            binario: dist/API-SUS.exe
+            arquivo: API-SUS-windows.exe
+          - os: macos-latest
+            sistema: macos
+            binario: dist/API-SUS
+            arquivo: API-SUS-macos
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar dependências
+        run: pip install -r requirements.txt pyinstaller
+      - name: Gerar o executável
+        run: pyinstaller --noconfirm --clean api-sus.spec
+      - name: Teste de fumaça (abre o app, consulta e encerra)
+        shell: bash
+        env:
+          API_SUS_NAO_ABRIR: "1"
+          API_SUS_PORTA: "8765"
+        run: |
+          export API_SUS_PASTA="$RUNNER_TEMP/api-sus-dados"
+          URL="http://127.0.0.1:8765"
+          "./${{ matrix.binario }}" > app.log 2>&1 &
+          PID=$!
+          pronto=""
+          for _ in $(seq 1 90); do
+            if curl -sf --noproxy "*" --max-time 5 "$URL/health" -o health.json; then pronto=1; break; fi
+            if ! kill -0 "$PID" 2> /dev/null; then echo "O app encerrou antes de responder."; break; fi
+            sleep 1
+          done
+          falhou=""
+          if [ -z "$pronto" ]; then
+            echo "::error::O /health não respondeu em 90 s."
+            falhou=1
+          else
+            cat health.json; echo
+            curl -sf --noproxy "*" --max-time 120 "$URL/api/datasets" -o bases.json || falhou=1
+            python -c "import json,sys; d=json.load(open('bases.json',encoding='utf-8')); print(d['total'],'bases'); sys.exit(0 if d['total']>0 else 1)" || falhou=1
+            curl -sf --noproxy "*" --max-time 30 "$URL/" | grep -qi "<html" || { echo "::error::GET / não devolveu a página."; falhou=1; }
+          fi
+          kill "$PID" 2> /dev/null || true
+          if [ "$RUNNER_OS" = "Windows" ]; then taskkill //F //T //IM API-SUS.exe > /dev/null 2>&1 || true; fi
+          wait "$PID" 2> /dev/null || true
+          echo "----- saída do app -----"
+          cat app.log
+          [ -z "$falhou" ]
+      - name: Preparar o arquivo para download
+        shell: bash
+        run: |
+          mkdir -p saida
+          cp "${{ matrix.binario }}" "saida/${{ matrix.arquivo }}"
+          chmod +x "saida/${{ matrix.arquivo }}"
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            # o .zip preserva a permissão de execução (o arquivo solto a perde no download)
+            (cd saida && zip -9 "${{ matrix.arquivo }}.zip" "${{ matrix.arquivo }}")
+          fi
+          ls -la saida
+      - uses: actions/upload-artifact@v4
+        with:
+          name: API-SUS-${{ matrix.sistema }}
+          path: saida/
+          if-no-files-found: error
+          retention-days: 14
+
+  publicar:
+    name: Publicar na release "app"
+    needs: construir
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: API-SUS-*
+          path: saida
+          merge-multiple: true
+      - name: Enviar os executáveis
+        run: |
+          ls -la saida
+          {
+            echo "Executáveis do **API-SUS** para usar no computador, sem instalar Python."
+            echo ""
+            echo "| Sistema | Arquivo |"
+            echo "|---|---|"
+            echo "| Windows 10/11 (64 bits) | \`API-SUS-windows.exe\` |"
+            echo "| macOS com chip Apple (M1 ou mais novo) | \`API-SUS-macos.zip\` (ou \`API-SUS-macos\`) |"
+            echo "| Linux (64 bits) | \`API-SUS-linux\` |"
+            echo ""
+            echo "Dois cliques no arquivo: abre uma janela de terminal e o navegador em http://127.0.0.1:8765/."
+            echo "Os executáveis **não são assinados digitalmente**: o Windows (SmartScreen) e o macOS"
+            echo "avisam na primeira vez. Veja as instruções na seção \"App no computador\" do README."
+            echo ""
+            echo "Gerado pelo workflow \"App no computador\" a partir do commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC'))."
+          } > notas.md
+          if ! gh release view app --repo "$REPO" > /dev/null 2>&1; then
+            gh release create app --repo "$REPO" --target "$GITHUB_SHA" \
+              --title "API-SUS no computador" --notes-file notas.md
+          fi
+          gh release upload app saida/* --repo "$REPO" --clobber
+          gh release edit app --repo "$REPO" --notes-file notas.md

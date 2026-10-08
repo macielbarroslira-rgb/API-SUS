@@ -161,6 +161,13 @@ def test_main_com_porta_ocupada_por_outro_programa(config, ambiente, monkeypatch
     assert "já está em uso" in capsys.readouterr().err
 
 
+def test_main_avisa_quando_o_servidor_nao_consegue_iniciar(config, api_falsa, ambiente, monkeypatch, capsys):
+    with _ocupar() as sock:  # outro programa pega a porta entre a escolha e a subida do servidor
+        monkeypatch.setattr(desktop, "escolher_porta", lambda: sock.getsockname()[1])
+        assert desktop.main(config, httpx.MockTransport(api_falsa)) == 1
+    assert "não conseguiu iniciar" in capsys.readouterr().err
+
+
 # ---------------------------------------------------------------------- #
 # Processo de verdade: Ctrl+C e SIGTERM encerram com elegância
 # ---------------------------------------------------------------------- #
@@ -230,3 +237,38 @@ def test_executavel_linux_devolve_as_bibliotecas_do_sistema_ao_navegador(monkeyp
     monkeypatch.delenv("LD_LIBRARY_PATH_ORIG")
     desktop._restaurar_bibliotecas_do_sistema()
     assert "LD_LIBRARY_PATH" not in os.environ
+
+
+def test_endurecer_bloqueia_outros_sites(config, api_falsa, monkeypatch):
+    """No app de computador, outros sites não leem nem alteram nada (CORS, CSRF e DNS rebinding)."""
+    import httpx
+    from fastapi.testclient import TestClient
+
+    from app.desktop import endurecer
+    from app.main import criar_app
+
+    monkeypatch.delenv("CORS_ORIGENS", raising=False)
+    cfg = endurecer(config)
+    assert cfg.cors_origens == [] and cfg.hosts_permitidos == ["127.0.0.1", "localhost"]
+    cfg.hosts_permitidos = ["127.0.0.1", "localhost", "testserver"]  # host usado pelo TestClient
+    with TestClient(criar_app(cfg, transport=httpx.MockTransport(api_falsa))) as c:
+        # leitura por outro site: sem cabeçalho CORS, o navegador não entrega a resposta
+        r = c.get("/api/local/bases", headers={"Origin": "https://site-malicioso.example"})
+        assert "access-control-allow-origin" not in r.headers
+        # alteração por outro site (ex.: formulário escondido): recusada
+        r = c.post("/api/downloads", headers={"Origin": "https://site-malicioso.example"},
+                   json={"dataset": "cnes-estabelecimentos", "filtros": {}})
+        assert r.status_code == 403
+        r = c.delete("/api/local/bases/qualquer", headers={"Origin": "https://site-malicioso.example"})
+        assert r.status_code == 403
+        # a própria página (mesma origem) continua funcionando
+        r = c.delete("/api/local/bases/nao-existe", headers={"Origin": "http://testserver"})
+        assert r.status_code == 404
+        # DNS rebinding: Host diferente de 127.0.0.1/localhost é recusado
+        assert c.get("/health", headers={"Host": "site-malicioso.example"}).status_code == 400
+
+
+def test_servidor_comum_continua_aberto(cliente):
+    """Fora do app de computador (ex.: Codespaces + GitHub Pages), o comportamento não muda."""
+    r = cliente.get("/health", headers={"Origin": "https://macielbarroslira-rgb.github.io"})
+    assert r.headers.get("access-control-allow-origin") == "*"

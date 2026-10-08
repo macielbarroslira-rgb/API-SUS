@@ -70,6 +70,9 @@ class Config:
     pausa_entre_paginas: float = 0.0
 
     cors_origens: list[str] = field(default_factory=lambda: ["*"])
+    # Nomes de host aceitos no cabeçalho Host (None = qualquer). O app de computador usa
+    # ["127.0.0.1", "localhost"] para bloquear ataques de DNS rebinding.
+    hosts_permitidos: list[str] | None = None
 
     @classmethod
     def do_ambiente(cls) -> "Config":
@@ -94,6 +97,8 @@ class Config:
         cfg.max_linhas_detalhe = int(env.get("DATASUS_MAX_LINHAS_DETALHE", cfg.max_linhas_detalhe))
         cfg.pausa_entre_paginas = float(env.get("DATASUS_PAUSA_ENTRE_PAGINAS", cfg.pausa_entre_paginas))
         cfg.cors_origens = _lista(env.get("CORS_ORIGENS"), cfg.cors_origens)
+        if env.get("API_SUS_HOSTS"):
+            cfg.hosts_permitidos = _lista(env.get("API_SUS_HOSTS"), [])
         if getattr(sys, "frozen", False) and not env.get("DATASUS_SPEC_CACHE"):
             cfg.spec_cache = cfg.pasta_dados / "swagger_cache.json"
         return cfg

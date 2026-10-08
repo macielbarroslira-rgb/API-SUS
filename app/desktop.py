@@ -51,6 +51,21 @@ class ErroDesktop(Exception):
 # ---------------------------------------------------------------------- #
 
 
+def endurecer(config: Config) -> Config:
+    """Segurança do app de computador: só a própria página conversa com o servidor.
+
+    Sem CORS (a não ser que CORS_ORIGENS seja definido), com o cabeçalho Host restrito a
+    127.0.0.1/localhost (contra DNS rebinding) e, pelo middleware de main.py, pedidos de
+    alteração vindos de outros sites recusados. Assim um site aberto no navegador não
+    consegue ler, baixar nem apagar as bases do usuário.
+    """
+    if not os.environ.get("CORS_ORIGENS"):
+        config.cors_origens = []
+    if not config.hosts_permitidos:
+        config.hosts_permitidos = ["127.0.0.1", "localhost"]
+    return config
+
+
 def porta_livre(porta: int, host: str = HOST) -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):  # Windows: não "divide" a porta com outro programa
@@ -132,12 +147,26 @@ def criar_servidor(config: Config, porta: int, transport: httpx.AsyncBaseTranspo
             reload=False,
             log_level="info",
             access_log=False,  # a página consulta o andamento dos downloads o tempo todo
+            use_colors=False,  # o console clássico do Windows mostraria os códigos de cor como lixo
             loop="asyncio",
             http="h11",
             ws="none",
             lifespan="on",
         )
     )
+
+
+def _parado(parar: threading.Event | None) -> bool:
+    return parar is not None and parar.is_set()
+
+
+def rodar_servidor(servidor: uvicorn.Server) -> None:
+    """Corpo da thread do servidor. Se a porta não abrir, o uvicorn chama sys.exit();
+    aqui isso só encerra a thread (main() percebe e avisa)."""
+    try:
+        servidor.run()
+    except SystemExit:
+        pass
 
 
 def esperar_pronto(
@@ -147,7 +176,7 @@ def esperar_pronto(
     inicio = time.monotonic()
     avisou = False
     while time.monotonic() - inicio < limite:
-        if not thread.is_alive() or (parar is not None and parar.is_set()):
+        if not thread.is_alive() or _parado(parar):
             return None
         saude = consultar_health(url)
         if saude is not None:
@@ -183,8 +212,8 @@ def sinais_de_encerramento() -> Iterator[None]:
     anteriores: dict[int, Any] = {}
     for nome in ("SIGTERM", "SIGHUP", "SIGBREAK"):
         sinal = getattr(signal, nome, None)
-        if sinal is None:
-            continue
+        if sinal is None or signal.getsignal(sinal) == signal.SIG_IGN:
+            continue  # ignorado de propósito (ex.: nohup): respeita
         try:
             anteriores[sinal] = signal.signal(sinal, _interromper)
         except (OSError, ValueError):
@@ -275,6 +304,51 @@ def _avisos_do_catalogo(saude: dict[str, Any]) -> list[str]:
     return []
 
 
+def anunciar(url: str, config: Config, saude: dict[str, Any], abrir: bool) -> None:
+    for aviso in _avisos_do_catalogo(saude):
+        print(aviso, flush=True)
+    linhas = [
+        "",
+        LINHA,
+        f"  API-SUS rodando em {url}",
+        f"  Seus dados ficam em: {config.pasta_dados}",
+        "  Feche esta janela (ou aperte Ctrl+C) para encerrar.",
+        LINHA,
+        "",
+    ]
+    print("\n".join(linhas), flush=True)
+    if abrir and not abrir_navegador(url):
+        print(f"Abra no navegador: {url}", flush=True)
+
+
+def acompanhar(
+    servidor: uvicorn.Server,
+    thread: threading.Thread,
+    url: str,
+    config: Config,
+    abrir: bool,
+    parar: threading.Event | None,
+) -> int:
+    """Espera o servidor ficar pronto, avisa o usuário e fica de guarda até o fim. Devolve o código de saída."""
+    saude = esperar_pronto(url, thread, parar)
+    if saude is None:
+        if _parado(parar):
+            return 0
+        if not thread.is_alive():
+            erro = f"o servidor não conseguiu iniciar em {url} (veja as mensagens acima)."
+        else:
+            erro = f"o servidor não respondeu em {ESPERA_MAXIMA:.0f} s."
+        print(f"Erro: {erro}", file=sys.stderr, flush=True)
+        return 1
+    anunciar(url, config, saude, abrir)
+    while thread.is_alive() and not _parado(parar):
+        thread.join(0.5)  # espera curta: o Ctrl+C é atendido logo
+    if not thread.is_alive() and not servidor.should_exit:
+        print("Erro: o servidor parou inesperadamente.", file=sys.stderr, flush=True)
+        return 1
+    return 0
+
+
 # ---------------------------------------------------------------------- #
 # Programa
 # ---------------------------------------------------------------------- #
@@ -292,7 +366,7 @@ def main(
     print(f"API-SUS {__version__} - bases de dados abertos do Ministério da Saúde no seu computador", flush=True)
     abrir = deve_abrir_navegador()
     try:
-        config = config or Config.do_ambiente()
+        config = endurecer(config or Config.do_ambiente())
         fixa = porta_do_ambiente()
         if fixa is None and not porta_livre(PORTA_PADRAO) and consultar_health(url_do_app(PORTA_PADRAO)):
             url = url_do_app(PORTA_PADRAO)
@@ -311,54 +385,17 @@ def main(
 
     url = url_do_app(porta)
     servidor = criar_servidor(config, porta, transport)
-    thread = threading.Thread(target=servidor.run, name="api-sus-servidor", daemon=True)
+    thread = threading.Thread(target=rodar_servidor, args=(servidor,), name="api-sus-servidor", daemon=True)
     print(f"Iniciando em {url} ...", flush=True)
     thread.start()
 
-    codigo = 0
+    codigo = 1
     with sinais_de_encerramento():
         try:
-            saude = esperar_pronto(url, thread, parar)
-            if saude is None:
-                if parar is not None and parar.is_set():
-                    pass
-                elif not thread.is_alive():
-                    print(
-                        f"Erro: o servidor não conseguiu iniciar na porta {porta} (veja as mensagens acima).",
-                        file=sys.stderr,
-                        flush=True,
-                    )
-                    return 1
-                else:
-                    print(f"Erro: o servidor não respondeu em {ESPERA_MAXIMA:.0f} s.", file=sys.stderr, flush=True)
-                    codigo = 1
-            else:
-                for aviso in _avisos_do_catalogo(saude):
-                    print(aviso, flush=True)
-                print(
-                    "\n".join(
-                        [
-                            "",
-                            LINHA,
-                            f"  API-SUS rodando em {url}",
-                            f"  Seus dados ficam em: {config.pasta_dados}",
-                            "  Feche esta janela (ou aperte Ctrl+C) para encerrar.",
-                            LINHA,
-                            "",
-                        ]
-                    ),
-                    flush=True,
-                )
-                if abrir:
-                    if not abrir_navegador(url):
-                        print(f"Abra no navegador: {url}", flush=True)
-                while codigo == 0 and thread.is_alive() and not (parar is not None and parar.is_set()):
-                    thread.join(0.5)
-                if not thread.is_alive() and not servidor.should_exit:
-                    print("Erro: o servidor parou inesperadamente.", file=sys.stderr, flush=True)
-                    codigo = 1
+            codigo = acompanhar(servidor, thread, url, config, abrir, parar)
         except KeyboardInterrupt:
             print("\nEncerrando o API-SUS...", flush=True)
+            codigo = 0
         parar_servidor(servidor, thread)
     print("API-SUS encerrado.", flush=True)
     return codigo
