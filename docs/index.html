@@ -63,13 +63,13 @@
   <h1>API-SUS: consulta à API de Dados Abertos do Ministério da Saúde</h1>
   <p id="status">Carregando catálogo...</p>
   <div class="fonte">
-    <label><input type="radio" name="modo" value="direto" checked> Direto na API oficial (pelo navegador)</label>
+    <label><input type="radio" name="modo" value="direto" checked> Catálogo + planilha pelo GitHub</label>
     <label><input type="radio" name="modo" value="servidor"> Pelo servidor API-SUS:</label>
     <input type="text" id="urlServidor" placeholder="https://seu-servidor (ex.: endereço do Codespaces)">
     <button id="aplicar">Conectar</button>
   </div>
   <details>
-    <summary>Avançado (modo direto)</summary>
+    <summary>Avançado</summary>
     <label>URL dos dados <input type="text" id="urlBase"></label>
     <label>URLs da especificação (separadas por vírgula) <input type="text" id="urlSpecs"></label>
     <label>Paginação do offset
@@ -95,7 +95,14 @@
 // Mesma lógica de app/catalogo.py e app/consulta.py.
 // =========================================================================
 const BASE_PADRAO = "https://apidadosabertos.saude.gov.br";
-const specsPadrao = b => [`${b}/v1/static/swagger.json`, `${b}/static/swagger.json`, `${b}/v1/swagger.json`, `${b}/swagger.json`];
+// A API oficial não envia cabeçalhos CORS: o navegador não consegue consultá-la de outro site.
+// Por isso o catálogo vem de cópias salvas neste site (atualizadas pelo GitHub Actions)
+// e a planilha é gerada pelo workflow "Baixar planilha".
+const specsPadrao = () => ["./swagger.json"];
+const REPO = location.hostname.endsWith(".github.io")
+  ? `${location.hostname.split(".")[0]}/${location.pathname.split("/").filter(Boolean)[0] || ""}`
+  : "macielbarroslira-rgb/API-SUS";
+const URL_WORKFLOW = `https://github.com/${REPO}/actions/workflows/baixar-planilha.yml`;
 const NOMES_LIMIT = ["limit", "limite"], NOMES_OFFSET = ["offset", "pagina", "page"];
 const TAMANHO_PAGINA_PADRAO = 20, MAX_PAGINAS = 5000;
 
@@ -234,6 +241,13 @@ async function obterJSON(url) {
 
 class MotorDireto {
   constructor(base, specs, modoOffset) { this.base = base.replace(/\/+$/, ""); this.specs = specs; this.modoOffset = modoOffset; this.cache = new Map(); }
+  get podeConsultar() { return !this.specs.every(u => u.startsWith("./")); }
+  async variaveisSalvas() {
+    if (this._vars === undefined) {
+      try { this._vars = (await (await fetch("./variaveis.json")).json()).bases || {}; } catch { this._vars = {}; }
+    }
+    return this._vars;
+  }
   async catalogo() {
     const erros = [];
     for (const url of this.specs) {
@@ -258,7 +272,14 @@ class MotorDireto {
     if (q) { const t = normalizar(q); itens = itens.filter(d => normalizar([d.id, d.caminho, d.grupo, d.resumo, d.descricao].join(" ")).includes(t)); }
     return itens.sort((a, b) => (a.grupo + a.caminho).localeCompare(b.grupo + b.caminho));
   }
-  async detalhe(id) { const d = this.datasets[id]; if (!d) throw new Error(`Base '${id}' não encontrada.`); return d; }
+  async detalhe(id) {
+    const d = this.datasets[id]; if (!d) throw new Error(`Base '${id}' não encontrada.`);
+    if (!d.campos.length) {
+      const v = (await this.variaveisSalvas())[id];
+      if (v && v.variaveis) d.campos = v.variaveis.map(nome => ({ nome, tipo: "", descricao: "" }));
+    }
+    return d;
+  }
   converter(p, v) {
     const t = String(v).trim();
     if (p.tipo === "integer") { if (!/^-?\d+$/.test(t)) throw new Error(`Filtro '${p.nome}' deve ser inteiro.`); return parseInt(t, 10); }
@@ -321,6 +342,11 @@ class MotorDireto {
              paginas_consultadas: paginas, total: regs.length, avisos, dados: regs };
   }
   async amostra(id, filtros) {
+    if (!this.podeConsultar) {
+      const v = (await this.variaveisSalvas())[id];
+      if (v && v.variaveis) return v.variaveis;
+      throw new Error("As variáveis desta base ainda não foram descobertas" + (v && v.erro ? ` (${v.erro})` : "") + ". Gere a planilha sem escolher colunas para ver todas.");
+    }
     const ds = await this.detalhe(id);
     const f = { ...filtros };
     if (ds.parametro_limit && !(ds.parametro_limit in f)) f[ds.parametro_limit] = 5;
@@ -332,6 +358,7 @@ class MotorDireto {
 // Motor "servidor": usa os endpoints do backend API-SUS (FastAPI).
 class MotorServidor {
   constructor(url) { this.url = url.replace(/\/+$/, ""); }
+  get podeConsultar() { return true; }
   async req(caminho, opcoes) {
     let r;
     try { r = await fetch(this.url + caminho, opcoes); }
@@ -377,7 +404,7 @@ function configurarCampos() {
   $("#urlServidor").value = qs.get("servidor") || lerGuardado("servidor") || "";
   $("#urlBase").value = qs.get("base") || lerGuardado("base") || BASE_PADRAO;
   $("#urlSpecs").value = qs.get("spec") || lerGuardado("specs") || "";
-  $("#urlSpecs").placeholder = specsPadrao($("#urlBase").value).join(", ");
+  $("#urlSpecs").placeholder = specsPadrao().join(", ") + " (cópia salva neste site)";
   $("#modoOffset").value = lerGuardado("offset") || "pagina";
 }
 
@@ -390,7 +417,7 @@ function criarMotor() {
     return new MotorServidor($("#urlServidor").value.trim());
   }
   const base = $("#urlBase").value.trim() || BASE_PADRAO;
-  const specs = $("#urlSpecs").value.trim() ? $("#urlSpecs").value.split(",").map(s => s.trim()).filter(Boolean) : specsPadrao(base);
+  const specs = $("#urlSpecs").value.trim() ? $("#urlSpecs").value.split(",").map(s => s.trim()).filter(Boolean) : specsPadrao();
   return new MotorDireto(base, specs, $("#modoOffset").value);
 }
 
@@ -425,7 +452,8 @@ async function abrir(id) {
   box.replaceChildren(el("p", { className: "vazio" }, "Carregando..."));
   try { atual = await motor.detalhe(id); } catch (e) { box.replaceChildren(el("p", { className: "msg erro" }, e.message)); return; }
   const controle = [atual.parametro_limit, atual.parametro_offset];
-  const filtros = atual.parametros.filter(p => !controle.includes(p.nome));
+  // "campos" é preenchido automaticamente a partir das colunas marcadas
+  const filtros = atual.parametros.filter(p => !controle.includes(p.nome) && p.nome !== "campos");
   const campos = el("div", { className: "campos" });
   for (const p of filtros) {
     let input;
@@ -450,14 +478,16 @@ async function abrir(id) {
       el("button", { onclick: () => marcar(true) }, "Marcar todas"),
       el("button", { onclick: () => marcar(false) }, "Desmarcar"),
       el("button", { onclick: amostrar }, "Descobrir variáveis com amostra real")),
-    el("h3", {}, "3. Resultado"),
+    el("h3", {}, motor.podeConsultar ? "3. Resultado" : "3. Baixar a planilha"),
     el("div", { className: "acoes" },
-      el("label", {}, "Máximo de registros ", el("input", { type: "number", id: "max", value: 200, min: 1, style: "width:110px" })),
-      el("label", {}, "Separador CSV ", el("select", { id: "sep", style: "width:auto" }, el("option", { value: ";" }, "; (Excel)"), el("option", { value: "," }, ", (vírgula)")))),
-    el("div", { className: "acoes" },
-      el("button", { className: "primario", id: "btnConsultar", onclick: consultar }, "Consultar"),
-      el("button", { id: "btnCsv", onclick: () => baixar("csv"), disabled: true }, "Baixar CSV"),
-      el("button", { id: "btnJson", onclick: () => baixar("json"), disabled: true }, "Baixar JSON")),
+      el("label", {}, "Máximo de linhas ", el("input", { type: "number", id: "max", value: motor.podeConsultar ? 200 : 1000, min: 1, style: "width:110px" })),
+      motor.podeConsultar ? el("label", {}, "Separador CSV ", el("select", { id: "sep", style: "width:auto" }, el("option", { value: ";" }, "; (Excel)"), el("option", { value: "," }, ", (vírgula)"))) : ""),
+    motor.podeConsultar
+      ? el("div", { className: "acoes" },
+          el("button", { className: "primario", id: "btnConsultar", onclick: consultar }, "Consultar"),
+          el("button", { id: "btnCsv", onclick: () => baixar("csv"), disabled: true }, "Baixar CSV"),
+          el("button", { id: "btnJson", onclick: () => baixar("json"), disabled: true }, "Baixar JSON"))
+      : el("div", { className: "acoes" }, el("button", { className: "primario", onclick: prepararPlanilha }, "Gerar planilha")),
     el("div", { id: "msgs" }),
     el("div", { id: "saida" }),
   );
@@ -503,6 +533,33 @@ async function consultar() {
   finally { btn.disabled = false; btn.textContent = "Consultar"; }
 }
 
+function prepararPlanilha() {
+  const { filtros, colunas, max_registros } = coletar();
+  const valores = [
+    ["base", atual.id],
+    ["filtros", Object.entries(filtros).map(([k, v]) => `${k}=${v}`).join("; ")],
+    ["colunas", (colunas || []).join(",")],
+    ["max_registros", String(max_registros)],
+  ];
+  const linha = ([nome, valor]) => {
+    const copiar = el("button", { onclick: async () => { try { await navigator.clipboard.writeText(valor); copiar.textContent = "Copiado ✓"; } catch { copiar.textContent = "Selecione e copie"; } } }, "Copiar");
+    return el("tr", {}, el("td", {}, el("b", {}, nome)), el("td", {}, el("code", {}, valor || "(deixe vazio)")), el("td", {}, valor ? copiar : ""));
+  };
+  const tab = el("table"); tab.append(el("tbody", {}, ...valores.map(linha)));
+  $("#saida").replaceChildren(
+    el("p", {}, "A planilha é gerada pelo GitHub (a API do Ministério não permite consulta direta pelo navegador):"),
+    el("ol", {},
+      el("li", {}, "Abra ", el("a", { href: URL_WORKFLOW, target: "_blank", rel: "noopener" }, "Actions → Baixar planilha"), " (precisa estar logado no GitHub)."),
+      el("li", {}, "Clique em ", el("b", {}, "Run workflow"), " e preencha com os valores abaixo:"),
+    ),
+    el("div", { className: "tabela" }, tab),
+    el("ol", { start: 3 },
+      el("li", {}, "Clique no botão verde ", el("b", {}, "Run workflow"), ". Aguarde a execução ficar com ✅ (atualize a página)."),
+      el("li", {}, "Clique na execução: aparece um resumo com a prévia dos dados. No fim da página, em ", el("b", {}, "Artifacts"), ", baixe ", el("b", {}, `planilha-${atual.id}`), " (um .zip com o Excel)."),
+    ),
+  );
+}
+
 function tabela(colunas, linhas) {
   const t = el("table");
   t.append(el("thead", {}, el("tr", {}, ...colunas.map(c => el("th", {}, c)))));
@@ -532,7 +589,6 @@ let t; $("#busca").oninput = () => { clearTimeout(t); t = setTimeout(() => motor
 $("#grupo").onchange = () => motor && carregarLista();
 $("#aplicar").onclick = iniciar;
 document.querySelectorAll("input[name=modo]").forEach(r => r.onchange = iniciar);
-$("#urlBase").onchange = () => { $("#urlSpecs").placeholder = specsPadrao($("#urlBase").value).join(", "); };
 configurarCampos();
 iniciar();
 </script>

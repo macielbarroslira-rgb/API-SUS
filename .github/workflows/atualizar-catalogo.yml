@@ -1,7 +1,8 @@
 name: Atualizar catálogo
 
-# Baixa a especificação oficial (swagger.json) e salva em docs/swagger.json,
-# usada pela página web e como cópia local do catálogo.
+# Baixa a especificação oficial (docs/swagger.json) e descobre as colunas de
+# cada base consultando 1 registro real (docs/variaveis.json). A página web usa
+# os dois arquivos.
 on:
   workflow_dispatch:
   schedule:
@@ -9,6 +10,7 @@ on:
   push:
     paths:
       - .github/workflows/atualizar-catalogo.yml
+      - scripts/gerar_variaveis.py
 
 permissions:
   contents: write
@@ -16,17 +18,26 @@ permissions:
 jobs:
   atualizar:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
       - name: Baixar especificação
         run: |
           curl -sSf --retry 3 -o docs/swagger.json https://apidadosabertos.saude.gov.br/static/swagger.json
           python3 -c "import json; d=json.load(open('docs/swagger.json')); print(d['info'], len(d['paths']), 'caminhos')"
+      - name: Descobrir variáveis de cada base
+        run: python scripts/gerar_variaveis.py docs/swagger.json docs/variaveis.json
       - name: Salvar no repositório
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/swagger.json
+          git add docs/swagger.json docs/variaveis.json
           if git diff --cached --quiet; then echo "Sem mudanças."; exit 0; fi
-          git commit -m "Atualiza catálogo da API oficial (swagger.json)"
+          git commit -m "Atualiza catálogo da API oficial (swagger.json e variáveis)"
+          git pull --rebase
           git push

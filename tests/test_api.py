@@ -171,3 +171,82 @@ def test_extrair_registros_formatos():
     assert extrair_registros({"a": 1, "b": [1]}) == [{"a": 1, "b": [1]}]
     assert extrair_registros(None) == []
     assert achatar({"a": {"b": {"c": 1}}, "l": [1, 2]}) == {"a.b.c": 1, "l": "[1, 2]"}
+
+
+def test_maximo_lido_da_descricao():
+    from app.catalogo import _maximo_da_descricao
+
+    assert _maximo_da_descricao("Quantidade de itens retornados por página. Deve ser menor ou igual 20.") == 20
+    assert _maximo_da_descricao("Quantidade de registros por página (máximo: 500).") == 500
+    assert _maximo_da_descricao("Quantidade por página") is None
+
+
+def test_paginacao_que_comeca_em_1_e_parametro_campos(config, api_falsa):
+    import httpx
+    from fastapi.testclient import TestClient
+
+    from app.main import criar_app
+    from tests.conftest import SPEC
+
+    spec = json.loads(json.dumps(SPEC))
+    spec["paths"]["/bps"] = {
+        "get": {
+            "parameters": [
+                {"name": "pagina", "in": "query", "type": "integer", "default": 1},
+                {"name": "tamanhoPagina", "in": "query", "type": "integer", "description": "(máximo: 500)."},
+                {"name": "campos", "in": "query", "type": "string"},
+            ]
+        }
+    }
+    chamadas = []
+
+    def handler(req):
+        chamadas.append(req.url)
+        if req.url.path == "/spec.json":
+            return httpx.Response(200, json=spec)
+        pagina = int(req.url.params["pagina"])
+        itens = [{"id": i, "preco": i * 2, "extra": "x"} for i in range(700)]
+        ini = (pagina - 1) * int(req.url.params["tamanhoPagina"])
+        return httpx.Response(200, json={"itens": itens[ini:ini + 500]})
+
+    with TestClient(criar_app(config, transport=httpx.MockTransport(handler))) as c:
+        r = c.get("/api/datasets/bps/dados", params={"colunas": "id,preco", "max_registros": 5000}).json()
+    assert r["total"] == 700 and r["paginas_consultadas"] == 2
+    assert [u.params["pagina"] for u in chamadas[1:]] == ["1", "2"]
+    assert all(u.params["tamanhoPagina"] == "500" and u.params["campos"] == "id,preco" for u in chamadas[1:])
+
+
+def test_saida_xlsx(cliente):
+    import io
+
+    from openpyxl import load_workbook
+
+    r = cliente.get(
+        "/api/datasets/arboviroses-dengue/dados",
+        params={"nu_ano": 2024, "formato": "xlsx", "colunas": "dt_notific,id_municip"},
+    )
+    assert r.status_code == 200
+    wb = load_workbook(io.BytesIO(r.content))
+    linhas = list(wb["dados"].values)
+    assert linhas[0] == ("dt_notific", "id_municip") and len(linhas) == 1 + len(DENGUE)
+    assert ("Registros", len(DENGUE)) in list(wb["consulta"].values)
+
+
+def test_cli_filtros_e_resumo(tmp_path, monkeypatch, api_falsa, config):
+    import httpx
+
+    from app import cli
+    from app.cliente import ClienteDataSUS
+
+    assert cli._filtros(["nu_ano=2024; id_municip=355030", "x=1"]) == {"nu_ano": "2024", "id_municip": "355030", "x": "1"}
+
+    original = ClienteDataSUS.__init__
+    monkeypatch.setattr(
+        ClienteDataSUS, "__init__", lambda self, cfg, transport=None: original(self, cfg, httpx.MockTransport(api_falsa))
+    )
+    monkeypatch.setattr(cli.Config, "do_ambiente", classmethod(lambda cls: config))
+    saida, resumo = tmp_path / "d.xlsx", tmp_path / "r.md"
+    codigo = cli.main(["dados", "arboviroses-dengue", "-f", "nu_ano=2024", "-o", str(saida), "--resumo", str(resumo)])
+    assert codigo == 0 and saida.stat().st_size > 0
+    texto = resumo.read_text()
+    assert "7 registro(s)" in texto and "| dt_notific | id_municip | classi_fin |" in texto

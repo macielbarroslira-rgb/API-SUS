@@ -182,10 +182,20 @@ def _tamanho_pagina(config: Config, ds: Dataset, query: dict[str, Any]) -> int:
     return config.tamanho_pagina_padrao
 
 
+def _campos_para_api(ds: Dataset, colunas: list[str] | None, query: dict[str, Any]) -> None:
+    """Se a base aceita o parâmetro "campos", pede à API só as colunas escolhidas."""
+    param = ds.parametro("campos")
+    if not colunas or param is None or param.local != "query" or "campos" in query:
+        return
+    nomes = list(dict.fromkeys(c.split(".")[0] for c in colunas))
+    query["campos"] = ",".join(nomes)
+
+
 async def executar(
     cliente: ClienteDataSUS, config: Config, catalogo: Catalogo, ds: Dataset, consulta: Consulta
 ) -> Resultado:
     query, path = validar_filtros(ds, consulta.filtros)
+    _campos_para_api(ds, consulta.colunas, query)
     url = montar_url(config, catalogo, ds, path)
     max_registros = min(consulta.max_registros or config.max_registros_padrao, config.max_registros_teto)
     if max_registros < 1:
@@ -204,7 +214,8 @@ async def executar(
         lim, off = ds.param_limit, ds.param_offset
         assert lim is not None and off is not None
         tamanho = _tamanho_pagina(config, ds, query)
-        inicio = int(query.pop(off.nome, 0) or 0)
+        # a maioria das bases começa em 0; algumas (ex.: "pagina") começam em 1 (default da spec)
+        inicio = int(query.pop(off.nome, None) or off.padrao or 0)
         anterior = None
         while len(registros) < max_registros and paginas < config.max_paginas_teto:
             deslocamento = inicio + (paginas if config.modo_offset == "pagina" else paginas * tamanho)
@@ -306,3 +317,36 @@ def para_csv(resultado: Resultado, separador: str = ",") -> str:
     for r in resultado.registros:
         escritor.writerow({k: ("" if v is None else v) for k, v in achatar(r).items()})
     return "﻿" + buffer.getvalue()  # BOM para o Excel reconhecer UTF-8
+
+
+def para_xlsx(resultado: Resultado) -> bytes:
+    """Gera uma planilha Excel com os dados e uma aba com informações da consulta."""
+    from openpyxl import Workbook
+    from openpyxl.cell import WriteOnlyCell
+    from openpyxl.styles import Font
+
+    wb = Workbook(write_only=True)
+    dados = wb.create_sheet("dados")
+    dados.append(resultado.colunas)
+    for r in resultado.registros:
+        plano = achatar(r)
+        dados.append([plano.get(c) for c in resultado.colunas])
+
+    info = wb.create_sheet("consulta")
+    negrito = Font(bold=True)
+    linhas = [
+        ("Base", resultado.dataset),
+        ("Origem", resultado.url),
+        ("Filtros", json.dumps(resultado.filtros, ensure_ascii=False)),
+        ("Registros", resultado.total),
+        ("Páginas consultadas", resultado.paginas_consultadas),
+        *[("Aviso", a) for a in resultado.avisos],
+    ]
+    for rotulo, valor in linhas:
+        c = WriteOnlyCell(info, value=rotulo)
+        c.font = negrito
+        info.append([c, valor])
+
+    buffer = io.BytesIO()
+    wb.save(buffer)
+    return buffer.getvalue()

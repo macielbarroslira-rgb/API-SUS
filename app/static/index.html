@@ -122,7 +122,8 @@ async function abrir(id) {
   catch (e) { box.replaceChildren(el("p", { className: "msg erro" }, e.message)); return; }
 
   const controle = [atual.parametro_limit, atual.parametro_offset];
-  const filtros = atual.parametros.filter(p => !controle.includes(p.nome));
+  // "campos" é preenchido automaticamente a partir das colunas marcadas
+  const filtros = atual.parametros.filter(p => !controle.includes(p.nome) && p.nome !== "campos");
   const campos = el("div", { className: "campos" });
   for (const p of filtros) {
     let input;

@@ -1,0 +1,191 @@
+# Arquivo gerado por scripts/gerar_workflow_planilha.py — não edite à mão.
+name: Baixar planilha
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Base de dados (veja a lista e as colunas em https://macielbarroslira-rgb.github.io/API-SUS/)"
+        type: choice
+        default: arboviroses-dengue
+        options:
+          - arboviroses-chikungunya
+          - arboviroses-dengue
+          - arboviroses-febre-amarela-epzootias
+          - arboviroses-febre-amarela-humanos-primatas-nao-humanos
+          - arboviroses-zikavirus
+          - assistencia-a-saude-cnes-equipamentos
+          - assistencia-a-saude-cnes-estabelecimentos
+          - assistencia-a-saude-cnes-leitos
+          - assistencia-a-saude-cnes-profissionais
+          - assistencia-a-saude-cnes-servicos-especializados
+          - assistencia-a-saude-hospitais-e-leitos
+          - assistencia-a-saude-registro-de-ocupacao-hospitalar-covid-19
+          - assistencia-a-saude-sia-procedimentos-ambulatoriais
+          - assistencia-a-saude-sih-procedimentos-hospitalares
+          - assistencia-a-saude-unidade-basicas-de-saude
+          - atencao-primaria-cadastro-vinculado-programa-previne-brasil
+          - atencao-primaria-enani-2019
+          - atencao-primaria-indicador-desempenho-programa-previne-brasil
+          - atencao-primaria-pmmb-consolidado
+          - atencao-primaria-pmmb-especialista-consolidado
+          - atencao-primaria-pmmb-especialista-relacao-nominal-ativo
+          - atencao-primaria-pmmb-especialista-serie-historica
+          - atencao-primaria-pmmb-relacao-nominal-ativo
+          - atencao-primaria-pmmb-relacao-nominal-coparticipacao
+          - atencao-primaria-pmmb-relatorio-historico-cadastro-cnes
+          - atencao-primaria-pmmb-serie-historica
+          - atencao-primaria-pmme-instituicoes-formadoras
+          - atencao-primaria-siaps-atendimento-individual
+          - atencao-primaria-siaps-cadastro-individual
+          - ciencia-tecnologia-dgits-contribuicoes-consultas-publicas
+          - ciencia-tecnologia-dgits-controle-demandas-conitec
+          - ciencia-tecnologia-dgits-controle-pcdt
+          - ciencia-tecnologia-dgits-tecnologias-diretrizes
+          - ciencia-tecnologia-plataformabr-pesquisa-saude
+          - ciencia-tecnologia-plataformabr-projeto-aprovado
+          - cnes-estabelecimentos
+          - cnes-tipounidades
+          - daf-estoque-medicamentos-bnafar-horus
+          - economia-da-saude-bps
+          - economia-da-saude-sistema-de-apuracao-e-gestao-de-custos-do-sus-apurasus
+          - educacao-em-saude-pvc
+          - educacao-saude-pet-saude
+          - educacao-saude-sig-residencia-area-profissional
+          - educacao-saude-sig-residencia-medica
+          - macrorregiao-e-regiao-de-saude-municipio
+          - outros-temas-ced
+          - ouvidoria-ouvidor2
+          - ouvidoria-ouvidor3
+          - prevencao-e-promocao-distribuicao-epi-insumo
+          - saude-indigena-acompanhamento-obra-infraestrutura-saude
+          - saude-indigena-indicadores-enfrentamento-monitoramento-covid19-indigenas
+          - saude-indigena-planilha-de-fornecimento-e-monitoramento-da-qualidade-da-agua-acesso-a-agua
+          - saude-indigena-planilha-registros-habilitacao-recebimento-incentivo
+          - saude-indigena-sasi-sus-gerenciamento-de-residuos-solidos
+          - saude-indigena-sasisus-esgotamento-sanitario
+          - saude-indigena-sesai-acidentes-ofidicos
+          - saude-indigena-sesai-arboviroses
+          - saude-indigena-sesai-assistencia-farmaceutica
+          - saude-indigena-sesai-atendimentos
+          - saude-indigena-sesai-cobertura-vacinal
+          - saude-indigena-sesai-covid19
+          - saude-indigena-sesai-demografico
+          - saude-indigena-sesai-doencas-diarreicas-agudas
+          - saude-indigena-sesai-doencas-imunopreveniveis
+          - saude-indigena-sesai-doencas-respiratorias
+          - saude-indigena-sesai-doencas-zoonoticas
+          - saude-indigena-sesai-hepatites-virais
+          - saude-indigena-sesai-obitos
+          - saude-indigena-sesai-recursos-humanos
+          - saude-indigena-siasi-acompanhamento-gestacional
+          - saude-indigena-siasi-modulo-morbidades
+          - saude-indigena-siasi-modulo-saude-bucal-ficha3
+          - saude-indigena-siasi-modulo-saude-bucal-ficha4
+          - saude-indigena-siasi-modulo-saude-bucal-ficha7
+          - saude-indigena-sistema-de-atencao-a-saude-indigena-modulo-de-vigilancia-alimentar-e-nutricional
+          - sisagua-cadastro-carro-pipa-populacao
+          - sisagua-cadastro-carro-pipa-procedencia
+          - sisagua-controle-mensal-amostras-fora-do-padrao
+          - sisagua-controle-mensal-demais-parametros
+          - sisagua-controle-mensal-infraestrutura-operacional
+          - sisagua-controle-mensal-parametros-basicos
+          - sisagua-controle-mensal-plano-amostragem
+          - sisagua-controle-semestral
+          - sisagua-pontos-de-captacao
+          - sisagua-populacao-abastecida
+          - sisagua-tratamento-de-agua
+          - sisagua-vigilancia-cianobacterias-e-cianotoxinas
+          - sisagua-vigilancia-demais-parametros
+          - sisagua-vigilancia-parametros-basicos
+          - sisvan-estado-nutricional
+          - vacinacao-doses-aplicadas-pni-2020
+          - vacinacao-doses-aplicadas-pni-2021
+          - vacinacao-doses-aplicadas-pni-2022
+          - vacinacao-doses-aplicadas-pni-2023
+          - vacinacao-doses-aplicadas-pni-2024
+          - vacinacao-doses-aplicadas-pni-2025
+          - vacinacao-doses-aplicadas-pni-2026
+          - vacinacao-esavi
+          - vacinacao-sistema-de-informacao-de-insumos-estrategicos
+          - vigilancia-e-meio-ambiente-mpox
+          - vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2020
+          - vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2021
+          - vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2022
+          - vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2023
+          - vigilancia-e-meio-ambiente-notificacoes-de-sindrome-gripal-leve-2024
+          - vigilancia-e-meio-ambiente-sistema-de-informacao-sobre-mortalidade
+          - vigilancia-e-meio-ambiente-sistema-de-informacao-sobre-nascidos-vivos
+          - vigilancia-e-meio-ambiente-srag-2009-2012
+          - vigilancia-e-meio-ambiente-srag-2013-2018
+          - vigilancia-e-meio-ambiente-srag-2019-2026
+          - vigilancia-e-meio-ambiente-svsa-populacao-residente
+      filtros:
+        description: "Filtros (opcional). Ex.: nu_ano=2024; id_municip=355030"
+        type: string
+        required: false
+      colunas:
+        description: "Colunas separadas por vírgula (vazio = todas)"
+        type: string
+        required: false
+      max_registros:
+        description: "Máximo de linhas"
+        type: string
+        default: "1000"
+      formato:
+        description: "Formato do arquivo"
+        type: choice
+        default: xlsx
+        options:
+          - xlsx
+          - csv
+
+permissions:
+  contents: read
+
+jobs:
+  planilha:
+    name: ${{ inputs.base }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Consultar a API oficial e gerar a planilha
+        env:
+          BASE: ${{ inputs.base }}
+          FILTROS: ${{ inputs.filtros }}
+          COLUNAS: ${{ inputs.colunas }}
+          MAX: ${{ inputs.max_registros }}
+          FORMATO: ${{ inputs.formato }}
+          DATASUS_SPEC_CACHE: docs/swagger.json
+        run: |
+          mkdir -p saida
+          args=(dados "$BASE" -n "$MAX" -o "saida/$BASE.$FORMATO" --separador ";" --resumo resumo.md)
+          if [ -n "$FILTROS" ]; then args+=(-f "$FILTROS"); fi
+          if [ -n "$COLUNAS" ]; then args+=(-c "$COLUNAS"); fi
+          if ! python -m app.cli "${args[@]}" 2> erro.log; then
+            {
+              echo "## ❌ Não foi possível gerar a planilha"
+              echo '```'
+              cat erro.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            cat erro.log
+            exit 1
+          fi
+          cat erro.log
+          {
+            cat resumo.md
+            echo ""
+            echo "📥 **Para baixar:** role até o fim desta página, em **Artifacts**, e clique em **planilha-$BASE**."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: planilha-${{ inputs.base }}
+          path: saida/
+          retention-days: 7

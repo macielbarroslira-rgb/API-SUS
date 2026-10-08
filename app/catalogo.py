@@ -19,7 +19,7 @@ from urllib.parse import quote
 from .cliente import ClienteDataSUS, ErroUpstream
 from .config import Config
 
-NOMES_LIMIT = ("limit", "limite")
+NOMES_LIMIT = ("limit", "limite", "tamanhopagina")
 NOMES_OFFSET = ("offset", "pagina", "page")
 
 
@@ -235,12 +235,25 @@ def _schema_resposta(op: dict[str, Any]) -> Any:
     return None
 
 
+_RE_MAXIMO = re.compile(r"(?:menor ou igual(?: a)?|m[áa]ximo:?|at[ée])\s*(\d+)", re.IGNORECASE)
+
+
+def _maximo_da_descricao(descricao: str) -> int | None:
+    """A especificação oficial informa o tamanho máximo de página só no texto,
+    ex.: "Deve ser menor ou igual 20." ou "(máximo: 500)"."""
+    m = _RE_MAXIMO.search(descricao or "")
+    return int(m.group(1)) if m else None
+
+
 def _parametro(spec: dict[str, Any], bruto: Any) -> Parametro | None:
     p = _resolver(spec, bruto)
     if not isinstance(p, dict) or p.get("in") not in ("query", "path"):
         return None
     schema = _resolver(spec, p.get("schema") or {})  # OpenAPI 3 guarda o tipo em "schema"
     fonte = schema if isinstance(schema, dict) and schema else p
+    maximo = fonte.get("maximum", p.get("maximum"))
+    if maximo is None and str(p["name"]).lower() in NOMES_LIMIT:
+        maximo = _maximo_da_descricao(p.get("description") or "")
     return Parametro(
         nome=p["name"],
         local=p["in"],
@@ -251,7 +264,7 @@ def _parametro(spec: dict[str, Any], bruto: Any) -> Parametro | None:
         enum=fonte.get("enum") or p.get("enum"),
         padrao=fonte.get("default", p.get("default")),
         minimo=fonte.get("minimum", p.get("minimum")),
-        maximo=fonte.get("maximum", p.get("maximum")),
+        maximo=maximo,
     )
 
 

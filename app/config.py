@@ -29,12 +29,7 @@ class Config:
 
     # Onde procurar a especificação Swagger/OpenAPI (tentadas em ordem).
     spec_urls: list[str] = field(
-        default_factory=lambda: [
-            "https://apidadosabertos.saude.gov.br/v1/static/swagger.json",
-            "https://apidadosabertos.saude.gov.br/static/swagger.json",
-            "https://apidadosabertos.saude.gov.br/v1/swagger.json",
-            "https://apidadosabertos.saude.gov.br/swagger.json",
-        ]
+        default_factory=lambda: ["https://apidadosabertos.saude.gov.br/static/swagger.json"]
     )
     # Arquivo local com a especificação (tem prioridade sobre as URLs, se existir).
     spec_arquivo: Path | None = None

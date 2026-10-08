@@ -17,7 +17,7 @@ from . import __version__
 from .catalogo import Catalogo, Dataset, ErroCatalogo, carregar_catalogo
 from .cliente import ClienteDataSUS, ErroUpstream
 from .config import Config
-from .consulta import Consulta, ErroConsulta, amostrar_variaveis, executar, para_csv
+from .consulta import Consulta, ErroConsulta, amostrar_variaveis, executar, para_csv, para_xlsx
 
 PASTA_STATIC = Path(__file__).parent / "static"
 
@@ -34,7 +34,7 @@ class CorpoConsulta(BaseModel):
     )
     max_registros: int | None = Field(None, ge=1, description="Máximo de registros a buscar.")
     paginar: bool = Field(True, description="Percorrer as páginas automaticamente.")
-    formato: Literal["json", "csv"] = "json"
+    formato: Literal["json", "csv", "xlsx"] = "json"
     separador: str = Field(",", min_length=1, max_length=1)
 
     model_config = {
@@ -163,7 +163,7 @@ def criar_app(config: Config | None = None, transport: httpx.AsyncBaseTransport 
             "filtros": [
                 {"nome": p.nome, "obrigatorio": p.obrigatorio, "tipo": p.tipo, "descricao": p.descricao, "enum": p.enum}
                 for p in ds.parametros
-                if p not in (ds.param_limit, ds.param_offset)
+                if p not in (ds.param_limit, ds.param_offset) and p.nome != "campos"
             ],
         }
         if amostra or not ds.campos:
@@ -185,14 +185,14 @@ def criar_app(config: Config | None = None, transport: httpx.AsyncBaseTransport 
             "Qualquer parâmetro da query string que não seja de controle é repassado como filtro para a "
             "API oficial (ex.: `?nu_ano=2024&id_municip=355030`). Filtros locais usam o prefixo "
             "`local.` (ex.: `local.sg_uf=SP`). Controle: `colunas` (separadas por vírgula), `formato` "
-            "(json|csv), `max_registros`, `paginar`, `separador`."
+            "(json|csv|xlsx), `max_registros`, `paginar`, `separador`."
         ),
     )
     async def dados_get(
         request: Request,
         dataset_id: str,
         colunas: str | None = Query(None, description="Variáveis a retornar, separadas por vírgula."),
-        formato: Literal["json", "csv"] = "json",
+        formato: Literal["json", "csv", "xlsx"] = "json",
         max_registros: int | None = Query(None, ge=1),
         paginar: bool = True,
         separador: str = Query(",", min_length=1, max_length=1),
@@ -279,6 +279,15 @@ async def _consultar(app: FastAPI, dataset_id: str, corpo: CorpoConsulta):
             paginar=corpo.paginar,
         ),
     )
+    if corpo.formato == "xlsx":
+        return Response(
+            content=para_xlsx(resultado),
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={
+                "Content-Disposition": f'attachment; filename="{ds.id}.xlsx"',
+                "X-Total-Registros": str(resultado.total),
+            },
+        )
     if corpo.formato == "csv":
         return Response(
             content=para_csv(resultado, corpo.separador),

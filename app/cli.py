@@ -17,12 +17,15 @@ from typing import Any
 from .catalogo import ErroCatalogo, carregar_catalogo
 from .cliente import ClienteDataSUS, ErroUpstream
 from .config import Config
-from .consulta import Consulta, ErroConsulta, amostrar_variaveis, executar, para_csv
+from .consulta import Consulta, ErroConsulta, achatar, amostrar_variaveis, executar, para_csv, para_xlsx
 
 
 def _filtros(pares: list[str]) -> dict[str, Any]:
+    """Aceita "-f a=1 -f b=2" e também "a=1; b=2" num único valor."""
     saida: dict[str, Any] = {}
-    for par in pares:
+    for par in (item.strip() for bloco in pares for item in bloco.replace("\n", ";").split(";")):
+        if not par:
+            continue
         if "=" not in par:
             raise SystemExit(f"Filtro inválido '{par}'. Use nome=valor.")
         nome, valor = par.split("=", 1)
@@ -73,7 +76,9 @@ async def _rodar(args: argparse.Namespace) -> int:
         for aviso in resultado.avisos:
             print(f"aviso: {aviso}", file=sys.stderr)
         destino = Path(args.saida) if args.saida else None
-        if destino and destino.suffix.lower() == ".csv":
+        if destino and destino.suffix.lower() == ".xlsx":
+            destino.write_bytes(para_xlsx(resultado))
+        elif destino and destino.suffix.lower() == ".csv":
             destino.write_text(para_csv(resultado, args.separador), encoding="utf-8")
         else:
             texto = json.dumps(resultado.como_dict(), ensure_ascii=False, indent=2, default=str)
@@ -82,6 +87,8 @@ async def _rodar(args: argparse.Namespace) -> int:
             else:
                 print(texto)
         print(f"{resultado.total} registro(s), {resultado.paginas_consultadas} página(s).", file=sys.stderr)
+        if args.resumo:
+            Path(args.resumo).write_text(_resumo_markdown(resultado), encoding="utf-8")
         return 0
     except (ErroCatalogo, ErroConsulta) as exc:
         print(f"erro: {exc}", file=sys.stderr)
@@ -91,6 +98,35 @@ async def _rodar(args: argparse.Namespace) -> int:
         return 3
     finally:
         await cliente.fechar()
+
+
+def _resumo_markdown(resultado, linhas_previa: int = 10) -> str:
+    """Resumo da consulta em Markdown (usado na página do GitHub Actions)."""
+
+    def celula(v: Any) -> str:
+        return ("" if v is None else str(v)).replace("|", "\\|").replace("\n", " ")[:80]
+
+    partes = [
+        f"## {resultado.total} registro(s) de `{resultado.dataset}`",
+        "",
+        f"- Filtros: `{json.dumps(resultado.filtros, ensure_ascii=False)}`",
+        f"- Páginas consultadas: {resultado.paginas_consultadas}",
+        f"- Origem: {resultado.url}",
+        *[f"- ⚠️ {a}" for a in resultado.avisos],
+        "",
+        f"**Variáveis ({len(resultado.colunas)}):** " + ", ".join(f"`{c}`" for c in resultado.colunas),
+        "",
+    ]
+    if resultado.registros:
+        cols = resultado.colunas[:12]
+        partes.append(f"### Prévia ({min(linhas_previa, resultado.total)} primeiras linhas, até 12 colunas)")
+        partes.append("")
+        partes.append("| " + " | ".join(cols) + " |")
+        partes.append("|" + "---|" * len(cols))
+        for r in resultado.registros[:linhas_previa]:
+            plano = achatar(r)
+            partes.append("| " + " | ".join(celula(plano.get(c)) for c in cols) + " |")
+    return "\n".join(partes) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -111,8 +147,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("-f", "--filtro", action="append", default=[], help="nome=valor (repetível)")
     p.add_argument("-c", "--colunas", help="variáveis separadas por vírgula")
     p.add_argument("-n", "--max-registros", type=int)
-    p.add_argument("-o", "--saida", help="arquivo .csv ou .json (padrão: imprime JSON)")
+    p.add_argument("-o", "--saida", help="arquivo .xlsx, .csv ou .json (padrão: imprime JSON)")
     p.add_argument("--separador", default=",")
+    p.add_argument("--resumo", help="grava um resumo em Markdown neste arquivo")
 
     return asyncio.run(_rodar(parser.parse_args(argv)))
 

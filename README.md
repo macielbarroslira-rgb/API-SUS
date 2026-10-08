@@ -42,28 +42,27 @@ docker run -p 8000:8000 api-sus
 ```
 
 
-## Testar na web (sem instalar nada)
+## Baixar planilhas pelo navegador (sem instalar nada)
 
-### Página web (GitHub Pages)
+A API do Ministério da Saúde **não permite consulta direta de outros sites** (não envia
+cabeçalhos CORS; verificado pelo workflow `Diagnóstico da API oficial`). Por isso a
+planilha é gerada pelo próprio GitHub:
 
-A pasta `docs/` tem uma versão da interface que roda **só no navegador**: lê o `swagger.json`
-oficial e consulta a API do Ministério da Saúde direto do seu computador. Para publicar:
+1. Veja as bases, filtros e colunas em **https://macielbarroslira-rgb.github.io/API-SUS/**
+   e clique em **Gerar planilha** para obter os valores a preencher.
+2. Abra **Actions → Baixar planilha → Run workflow**, preencha base, filtros
+   (ex.: `nu_ano=2024; id_municip=355030`), colunas e máximo de linhas.
+3. Quando a execução terminar (✅), abra-a: há um resumo com prévia dos dados e, no fim
+   da página, em **Artifacts**, o arquivo `planilha-<base>` (Excel ou CSV).
 
-1. No GitHub, abra **Settings → Pages**.
-2. Em **Build and deployment → Source**, escolha **Deploy from a branch**.
-3. Selecione o branch onde está o código (ex.: `main`) e a pasta **`/docs`**. Clique em **Save**.
-4. Em alguns minutos a página fica em `https://<seu-usuario>.github.io/API-SUS/`.
-
-> O modo direto só funciona se a API oficial permitir chamadas de outros sites (CORS).
-> Isso não foi verificado. Se a página mostrar erro de acesso, use o modo
-> **"Pelo servidor API-SUS"** com o endereço do Codespaces (abaixo).
+O workflow `Atualizar catálogo` (semanal) mantém `docs/swagger.json` e `docs/variaveis.json`
+(colunas descobertas consultando 1 registro de cada base) atualizados.
 
 ### Codespaces (API completa rodando no GitHub)
 
 1. Na página do repositório, clique em **Code → Codespaces → Create codespace**.
-2. Aguarde a instalação; a API sobe sozinha na porta 8000 e o navegador abre a interface.
-3. A aba **Ports** mostra o endereço público (`https://...app.github.dev`). Para usá-lo na
-   página do GitHub Pages, deixe a porta como **Public** (botão direito → Port Visibility).
+2. Aguarde a instalação; a API sobe sozinha na porta 8000 e o navegador abre a interface,
+   que consulta e baixa os dados diretamente.
 
 ## Endpoints
 
@@ -90,13 +89,10 @@ O `{id}` é o caminho da base com `-` no lugar de `/` (ex.: `/arboviroses/dengue
 | `local.<coluna>` | Filtro de igualdade aplicado aqui, depois do download (para colunas que a API oficial não filtra). |
 | `max_registros` | Máximo de registros a buscar (padrão 1000, teto 100000). |
 | `paginar` | `true` (padrão) percorre as páginas automaticamente. |
-| `formato` | `json` (padrão) ou `csv`. |
+| `formato` | `json` (padrão), `csv` ou `xlsx` (Excel). |
 | `separador` | Separador do CSV (padrão `,`; use `;` para o Excel em português). |
 
 ### Exemplos
-
-> Os nomes de bases e filtros abaixo vêm de projetos públicos que usam a API.
-> **Confirme na listagem `/api/datasets`**: o catálogo real é o da especificação oficial.
 
 ```bash
 # listar bases
@@ -134,7 +130,7 @@ Resposta JSON:
 ```bash
 python -m app.cli bases --busca cnes
 python -m app.cli variaveis arboviroses-dengue --amostra -f nu_ano=2024
-python -m app.cli dados arboviroses-dengue -f nu_ano=2024 -c dt_notific,id_municip -n 5000 -o dengue.csv
+python -m app.cli dados arboviroses-dengue -f "nu_ano=2024; id_municip=355030" -c dt_notific,cs_sexo -n 5000 -o dengue.xlsx
 ```
 
 ## Configuração (variáveis de ambiente)
@@ -142,12 +138,12 @@ python -m app.cli dados arboviroses-dengue -f nu_ano=2024 -c dt_notific,id_munic
 | Variável | Padrão | Descrição |
 |---|---|---|
 | `DATASUS_BASE_URL` | `https://apidadosabertos.saude.gov.br` | Host dos dados (sem `/v1`) |
-| `DATASUS_SPEC_URLS` | 4 caminhos candidatos do `swagger.json` | URLs da especificação, separadas por vírgula, tentadas em ordem |
+| `DATASUS_SPEC_URLS` | `https://apidadosabertos.saude.gov.br/static/swagger.json` | URLs da especificação, separadas por vírgula, tentadas em ordem |
 | `DATASUS_SPEC_ARQUIVO` | | Arquivo local com a especificação (tem prioridade) |
 | `DATASUS_SPEC_CACHE` | `data/swagger_cache.json` | Cópia da última especificação baixada, usada se o site estiver fora do ar |
 | `DATASUS_RESPEITAR_BASEPATH` | `false` | Prefixar as chamadas com o `basePath` da especificação |
 | `DATASUS_MODO_OFFSET` | `pagina` | `pagina`: `offset` = nº da página (0, 1, 2...). `registro`: `offset` = índice do registro (0, 20, 40...) |
-| `DATASUS_TAMANHO_PAGINA` | `20` | Tamanho de página quando a especificação não declara `maximum`/`default` para `limit` |
+| `DATASUS_TAMANHO_PAGINA` | `20` | Tamanho de página quando a especificação não informa máximo nem `default` |
 | `DATASUS_MAX_REGISTROS` | `1000` | Padrão de `max_registros` |
 | `DATASUS_MAX_REGISTROS_TETO` | `100000` | Valor máximo aceito em `max_registros` |
 | `DATASUS_PAUSA_ENTRE_PAGINAS` | `0` | Segundos de espera entre páginas (para não sobrecarregar a API oficial) |
@@ -156,27 +152,22 @@ python -m app.cli dados arboviroses-dengue -f nu_ano=2024 -c dt_notific,id_munic
 | `DATASUS_CACHE_TTL` | `300` | Cache em memória das respostas (s); `0` desliga |
 | `CORS_ORIGENS` | `*` | Origens permitidas, separadas por vírgula |
 
-## Pontos não verificados
+## Comportamento da API oficial
 
-Esta API foi escrita num ambiente **sem acesso de rede ao `apidadosabertos.saude.gov.br`**,
-então não foi testada contra o serviço real. Os testes usam uma especificação **sintética**
-(`tests/fixtures/swagger_exemplo.json`). As escolhas abaixo seguem fontes de terceiros e
-são configuráveis:
+Verificado contra a API real (workflow `Diagnóstico da API oficial`):
 
-- **Endereço do `swagger.json`**: a página `/v1/` cita `/static/swagger.json`. Como não sei se o
-  caminho é relativo ao `/v1/`, a API tenta os dois (e também `swagger.json` na raiz). Se nenhum
-  funcionar, baixe o arquivo pelo navegador e use `DATASUS_SPEC_ARQUIVO`.
-- **Prefixo `/v1`**: um projeto público relata que os dados respondem **sem** o `/v1`
-  (ex.: `https://apidadosabertos.saude.gov.br/arboviroses/dengue`), por isso esse é o padrão.
-- **Semântica do `offset`**: fontes públicas indicam que o `offset` é o **número da página**, e não
-  o índice do registro. Se a API devolver a mesma página duas vezes, a paginação é interrompida
-  com um aviso, e basta trocar `DATASUS_MODO_OFFSET`.
-- **Tamanho máximo de página**: varia entre as bases (há relatos de 20 no CNES e de 1000 na dengue).
-  A API usa o `maximum` declarado na especificação. Se não houver, usa 20.
-- **Autenticação**: um catálogo de terceiros diz que a API exige autenticação, mas projetos públicos
-  fazem as chamadas sem credenciais. Esta API não envia credenciais.
+- A especificação fica em `https://apidadosabertos.saude.gov.br/static/swagger.json` (113 bases).
+- Os dados respondem **sem** o prefixo `/v1` (com `/v1` dá 404) e sem autenticação.
+- A API **não envia cabeçalhos CORS**: navegadores não conseguem consultá-la de outros sites.
+- O `offset` é o **número da página** (começa em 0); o tamanho máximo de página aparece só no
+  texto da descrição do `limit` (ex.: 20 no CNES, 1000 na dengue) e é lido de lá. A base
+  `economia-da-saude/bps` usa `pagina` (começa em 1) e `tamanhoPagina` (máx. 500).
+- A especificação não documenta as colunas das respostas; elas são descobertas por amostra.
+- Bases com o parâmetro `campos` recebem as colunas escolhidas, e a própria API devolve só elas.
 
 ## Testes
+
+Os testes usam uma especificação **sintética** (`tests/fixtures/swagger_exemplo.json`) e uma API simulada.
 
 ```bash
 pip install -r requirements-dev.txt
