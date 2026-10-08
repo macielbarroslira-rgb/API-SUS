@@ -78,7 +78,7 @@ jobs:
             cat health.json; echo
             curl -sf --noproxy "*" --max-time 120 "$URL/api/datasets" -o bases.json || falhou=1
             python -c "import json,sys; d=json.load(open('bases.json',encoding='utf-8')); print(d['total'],'bases'); sys.exit(0 if d['total']>0 else 1)" || falhou=1
-            curl -sf --noproxy "*" --max-time 30 "$URL/" | grep -qi "<html" || { echo "::error::GET / não devolveu a página."; falhou=1; }
+            { curl -sf --noproxy "*" --max-time 30 "$URL/" -o pagina.html && grep -qi "<html" pagina.html; } || { echo "::error::GET / não devolveu a página."; falhou=1; }
           fi
           kill "$PID" 2> /dev/null || true
           if [ "$RUNNER_OS" = "Windows" ]; then taskkill //F //T //IM API-SUS.exe > /dev/null 2>&1 || true; fi
