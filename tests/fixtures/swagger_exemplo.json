@@ -1,0 +1,65 @@
+{
+  "swagger": "2.0",
+  "info": {"title": "Especificação SINTÉTICA para testes (não é a oficial)", "version": "0.0-teste"},
+  "basePath": "/",
+  "paths": {
+    "/arboviroses/dengue": {
+      "get": {
+        "tags": ["Agravo Arboviroses"],
+        "summary": "Notificações de dengue",
+        "operationId": "get_arboviroses_dengue",
+        "parameters": [
+          {"name": "nu_ano", "in": "query", "type": "integer", "required": true, "description": "Ano"},
+          {"name": "id_municip", "in": "query", "type": "string"},
+          {"$ref": "#/parameters/limit"},
+          {"$ref": "#/parameters/offset"}
+        ],
+        "responses": {"200": {"description": "ok", "schema": {"$ref": "#/definitions/RespostaDengue"}}}
+      }
+    },
+    "/cnes/estabelecimentos": {
+      "get": {
+        "tags": ["CNES"],
+        "summary": "Estabelecimentos de saúde",
+        "parameters": [
+          {"name": "codigo_uf", "in": "query", "type": "integer"},
+          {"name": "status", "in": "query", "type": "integer", "enum": [0, 1]},
+          {"name": "limit", "in": "query", "type": "integer", "maximum": 20},
+          {"name": "offset", "in": "query", "type": "integer"}
+        ],
+        "responses": {"200": {"description": "ok"}}
+      }
+    },
+    "/cnes/estabelecimentos/{codigo_cnes}": {
+      "parameters": [{"name": "codigo_cnes", "in": "path", "type": "integer", "required": true}],
+      "get": {
+        "tags": ["CNES"],
+        "summary": "Um estabelecimento pelo código CNES",
+        "responses": {"200": {"description": "ok", "schema": {"$ref": "#/definitions/Estabelecimento"}}}
+      }
+    },
+    "/apenas-post": {"post": {"responses": {"200": {"description": "ok"}}}}
+  },
+  "parameters": {
+    "limit": {"name": "limit", "in": "query", "type": "integer", "default": 3},
+    "offset": {"name": "offset", "in": "query", "type": "integer", "default": 0}
+  },
+  "definitions": {
+    "RespostaDengue": {
+      "type": "object",
+      "properties": {"dengue": {"type": "array", "items": {"$ref": "#/definitions/Notificacao"}}}
+    },
+    "Notificacao": {
+      "type": "object",
+      "properties": {
+        "dt_notific": {"type": "string", "format": "date", "description": "Data da notificação"},
+        "id_municip": {"type": "string"},
+        "classi_fin": {"type": "string"}
+      }
+    },
+    "Estabelecimento": {
+      "type": "object",
+      "properties": {"codigo_cnes": {"type": "integer"}, "nome_fantasia": {"type": "string"}}
+    }
+  }
+}

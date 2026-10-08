@@ -1,0 +1,173 @@
+import json
+
+from app.consulta import achatar, extrair_registros
+from tests.conftest import DENGUE
+
+
+def test_health_e_catalogo(cliente):
+    assert cliente.get("/health").json()["catalogo_carregado"] is True
+    cat = cliente.get("/api/catalogo").json()
+    assert cat["total_bases"] == 3
+    assert cat["grupos"] == {"Agravo Arboviroses": 1, "CNES": 2}
+
+
+def test_lista_e_busca_sem_acento(cliente):
+    assert cliente.get("/api/datasets").json()["total"] == 3
+    r = cliente.get("/api/datasets", params={"q": "saude"}).json()  # "saúde" no resumo
+    assert [b["id"] for b in r["bases"]] == ["cnes-estabelecimentos"]
+    r = cliente.get("/api/datasets", params={"grupo": "cnes"}).json()
+    assert r["total"] == 2
+
+
+def test_detalhe_e_404(cliente):
+    d = cliente.get("/api/datasets/arboviroses-dengue").json()
+    assert d["parametro_limit"] == "limit" and d["parametro_offset"] == "offset"
+    # também encontra pelo operationId e pelo caminho
+    assert cliente.get("/api/datasets/get_arboviroses_dengue").status_code == 200
+    assert cliente.get("/api/datasets/nao-existe").status_code == 404
+
+
+def test_paginacao_automatica_por_numero_de_pagina(cliente, api_falsa):
+    r = cliente.get("/api/datasets/arboviroses-dengue/dados", params={"nu_ano": 2024}).json()
+    assert r["total"] == 7
+    assert r["paginas_consultadas"] == 3
+    assert [str(u.params["offset"]) for u in api_falsa.chamadas[1:]] == ["0", "1", "2"]
+    assert all(u.params["limit"] == "3" for u in api_falsa.chamadas[1:])  # default do parâmetro na spec
+
+
+def test_respeita_maximo_do_limit(cliente, api_falsa):
+    r = cliente.get("/api/datasets/cnes-estabelecimentos/dados", params={"max_registros": 1000}).json()
+    assert r["total"] == 45 and r["paginas_consultadas"] == 3
+    assert {u.params["limit"] for u in api_falsa.chamadas[1:]} == {"20"}
+
+
+def test_max_registros_trunca_e_avisa(cliente):
+    r = cliente.get("/api/datasets/cnes-estabelecimentos/dados", params={"max_registros": 25}).json()
+    assert r["total"] == 25
+    assert any("Limite de 25" in a for a in r["avisos"])
+
+
+def test_selecao_de_variaveis_e_colunas_aninhadas(cliente):
+    r = cliente.get(
+        "/api/datasets/cnes-estabelecimentos/dados",
+        params={"colunas": "codigo_cnes,endereco.uf,inexistente", "max_registros": 2},
+    ).json()
+    assert r["colunas"] == ["codigo_cnes", "endereco.uf", "inexistente"]
+    assert r["dados"][0] == {"codigo_cnes": 0, "endereco.uf": "SP", "inexistente": None}
+    assert any("inexistente" in a for a in r["avisos"])
+
+
+def test_filtro_oficial_e_local(cliente):
+    r = cliente.get(
+        "/api/datasets/arboviroses-dengue/dados", params={"nu_ano": 2024, "id_municip": "355030"}
+    ).json()
+    assert r["total"] == 4
+    r = cliente.get(
+        "/api/datasets/arboviroses-dengue/dados", params={"nu_ano": 2024, "local.dt_notific": "2024-01-03"}
+    ).json()
+    assert r["total"] == 1
+
+
+def test_validacao_de_filtros(cliente):
+    r = cliente.get("/api/datasets/arboviroses-dengue/dados")
+    assert r.status_code == 422 and "nu_ano" in r.json()["erro"]
+    r = cliente.get("/api/datasets/arboviroses-dengue/dados", params={"nu_ano": "abc"})
+    assert r.status_code == 422
+    r = cliente.get("/api/datasets/arboviroses-dengue/dados", params={"nu_ano": 2024, "uf": "SP"})
+    assert r.status_code == 422 and "Disponíveis" in r.json()["erro"]
+    r = cliente.get("/api/datasets/cnes-estabelecimentos/dados", params={"status": 5})
+    assert r.status_code == 422
+
+
+def test_parametro_de_caminho(cliente, api_falsa):
+    r = cliente.get("/api/datasets/cnes-estabelecimentos-codigo_cnes/dados", params={"codigo_cnes": 2077485}).json()
+    assert r["dados"] == [{"codigo_cnes": 2077485, "nome_fantasia": "UBS X"}]
+    assert api_falsa.chamadas[-1].path == "/cnes/estabelecimentos/2077485"
+
+
+def test_post_com_corpo_json(cliente):
+    r = cliente.post(
+        "/api/datasets/arboviroses-dengue/dados",
+        json={"filtros": {"nu_ano": 2024}, "colunas": ["dt_notific"], "max_registros": 4},
+    ).json()
+    assert r["total"] == 4 and r["dados"][0] == {"dt_notific": "2024-01-01"}
+
+
+def test_saida_csv(cliente):
+    r = cliente.get(
+        "/api/datasets/arboviroses-dengue/dados",
+        params={"nu_ano": 2024, "formato": "csv", "separador": ";", "colunas": "dt_notific,id_municip"},
+    )
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/csv")
+    linhas = r.content.decode("utf-8-sig").strip().split("\n")
+    assert linhas[0] == "dt_notific;id_municip"
+    assert len(linhas) == 1 + len(DENGUE)
+
+
+def test_variaveis_documentadas_e_amostra(cliente):
+    r = cliente.get("/api/datasets/arboviroses-dengue/variaveis").json()
+    assert [c["nome"] for c in r["documentadas"]] == ["dt_notific", "id_municip", "classi_fin"]
+    assert [f["nome"] for f in r["filtros"]] == ["nu_ano", "id_municip"]
+    assert "amostra" not in r
+    # sem filtro obrigatório, a amostra não é possível e a API avisa
+    r = cliente.get("/api/datasets/arboviroses-dengue/variaveis", params={"amostra": True}).json()
+    assert r["amostra"] is None and "nu_ano" in r["aviso"]
+    r = cliente.get("/api/datasets/arboviroses-dengue/variaveis", params={"amostra": True, "nu_ano": 2024}).json()
+    assert r["amostra"]["variaveis"] == ["dt_notific", "id_municip", "classi_fin"]
+    # base sem schema documentado: amostra automática
+    r = cliente.get("/api/datasets/cnes-estabelecimentos/variaveis").json()
+    assert r["amostra"]["variaveis"] == ["codigo_cnes", "nome_fantasia", "endereco.uf"]
+
+
+def test_pagina_repetida_interrompe(cliente, api_falsa):
+    api_falsa.ignorar_offset = True
+    r = cliente.get("/api/datasets/cnes-estabelecimentos/dados", params={"max_registros": 100}).json()
+    assert r["total"] == 20 and r["paginas_consultadas"] == 2
+    assert any("mesma página" in a for a in r["avisos"])
+
+
+def test_erro_da_api_oficial_vira_502(cliente):
+    r = cliente.get("/api/datasets/arboviroses-dengue/dados", params={"nu_ano": 2024, "id_municip": "erro"})
+    assert r.status_code == 502 and r.json()["status_origem"] == 400
+    # limit acima do máximo declarado na especificação é barrado antes de chamar a API
+    r = cliente.get("/api/datasets/cnes-estabelecimentos/dados", params={"limit": 50})
+    assert r.status_code == 422
+
+
+def test_cache_da_especificacao(config, api_falsa, tmp_path):
+    import httpx
+    from fastapi.testclient import TestClient
+
+    from app.main import criar_app
+
+    with TestClient(criar_app(config, transport=httpx.MockTransport(api_falsa))):
+        pass
+    assert json.loads(config.spec_cache.read_text())["info"]["version"] == "0.0-teste"
+
+    def fora_do_ar(_):
+        return httpx.Response(503)
+
+    with TestClient(criar_app(config, transport=httpx.MockTransport(fora_do_ar))) as c:
+        assert c.get("/api/catalogo").json()["origem"].startswith("cache:")
+
+
+def test_catalogo_indisponivel_vira_503(tmp_path):
+    import httpx
+    from fastapi.testclient import TestClient
+
+    from app.config import Config
+    from app.main import criar_app
+
+    cfg = Config(base_url="https://x", spec_urls=["https://x/s"], spec_cache=tmp_path / "nada.json", tentativas=1)
+    with TestClient(criar_app(cfg, transport=httpx.MockTransport(lambda _: httpx.Response(503)))) as c:
+        assert c.get("/health").json()["catalogo_carregado"] is False
+        assert c.get("/api/datasets").status_code == 503
+
+
+def test_extrair_registros_formatos():
+    assert extrair_registros([{"a": 1}]) == [{"a": 1}]
+    assert extrair_registros({"x": [{"a": 1}]}) == [{"a": 1}]
+    assert extrair_registros({"a": 1, "b": [1]}) == [{"a": 1, "b": [1]}]
+    assert extrair_registros(None) == []
+    assert achatar({"a": {"b": {"c": 1}}, "l": [1, 2]}) == {"a.b.c": 1, "l": "[1, 2]"}

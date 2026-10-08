@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API-SUS · Consulta</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --painel: #fff; --texto: #1c2430; --suave: #5b6675; --borda: #dde2e8;
+    --destaque: #0b6e4f; --destaque-texto: #fff; --erro: #b42318; --aviso: #8a5a00; --sel: #e7f4ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c; --painel: #1a2028; --texto: #e6e9ee; --suave: #9aa5b3; --borda: #2c3540;
+      --destaque: #3fb68b; --destaque-texto: #08130e; --erro: #ff8a7a; --aviso: #f0c060; --sel: #1d3329;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--texto); }
+  header { padding: 16px; border-bottom: 1px solid var(--borda); background: var(--painel); }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; color: var(--suave); font-size: 13px; }
+  main { display: grid; grid-template-columns: 340px 1fr; gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  section { background: var(--painel); border: 1px solid var(--borda); border-radius: 10px; padding: 14px; min-width: 0; }
+  h2 { font-size: 16px; margin: 0 0 10px; }
+  h3 { font-size: 14px; margin: 16px 0 8px; }
+  input, select, button { font: inherit; color: inherit; }
+  input[type=text], input[type=number], select { width: 100%; padding: 7px 9px; border: 1px solid var(--borda); border-radius: 6px; background: var(--bg); }
+  button { padding: 8px 14px; border-radius: 6px; border: 1px solid var(--borda); background: var(--bg); cursor: pointer; }
+  button.primario { background: var(--destaque); color: var(--destaque-texto); border-color: var(--destaque); }
+  button:disabled { opacity: .5; cursor: wait; }
+  .lista { list-style: none; margin: 10px 0 0; padding: 0; max-height: 70vh; overflow: auto; }
+  .lista li { padding: 8px; border-radius: 6px; cursor: pointer; border-bottom: 1px solid var(--borda); }
+  .lista li:hover, .lista li.ativo { background: var(--sel); }
+  .lista .grupo { font-size: 11px; text-transform: uppercase; color: var(--suave); letter-spacing: .03em; }
+  .lista .cam { font-family: ui-monospace, monospace; font-size: 13px; word-break: break-all; }
+  .lista .res { font-size: 12px; color: var(--suave); }
+  .campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .campos label { display: block; font-size: 13px; }
+  .campos small { color: var(--suave); display: block; }
+  .obrig { color: var(--erro); }
+  .vars { display: flex; flex-wrap: wrap; gap: 6px 14px; max-height: 240px; overflow: auto; padding: 6px; border: 1px solid var(--borda); border-radius: 6px; }
+  .vars label { font-size: 13px; white-space: nowrap; }
+  .acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+  .msg { margin-top: 10px; font-size: 13px; }
+  .msg.erro { color: var(--erro); } .msg.aviso { color: var(--aviso); }
+  .url { font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all; background: var(--bg); padding: 8px; border-radius: 6px; border: 1px solid var(--borda); }
+  .tabela { overflow: auto; max-height: 60vh; margin-top: 10px; border: 1px solid var(--borda); border-radius: 6px; }
+  table { border-collapse: collapse; font-size: 12px; min-width: 100%; }
+  th, td { padding: 5px 8px; border-bottom: 1px solid var(--borda); text-align: left; white-space: nowrap; }
+  th { position: sticky; top: 0; background: var(--painel); }
+  .vazio { color: var(--suave); }
+  a { color: var(--destaque); }
+</style>
+</head>
+<body>
+<header>
+  <h1>API-SUS: consulta à API de Dados Abertos do Ministério da Saúde</h1>
+  <p id="status">Carregando catálogo...</p>
+</header>
+<main>
+  <section>
+    <h2>Bases disponíveis</h2>
+    <input type="text" id="busca" placeholder="Buscar (ex.: dengue, cnes, leitos)">
+    <div style="margin-top:8px"><select id="grupo"><option value="">Todos os grupos</option></select></div>
+    <ul class="lista" id="lista"></ul>
+  </section>
+  <section id="detalhe">
+    <p class="vazio">Selecione uma base à esquerda. A documentação completa da API está em <a href="/docs">/docs</a>.</p>
+  </section>
+</main>
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const el = (tag, props = {}, ...filhos) => {
+  const n = document.createElement(tag);
+  Object.assign(n, props);
+  for (const f of filhos) n.append(f instanceof Node ? f : document.createTextNode(f ?? ""));
+  return n;
+};
+let bases = [], atual = null;
+
+async function getJSON(url, opcoes) {
+  const r = await fetch(url, opcoes);
+  const corpo = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(corpo.erro || corpo.detail?.toString?.() || JSON.stringify(corpo.detail) || r.statusText);
+  return corpo;
+}
+
+async function iniciar() {
+  try {
+    const cat = await getJSON("/api/catalogo");
+    $("#status").textContent = `${cat.total_bases} bases · ${cat.titulo_api_oficial || ""} ${cat.versao_api_oficial || ""} · origem: ${cat.origem}`;
+    for (const [g, n] of Object.entries(cat.grupos)) $("#grupo").append(el("option", { value: g }, `${g} (${n})`));
+    await carregarLista();
+  } catch (e) {
+    $("#status").textContent = "Erro ao carregar o catálogo: " + e.message;
+  }
+}
+
+async function carregarLista() {
+  const p = new URLSearchParams();
+  if ($("#busca").value) p.set("q", $("#busca").value);
+  if ($("#grupo").value) p.set("grupo", $("#grupo").value);
+  bases = (await getJSON("/api/datasets?" + p)).bases;
+  const ul = $("#lista"); ul.replaceChildren();
+  if (!bases.length) ul.append(el("li", { className: "vazio" }, "Nenhuma base encontrada."));
+  for (const b of bases) {
+    const li = el("li", {}, el("div", { className: "grupo" }, b.grupo), el("div", { className: "cam" }, b.caminho), el("div", { className: "res" }, b.resumo));
+    li.onclick = () => { document.querySelectorAll(".lista li").forEach(x => x.classList.remove("ativo")); li.classList.add("ativo"); abrir(b.id); };
+    ul.append(li);
+  }
+}
+
+let t; $("#busca").oninput = () => { clearTimeout(t); t = setTimeout(carregarLista, 250); };
+$("#grupo").onchange = carregarLista;
+
+async function abrir(id) {
+  const box = $("#detalhe");
+  box.replaceChildren(el("p", { className: "vazio" }, "Carregando..."));
+  try { atual = await getJSON("/api/datasets/" + encodeURIComponent(id)); }
+  catch (e) { box.replaceChildren(el("p", { className: "msg erro" }, e.message)); return; }
+
+  const controle = [atual.parametro_limit, atual.parametro_offset];
+  const filtros = atual.parametros.filter(p => !controle.includes(p.nome));
+  const campos = el("div", { className: "campos" });
+  for (const p of filtros) {
+    let input;
+    if (p.enum) {
+      input = el("select", { name: p.nome }, el("option", { value: "" }, "(qualquer)"));
+      for (const v of p.enum) input.append(el("option", { value: v }, String(v)));
+    } else {
+      input = el("input", { type: ["integer", "number"].includes(p.tipo) ? "number" : "text", name: p.nome, placeholder: p.padrao ?? "" });
+    }
+    const rotulo = el("label", {}, p.nome, p.obrigatorio ? el("span", { className: "obrig" }, " *") : "", el("small", {}, `${p.tipo}${p.formato ? " · " + p.formato : ""}${p.descricao ? " · " + p.descricao : ""}`), input);
+    campos.append(rotulo);
+  }
+
+  box.replaceChildren(
+    el("h2", {}, atual.resumo || atual.caminho),
+    el("div", { className: "res" }, `${atual.grupo} · `, el("code", {}, atual.caminho), atual.paginavel ? " · paginação automática" : ""),
+    atual.descricao ? el("p", {}, atual.descricao) : "",
+    el("h3", {}, "1. Filtros (enviados à API oficial)"),
+    filtros.length ? campos : el("p", { className: "vazio" }, "Esta base não declara filtros."),
+    el("h3", {}, "2. Variáveis (colunas) a retornar"),
+    el("div", { id: "vars", className: "vars" }, el("span", { className: "vazio" }, "Carregando...")),
+    el("div", { className: "acoes" },
+      el("button", { onclick: () => marcar(true) }, "Marcar todas"),
+      el("button", { onclick: () => marcar(false) }, "Desmarcar"),
+      el("button", { onclick: amostrar }, "Descobrir variáveis com amostra real")),
+    el("h3", {}, "3. Resultado"),
+    el("label", {}, "Máximo de registros ", el("input", { type: "number", id: "max", value: 200, min: 1, style: "width:120px" })),
+    el("div", { className: "acoes" },
+      el("button", { className: "primario", id: "btnConsultar", onclick: consultar }, "Consultar"),
+      el("button", { onclick: () => baixar("csv") }, "Baixar CSV"),
+      el("button", { onclick: () => baixar("json") }, "Baixar JSON")),
+    el("div", { id: "msgs" }),
+    el("div", { id: "saida" }),
+  );
+  mostrarVariaveis(atual.campos.map(c => c.nome), atual.campos);
+  if (!atual.campos.length) amostrar();
+}
+
+function mostrarVariaveis(nomes, campos = []) {
+  const box = $("#vars"); box.replaceChildren();
+  if (!nomes.length) { box.append(el("span", { className: "vazio" }, "Nenhuma variável documentada. Preencha os filtros obrigatórios e use “Descobrir variáveis”. Sem seleção, todas as colunas são retornadas.")); return; }
+  const desc = Object.fromEntries(campos.map(c => [c.nome, c]));
+  for (const n of nomes) box.append(el("label", { title: [desc[n]?.tipo, desc[n]?.descricao].filter(Boolean).join(" · ") }, el("input", { type: "checkbox", value: n, checked: true }), " " + n));
+}
+const marcar = v => document.querySelectorAll("#vars input").forEach(c => c.checked = v);
+
+function coletar() {
+  const filtros = {};
+  document.querySelectorAll(".campos [name]").forEach(i => { if (i.value !== "") filtros[i.name] = i.value; });
+  const todas = [...document.querySelectorAll("#vars input")];
+  const marcadas = todas.filter(c => c.checked).map(c => c.value);
+  const colunas = marcadas.length && marcadas.length < todas.length ? marcadas : null;
+  return { filtros, colunas, max_registros: Number($("#max").value) || null };
+}
+
+function mensagens(lista, classe) {
+  $("#msgs").replaceChildren(...lista.map(m => el("div", { className: "msg " + classe }, m)));
+}
+
+async function amostrar() {
+  const { filtros } = coletar();
+  const p = new URLSearchParams({ ...filtros, amostra: "true" });
+  try {
+    const r = await getJSON(`/api/datasets/${encodeURIComponent(atual.id)}/variaveis?${p}`);
+    if (r.amostra) mostrarVariaveis(r.amostra.variaveis, r.documentadas);
+    if (r.aviso) mensagens([r.aviso], "aviso"); else mensagens([], "");
+  } catch (e) { mensagens([e.message], "erro"); }
+}
+
+function urlGet(formato) {
+  const { filtros, colunas, max_registros } = coletar();
+  const p = new URLSearchParams(filtros);
+  if (colunas) p.set("colunas", colunas.join(","));
+  if (max_registros) p.set("max_registros", max_registros);
+  p.set("formato", formato);
+  return `/api/datasets/${encodeURIComponent(atual.id)}/dados?${p}`;
+}
+
+async function consultar() {
+  const btn = $("#btnConsultar"); btn.disabled = true; btn.textContent = "Consultando...";
+  mensagens([], ""); $("#saida").replaceChildren();
+  try {
+    const r = await getJSON(urlGet("json"));
+    mensagens(r.avisos, "aviso");
+    const url = location.origin + urlGet("json");
+    $("#saida").append(
+      el("p", {}, `${r.total} registro(s) · ${r.paginas_consultadas} página(s) consultada(s).`),
+      el("div", { className: "url" }, url),
+      tabela(r.colunas, r.dados.slice(0, 500)),
+      r.total > 500 ? el("p", { className: "vazio" }, "Mostrando 500 linhas; baixe o CSV para ver tudo.") : "",
+    );
+  } catch (e) { mensagens([e.message], "erro"); }
+  finally { btn.disabled = false; btn.textContent = "Consultar"; }
+}
+
+function tabela(colunas, linhas) {
+  const achatar = (o, pre = "", s = {}) => { for (const [k, v] of Object.entries(o || {})) { if (v && typeof v === "object" && !Array.isArray(v)) achatar(v, pre + k + ".", s); else s[pre + k] = Array.isArray(v) ? JSON.stringify(v) : v; } return s; };
+  const t = el("table");
+  t.append(el("thead", {}, el("tr", {}, ...colunas.map(c => el("th", {}, c)))));
+  const tb = el("tbody");
+  for (const l of linhas) { const a = achatar(l); tb.append(el("tr", {}, ...colunas.map(c => el("td", {}, a[c] == null ? "" : String(a[c]))))); }
+  t.append(tb);
+  return el("div", { className: "tabela" }, t);
+}
+
+function baixar(formato) { window.location.href = urlGet(formato === "json" ? "json" : "csv"); }
+
+iniciar();
+</script>
+</body>
+</html>
