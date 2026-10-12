@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-10-08T02:33:40+00:00",
+ "gerado_em": "2026-10-12T15:17:26+00:00",
  "bases": {
   "arboviroses-chikungunya": {
    "variaveis": [
@@ -433,7 +433,7 @@
     "disp_sus"
    ],
    "paginacao": "incompleta",
-   "teste_paginacao": "pedidos 50: página 1 = 2, página 2 = 2"
+   "teste_paginacao": "pedidos 50: página 1 = 1, página 2 = 1"
   },
   "assistencia-a-saude-cnes-estabelecimentos": {
    "variaveis": [
@@ -460,7 +460,7 @@
     "ds_status"
    ],
    "paginacao": "incompleta",
-   "teste_paginacao": "pedidos 50: página 1 = 2, página 2 = 2"
+   "teste_paginacao": "pedidos 50: página 1 = 3, página 2 = 3"
   },
   "assistencia-a-saude-cnes-leitos": {
    "variaveis": [
@@ -508,7 +508,7 @@
     "dt_desat_equipe"
    ],
    "paginacao": "incompleta",
-   "teste_paginacao": "pedidos 50: página 1 = 2, página 2 = 2"
+   "teste_paginacao": "pedidos 50: página 1 = 1, página 2 = 1"
   },
   "assistencia-a-saude-cnes-servicos-especializados": {
    "variaveis": [
@@ -532,7 +532,7 @@
     "nu_seq_processo"
    ],
    "paginacao": "incompleta",
-   "teste_paginacao": "pedidos 50: página 1 = 2, página 2 = 2"
+   "teste_paginacao": "pedidos 50: página 1 = 1, página 2 = 1"
   },
   "assistencia-a-saude-hospitais-e-leitos": {
    "variaveis": [
@@ -619,7 +619,7 @@
     "co_pa_complexidade"
    ],
    "paginacao": "incompleta",
-   "teste_paginacao": "pedidos 50: página 1 = 2, página 2 = 2"
+   "teste_paginacao": "pedidos 50: página 1 = 1, página 2 = 1"
   },
   "assistencia-a-saude-sih-procedimentos-hospitalares": {
    "variaveis": [
@@ -3479,7 +3479,7 @@
     "codigo_troca_documento",
     "codigo_dose_vacina"
    ],
-   "paginacao": "registro",
+   "paginacao": "ok",
    "teste_paginacao": "pedidos 50: página 1 = 50, página 2 = 50"
   },
   "vacinacao-esavi": {
