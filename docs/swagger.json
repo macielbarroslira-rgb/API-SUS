@@ -3757,7 +3757,64 @@
           "Vigilância e Meio Ambiente"
         ],
         "summary": "Legado dos bancos de dados (BD) epidemiológicos de SRAG, da rede de vigilância da Influenza e outros vírus respiratórios, desde o início da sua implantação.",
+        "description": "Retorna os registros de Síndrome Respiratória Aguda Grave (SRAG) notificados entre 2019 e 2026, contemplando dados de notificação, residência, perfil do paciente, sinais e sintomas, fatores de risco, vacinação, hospitalização, exames laboratoriais e classificação final. Permite filtrar por municípios, Unidades Federativas e Regionais de Saúde de notificação e de residência, datas de notificação e de primeiros sintomas, semana epidemiológica, classificação final, número da notificação, sexo e período (ano e mês). A resposta traz a chave \"total_registros\" com o total de registros que atendem aos filtros (independente da paginação) e a chave \"srag_2019_2026\" com a página de resultados.",
         "parameters": [
+          {
+            "name": "co_mun_not",
+            "in": "query",
+            "description": "Código IBGE do município de notificação.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "co_mun_res",
+            "in": "query",
+            "description": "Código IBGE do município de residência.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf_not",
+            "in": "query",
+            "description": "Unidade Federativa onde está localizada a Unidade que realizou a notificação.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Unidade Federativa de residência do paciente.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Município onde está localizada a Unidade que realizou a notificação.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_mn_resi",
+            "in": "query",
+            "description": "Município de residência do paciente.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "co_regiona",
+            "in": "query",
+            "description": "Código da Regional de Saúde onde está localizado o Município que realizou a notificação.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "co_rg_resi",
+            "in": "query",
+            "description": "Código da Regional de Saúde de residência.",
+            "required": false,
+            "type": "string"
+          },
           {
             "name": "dt_notific",
             "in": "query",
@@ -3766,9 +3823,58 @@
             "type": "string"
           },
           {
+            "name": "dt_sin_pri",
+            "in": "query",
+            "description": "Data de 1º sintomas do caso. Formato: AAAA-MM-DD. Exemplo: 2024-01-15.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sem_not",
+            "in": "query",
+            "description": "Semana Epidemiológica do preenchimento da ficha de notificação.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "classi_fin",
+            "in": "query",
+            "description": "Classificação final: 1.Influenza por novo subtipo viral; 2.Outro agente infeccioso; 3.Descartado.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nu_notific",
+            "in": "query",
+            "description": "Número do registro: Número sequencial gerado automaticamente pelo sistema.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "cs_sexo",
+            "in": "query",
+            "description": "Sexo do paciente: M - Masculino, F - Feminino.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "dt_digita",
+            "in": "query",
+            "description": "Data da digitação da ficha de notificação. Formato: AAAA-MM-DD. Exemplo: 2024-03-14.",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "anomes_notific",
             "in": "query",
             "description": "Filtra pela Ano Mês da ficha de notificação informada. Formato: AAAAMM. Exemplo: 202402",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "anomes_sin_pri",
+            "in": "query",
+            "description": "Filtra pelo Ano Mês dos primeiros sintomas (derivado do campo dt_sin_pri). Formato: AAAAMM. Exemplo: 202401",
             "required": false,
             "type": "string"
           },
@@ -6714,6 +6820,192 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/vigitel-microdados-anual": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados originais do Vigitel Brasil por ano (2006-2023)",
+        "description": "Retorna os microdados originais da pesquisa Vigitel Brasil por ano, provenientes de arquivos XLS/XLSX com peso rake, contendo uma linha por entrevistado.",
+        "parameters": [
+          {
+            "name": "ano",
+            "in": "query",
+            "description": "Ano de referência da pesquisa",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "ano,cidade,q6,q7,civil,q8a,q8b,fesc,q9,q11,imc,excpeso,obesid,fumante,exfuma,alcabu,inativo,ativo_livre,flvreg,refritl5,hart,diab"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de microdados originais do Vigitel Brasil",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/vigitel-microdados-consolidado": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados do Vigitel Brasil 2006–2024 consolidados",
+        "description": "Retorna os microdados consolidados da pesquisa Vigitel Brasil no período de 2006 a 2024 (peso rake), com uma linha por entrevistado, provenientes de arquivo CSV.",
+        "parameters": [
+          {
+            "name": "ano",
+            "in": "query",
+            "description": "Ano de referência da pesquisa",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "ano,cidade,q6,q7,civil,q8a,q8b,fesc,q9,q11,imc,excpeso,obesid,fumante,exfuma,alcabu,inativo,ativo_livre,flvreg,refritl5,hart,diab"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de microdados consolidados do Vigitel Brasil",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/vigitel-microdados-pn-2018": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados do Vigitel Brasil 2018 — recorte população negra",
+        "description": "Retorna os microdados da pesquisa Vigitel Brasil 2018 referentes ao recorte da população negra, provenientes de arquivo XLS, com uma linha por entrevistado.",
+        "parameters": [
+          {
+            "name": "ano",
+            "in": "query",
+            "description": "Ano de referência da pesquisa",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "ano,cidade,q6,q7,civil,q8a,q8b,fesc,q9,q11,imc,excpeso,obesid,fumante,exfuma,alcabu,inativo,ativo_livre,flvreg,refritl5,hart,diab"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de microdados do Vigitel Brasil 2018 (recorte população negra)",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
           }
         }
       }
