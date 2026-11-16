@@ -204,7 +204,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -375,7 +375,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -509,7 +509,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -615,7 +615,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -672,7 +672,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -715,7 +715,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -758,7 +758,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -801,7 +801,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -844,7 +844,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -887,7 +887,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -930,7 +930,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -973,7 +973,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1016,7 +1016,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1059,7 +1059,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1102,7 +1102,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1219,7 +1219,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1276,7 +1276,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1341,7 +1341,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1406,7 +1406,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1520,7 +1520,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1612,7 +1612,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1662,7 +1662,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1719,7 +1719,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1769,7 +1769,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1819,7 +1819,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1869,7 +1869,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1912,7 +1912,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1955,7 +1955,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -1998,7 +1998,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2221,7 +2221,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2264,7 +2264,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2307,7 +2307,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2350,7 +2350,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2393,7 +2393,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2436,7 +2436,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2479,7 +2479,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2522,7 +2522,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2565,7 +2565,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2608,7 +2608,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2651,7 +2651,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2694,7 +2694,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2759,7 +2759,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2823,7 +2823,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2889,7 +2889,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0.",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -2961,7 +2961,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3014,7 +3014,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3074,7 +3074,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3138,7 +3138,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3181,7 +3181,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3224,7 +3224,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3267,7 +3267,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3339,7 +3339,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3382,7 +3382,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3425,7 +3425,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3468,7 +3468,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3511,7 +3511,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3554,7 +3554,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3597,7 +3597,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3640,7 +3640,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3683,7 +3683,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3726,7 +3726,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3788,34 +3788,6 @@
             "type": "string"
           },
           {
-            "name": "id_municip",
-            "in": "query",
-            "description": "Município onde está localizada a Unidade que realizou a notificação.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "id_mn_resi",
-            "in": "query",
-            "description": "Município de residência do paciente.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "co_regiona",
-            "in": "query",
-            "description": "Código da Regional de Saúde onde está localizado o Município que realizou a notificação.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "co_rg_resi",
-            "in": "query",
-            "description": "Código da Regional de Saúde de residência.",
-            "required": false,
-            "type": "string"
-          },
-          {
             "name": "dt_notific",
             "in": "query",
             "description": "Data de preenchimento da ficha de notificação. Formato: AAAA-MM-DD. Exemplo: 2024-02-21.",
@@ -3830,53 +3802,18 @@
             "type": "string"
           },
           {
-            "name": "sem_not",
-            "in": "query",
-            "description": "Semana Epidemiológica do preenchimento da ficha de notificação.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "classi_fin",
-            "in": "query",
-            "description": "Classificação final: 1.Influenza por novo subtipo viral; 2.Outro agente infeccioso; 3.Descartado.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "nu_notific",
-            "in": "query",
-            "description": "Número do registro: Número sequencial gerado automaticamente pelo sistema.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "cs_sexo",
-            "in": "query",
-            "description": "Sexo do paciente: M - Masculino, F - Feminino.",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "dt_digita",
-            "in": "query",
-            "description": "Data da digitação da ficha de notificação. Formato: AAAA-MM-DD. Exemplo: 2024-03-14.",
-            "required": false,
-            "type": "string"
-          },
-          {
             "name": "anomes_notific",
             "in": "query",
             "description": "Filtra pela Ano Mês da ficha de notificação informada. Formato: AAAAMM. Exemplo: 202402",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "anomes_sin_pri",
             "in": "query",
             "description": "Filtra pelo Ano Mês dos primeiros sintomas (derivado do campo dt_sin_pri). Formato: AAAAMM. Exemplo: 202401",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "limit",
@@ -3889,7 +3826,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3939,7 +3876,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -3982,7 +3919,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4025,7 +3962,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4068,7 +4005,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4126,7 +4063,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4183,7 +4120,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4226,7 +4163,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4269,7 +4206,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4312,7 +4249,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4383,7 +4320,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4447,7 +4384,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4490,7 +4427,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4547,7 +4484,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4611,7 +4548,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4675,7 +4612,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4746,7 +4683,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4817,7 +4754,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4888,7 +4825,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -4959,7 +4896,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5023,7 +4960,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Numero da pagina de itens que deve ser retornada. Observacao: As paginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5088,7 +5025,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5131,7 +5068,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5174,7 +5111,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5217,7 +5154,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5260,7 +5197,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5317,7 +5254,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5381,7 +5318,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5452,7 +5389,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5537,7 +5474,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5580,7 +5517,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5644,7 +5581,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5715,7 +5652,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5794,7 +5731,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5826,7 +5763,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5907,7 +5844,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -5978,7 +5915,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6056,7 +5993,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6134,7 +6071,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6212,7 +6149,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6283,7 +6220,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6361,7 +6298,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6439,7 +6376,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6532,7 +6469,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6597,7 +6534,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6669,7 +6606,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6720,7 +6657,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6792,7 +6729,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6824,6 +6761,1602 @@
         }
       }
     },
+    "/vigilancia-e-meio-ambiente/sinan-acidente-trabalho-material-biologico": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de acidentes de trabalho com exposição a material biológico",
+        "description": "Retorna os microdados das notificações de acidentes de trabalho com exposição direta ou indireta a material biológico potencialmente contaminado, registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, ocupacionais, características da exposição e condutas adotadas.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_obito,evolucao"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de acidentes de trabalho com exposição a material biológico",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-atendimento-antirrabico": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de atendimento antirrábico humano",
+        "description": "Retorna os microdados das notificações de atendimento antirrábico humano registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando características da exposição ao vírus rábico, do animal agressor, dos ferimentos, da conduta profilática e do acompanhamento do tratamento.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de atendimento antirrábico humano",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-botulismo": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de notificação e investigação de botulismo",
+        "description": "Retorna os microdados das notificações e investigações de casos suspeitos de botulismo registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, territoriais, clínicas e epidemiológicas, critérios de confirmação, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de notificação e investigação de botulismo",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-cancer-relacionado-trabalho": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de câncer relacionado ao trabalho",
+        "description": "Retorna os microdados das notificações de câncer relacionado ao trabalho registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, ocupacionais, exposição a agentes de risco e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_digita,dt_obito,evolucao"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de câncer relacionado ao trabalho",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-doenca-chagas": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de doença de Chagas aguda",
+        "description": "Retorna os microdados das notificações e investigações de casos de doença de Chagas aguda registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, clínicas, epidemiológicas e laboratoriais, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de doença de Chagas aguda",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-dermatose-ocupacional": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de dermatoses ocupacionais",
+        "description": "Retorna os microdados das notificações de dermatoses ocupacionais registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, ocupacionais, agentes de exposição, diagnóstico e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_obito,evolucao"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de dermatoses ocupacionais",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-esquistossomose": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de esquistossomose",
+        "description": "Retorna os microdados das notificações e investigações de casos de esquistossomose registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, clínicas, epidemiológicas e laboratoriais, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de esquistossomose",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-febre-maculosa": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de febre maculosa e outras riquetsioses",
+        "description": "Retorna os microdados das notificações e investigações de casos suspeitos de febre maculosa e outras riquetsioses registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, sinais e sintomas, exposição, investigação laboratorial, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de febre maculosa e outras riquetsioses",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-febre-tifoide": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de febre tifoide",
+        "description": "Retorna os microdados das notificações e investigações de casos suspeitos de febre tifoide registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, territoriais, clínicas e epidemiológicas, critérios de confirmação, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de febre tifoide",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-hanseniase": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de hanseníase",
+        "description": "Retorna os microdados das notificações de hanseníase registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, clínicas, epidemiológicas, classificação operacional, formas clínicas, avaliação de incapacidades e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_digita"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de hanseníase",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-hantavirose": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de hantavirose",
+        "description": "Retorna os microdados das notificações e investigações de casos suspeitos de hantavirose registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, clínicas, epidemiológicas, exposição a roedores e ambientes de risco, exames laboratoriais, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de hantavirose",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-intoxicacao-exogena": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de intoxicação exógena",
+        "description": "Retorna os microdados das notificações de intoxicação exógena registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, ocupacionais, agente tóxico, circunstância da exposição, diagnóstico, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de intoxicação exógena",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-leptospirose": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de leptospirose",
+        "description": "Retorna os microdados das notificações e investigações de casos suspeitos de leptospirose registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, territoriais, clínicas e epidemiológicas, antecedentes de exposição, critérios de confirmação, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de leptospirose",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-ler-dort": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de LER/DORT",
+        "description": "Retorna os microdados das notificações de lesões por esforço repetitivo e distúrbios osteomusculares relacionados ao trabalho (LER/DORT) registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, ocupacionais, clínicas e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_obito,evolucao"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de LER/DORT",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-leishmaniose-visceral": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de leishmaniose visceral",
+        "description": "Retorna os microdados das notificações e investigações de casos de leishmaniose visceral registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, clínicas, epidemiológicas e laboratoriais, tratamento, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de leishmaniose visceral",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-perda-auditiva": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de perda auditiva relacionada ao trabalho",
+        "description": "Retorna os microdados das notificações de perda auditiva induzida por ruído relacionada ao trabalho registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, ocupacionais, exposição a agentes de risco, diagnóstico e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_obito,evolucao"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de perda auditiva relacionada ao trabalho",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-peste": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de peste",
+        "description": "Retorna os microdados das notificações e investigações de casos suspeitos de peste registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, clínicas, epidemiológicas, antecedentes de exposição, investigação laboratorial, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,evolucao,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de peste",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-pneumoconiose": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de pneumoconioses relacionadas ao trabalho",
+        "description": "Retorna os microdados das notificações de pneumoconioses relacionadas ao trabalho registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, ocupacionais, exposição a poeiras minerais, exames complementares, diagnóstico e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_digita,dt_obito,evolucao"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de pneumoconioses relacionadas ao trabalho",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-raiva": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de raiva humana",
+        "description": "Retorna os microdados das notificações e investigações de raiva humana registradas no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, exposição ao vírus rábico, animal agressor, antecedentes de profilaxia, resultados laboratoriais, classificação final e critérios de confirmação ou descarte.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_raca,cs_escol_n,cs_gestant,id_ocupa_n,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_invest,dt_obito,classi_fin,criterio,doenca_tra"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de raiva humana",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-rotavirus": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de rotavírus",
+        "description": "Retorna os microdados das notificações e investigações de casos suspeitos de rotavírus registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, territoriais, clínicas e epidemiológicas, critérios de confirmação, classificação final e evolução dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "nu_ano,sg_uf,id_municip,dt_notific,sem_not,tp_not,id_agravo,sg_uf_not,id_mn_resi,id_rg_resi,id_regiona,id_unidade,cs_sexo,nu_idade_n,ano_nasc,cs_escol_n,cs_gestant,id_pais,dt_sin_pri,sem_pri,dt_encerra,dt_digita,dt_obito,classi_fin,criterio,evolucao"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de rotavírus",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
+    "/vigilancia-e-meio-ambiente/sinan-tracoma": {
+      "get": {
+        "tags": [
+          "Vigilância e Meio Ambiente"
+        ],
+        "summary": "Microdados de tracoma",
+        "description": "Retorna os microdados dos boletins de inquérito de tracoma registrados no Sistema de Informação de Agravos de Notificação (Sinan), contemplando informações demográficas, formas clínicas, classificação e acompanhamento dos casos.",
+        "parameters": [
+          {
+            "name": "nu_ano",
+            "in": "query",
+            "description": "Ano da notificação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sg_uf",
+            "in": "query",
+            "description": "Sigla da Unidade da Federação de residência",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "id_municip",
+            "in": "query",
+            "description": "Código do município de notificação (IBGE)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de itens retornados por página. Deve ser menor ou igual 1000.",
+            "required": false,
+            "type": "integer",
+            "default": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
+            "required": false,
+            "type": "integer",
+            "default": 0
+          },
+          {
+            "name": "campos",
+            "in": "query",
+            "description": "Lista de campos a serem retornados, separados por vírgula. Premissa de uso: quando omitido, o endpoint retorna o conjunto padrão reduzido destes campos. Informe campos específicos separados por vírgula, no máximo 50 por requisição; acima disso a API retorna 400. Campos inexistentes retornam 400. Os nomes correspondem às colunas da tabela de origem.",
+            "required": false,
+            "type": "string",
+            "default": "cs_inqueri,id_muni_re,dt_notific,id_unidade,sg_uf,dt_digita,dt_transsm,dt_transdm,forma_ts,sg_uf_not,cs_sexo,id_agravo,forma_ti,nu_notific,nu_caso,dt_transus,forma_tf,dt_transse,nu_lote_h,sem_not,forma_tt,encaminha,dt_transrs,nu_ano,id_municip,id_regiona,nu_lote_v,nu_idade_n,dt_transrm,forma_co"
+          }
+        ],
+        "produces": [
+          "application/json",
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Microdados de tracoma",
+            "content": {
+              "application/json": {},
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campos inválidos ou quantidade de campos excedida (máximo de 50)."
+          }
+        }
+      }
+    },
     "/vigilancia-e-meio-ambiente/vigitel-microdados-anual": {
       "get": {
         "tags": [
@@ -6850,7 +8383,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6912,7 +8445,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
@@ -6974,7 +8507,7 @@
           {
             "name": "offset",
             "in": "query",
-            "description": "Número da página de itens que deve ser retornada. Observação: As páginas iniciam a contagem a partir de 0 (zero), por exemplo: offset=0",
+            "description": "Número da página de itens que deve ser retornada (paginação iniciando a partir de 0 (zero)). Por exemplo: offset=0 retorna a primeira página.",
             "required": false,
             "type": "integer",
             "default": 0
